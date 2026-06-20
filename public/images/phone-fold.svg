@@ -1,0 +1,17 @@
+<svg width="480" height="560" viewBox="0 0 480 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="560" rx="32" fill="#f0f2f6"/>
+  <rect x="82" y="74" width="316" height="412" rx="34" fill="#ffffff" stroke="#cbd2da" stroke-width="8"/>
+  <rect x="108" y="104" width="124" height="352" rx="20" fill="url(#foldA)"/>
+  <rect x="248" y="104" width="124" height="352" rx="20" fill="url(#foldB)"/>
+  <rect x="236" y="102" width="8" height="356" rx="4" fill="#d6dde3"/>
+  <defs>
+    <linearGradient id="foldA" x1="108" y1="104" x2="232" y2="456" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1c3940"/>
+      <stop offset="1" stop-color="#5bc0be"/>
+    </linearGradient>
+    <linearGradient id="foldB" x1="248" y1="104" x2="372" y2="456" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f1a53b"/>
+      <stop offset="1" stop-color="#d95f43"/>
+    </linearGradient>
+  </defs>
+</svg>

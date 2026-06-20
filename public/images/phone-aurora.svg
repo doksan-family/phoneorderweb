@@ -1,0 +1,14 @@
+<svg width="480" height="560" viewBox="0 0 480 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="560" rx="32" fill="#f4f8f7"/>
+  <rect x="144" y="48" width="192" height="464" rx="38" fill="#122126"/>
+  <rect x="160" y="72" width="160" height="416" rx="30" fill="url(#aurora)"/>
+  <rect x="214" y="58" width="52" height="8" rx="4" fill="#31464a"/>
+  <circle cx="240" cy="474" r="8" fill="#31464a"/>
+  <defs>
+    <linearGradient id="aurora" x1="160" y1="72" x2="320" y2="488" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#58c4b9"/>
+      <stop offset="0.48" stop-color="#176b87"/>
+      <stop offset="1" stop-color="#ee9b32"/>
+    </linearGradient>
+  </defs>
+</svg>

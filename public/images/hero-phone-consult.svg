@@ -1,0 +1,31 @@
+<svg width="1440" height="760" viewBox="0 0 1440 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="760" fill="#eef5f4"/>
+  <rect x="770" y="126" width="428" height="510" rx="34" fill="#ffffff" stroke="#cbd9d7" stroke-width="4"/>
+  <rect x="800" y="156" width="368" height="450" rx="24" fill="#112225"/>
+  <rect x="832" y="190" width="304" height="382" rx="22" fill="url(#screenA)"/>
+  <rect x="941" y="172" width="86" height="8" rx="4" fill="#304447"/>
+  <rect x="1058" y="256" width="246" height="336" rx="30" fill="#ffffff" stroke="#d8c9b7" stroke-width="4"/>
+  <rect x="1083" y="284" width="196" height="280" rx="21" fill="url(#screenB)"/>
+  <circle cx="1168" cy="308" r="8" fill="#1c2d2f"/>
+  <rect x="646" y="286" width="236" height="306" rx="28" fill="#ffffff" stroke="#d5dde5" stroke-width="4"/>
+  <rect x="672" y="318" width="184" height="232" rx="20" fill="url(#screenC)"/>
+  <rect x="560" y="616" width="798" height="26" rx="13" fill="#d9e6e2"/>
+  <rect x="926" y="96" width="266" height="30" rx="15" fill="#d78a2d" opacity="0.9"/>
+  <rect x="1210" y="178" width="54" height="54" rx="16" fill="#176b87" opacity="0.16"/>
+  <rect x="707" y="116" width="78" height="78" rx="24" fill="#176b87" opacity="0.12"/>
+  <defs>
+    <linearGradient id="screenA" x1="832" y1="190" x2="1136" y2="572" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5bc0be"/>
+      <stop offset="0.5" stop-color="#176b87"/>
+      <stop offset="1" stop-color="#f1a53b"/>
+    </linearGradient>
+    <linearGradient id="screenB" x1="1083" y1="284" x2="1279" y2="564" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f5f7fa"/>
+      <stop offset="1" stop-color="#8bb7a6"/>
+    </linearGradient>
+    <linearGradient id="screenC" x1="672" y1="318" x2="856" y2="550" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f2b25b"/>
+      <stop offset="1" stop-color="#d95f43"/>
+    </linearGradient>
+  </defs>
+</svg>
