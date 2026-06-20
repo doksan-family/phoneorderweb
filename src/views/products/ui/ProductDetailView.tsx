@@ -34,12 +34,6 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
         </div>
       </section>
       <ProductDetailTabs profile={productDetailProfile} />
-      <div className="detail-sticky-cta">
-        <span>결제 없이 상담 신청으로 조건 확인</span>
-        <Link className="button button--primary" href={`/consultation?productId=${product.id}`}>
-          상담 신청하기
-        </Link>
-      </div>
     </main>
   );
 }

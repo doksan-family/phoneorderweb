@@ -42,9 +42,6 @@ export function SiteHeader() {
         <a className="float-btn float-btn--kakao" href="/consultation">
           💬 <span>카카오 상담</span>
         </a>
-        <a className="float-btn float-btn--phone" href="tel:02-0000-0000">
-          📞 <span>전화 상담</span>
-        </a>
       </div>
     </>
   );
