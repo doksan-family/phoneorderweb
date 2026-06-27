@@ -1,28 +1,17 @@
-const AUTH_KEY = "phone-order-admin-auth";
+import { createClient } from "@/shared/lib/supabase/client";
 
-export const adminAccount = {
-  email: "admin@phoneorder.local",
-  password: "phoneorder2026"
-};
+export async function loginAdmin(email: string, password: string) {
+  const supabase = createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-export function isAdminAuthenticated() {
-  if (typeof window === "undefined") {
-    return false;
+  if (error) {
+    return { success: false, error: "이메일 또는 비밀번호를 확인해 주세요." };
   }
 
-  return window.sessionStorage.getItem(AUTH_KEY) === "true";
+  return { success: true };
 }
 
-export function loginAdmin(email: string, password: string) {
-  const isValid = email === adminAccount.email && password === adminAccount.password;
-
-  if (isValid) {
-    window.sessionStorage.setItem(AUTH_KEY, "true");
-  }
-
-  return isValid;
-}
-
-export function logoutAdmin() {
-  window.sessionStorage.removeItem(AUTH_KEY);
+export async function logoutAdmin() {
+  const supabase = createClient();
+  await supabase.auth.signOut();
 }

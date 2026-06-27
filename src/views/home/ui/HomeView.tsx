@@ -1,4 +1,4 @@
-import { banners } from "@/entities/content/model/mock-content";
+import { fetchBanners } from "@/entities/banner/api";
 import { getVisibleProducts } from "@/entities/product/model/mock-products";
 import { ProductCard } from "@/shared/ui/ProductCard";
 import { MarketingConsentNotice } from "@/shared/ui/MarketingConsentNotice";
@@ -6,9 +6,13 @@ import { HomeEventBanner } from "./HomeEventBanner";
 import { HomeHero } from "./HomeHero";
 import { HomeReviewPreview } from "./HomeReviewPreview";
 
-export function HomeView() {
-  const visibleProducts = getVisibleProducts();
-  const mainBanner = banners.find((banner) => banner.visible);
+export async function HomeView() {
+  const [eventBanners, visibleProducts] = await Promise.all([
+    fetchBanners("event"),
+    Promise.resolve(getVisibleProducts()),
+  ]);
+
+  const eventBanner = eventBanners[0] ?? null;
 
   return (
     <main>
@@ -22,9 +26,9 @@ export function HomeView() {
         </div>
       </section>
 
-      {mainBanner ? (
+      {eventBanner ? (
         <section className="section">
-          <HomeEventBanner banner={mainBanner} />
+          <HomeEventBanner banner={eventBanner} />
         </section>
       ) : null}
 

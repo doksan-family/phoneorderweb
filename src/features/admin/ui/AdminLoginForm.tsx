@@ -2,30 +2,42 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { adminAccount, loginAdmin } from "@/features/admin/model/auth";
+import { loginAdmin } from "@/features/admin/model/auth";
 
 export function AdminLoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState(adminAccount.email);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function submitForm(event: FormEvent<HTMLFormElement>) {
+  async function submitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLoading(true);
+    setError("");
 
-    if (!loginAdmin(email, password)) {
-      setError("관리자 계정 정보를 확인해 주세요.");
+    const result = await loginAdmin(email, password);
+
+    if (!result.success) {
+      setError(result.error ?? "로그인에 실패했습니다.");
+      setLoading(false);
       return;
     }
 
     router.push("/admin");
+    router.refresh();
   }
 
   return (
     <form className="form-card form-card--narrow" onSubmit={submitForm}>
       <label>
         관리자 이메일
-        <input value={email} onChange={(event) => setEmail(event.target.value)} />
+        <input
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
       </label>
       <label>
         비밀번호
@@ -33,12 +45,16 @@ export function AdminLoginForm() {
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
+          required
         />
       </label>
-      <p className="form-card__note">개발용 계정 1개: {adminAccount.email}</p>
       {error ? <p className="form-card__error">{error}</p> : null}
-      <button className="button button--primary" type="submit">
-        로그인
+      <button
+        className="button button--primary"
+        type="submit"
+        disabled={loading}
+      >
+        {loading ? "로그인 중..." : "로그인"}
       </button>
     </form>
   );

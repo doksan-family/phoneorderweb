@@ -1,57 +1,68 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import type { HeroBanner } from "@/entities/content/model/types";
+import type { PublicBanner } from "@/entities/banner/model/types";
 
 type HeroBannerSliderProps = {
-  banners: HeroBanner[];
+  banners: PublicBanner[];
 };
 
-export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
-  const visible = banners
-    .filter((b) => b.visible)
-    .sort((a, b) => a.order - b.order);
+const DEFAULT_BG = "linear-gradient(130deg, #eff6ff 0%, #dbeafe 100%)";
 
+export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
   const [current, setCurrent] = useState(0);
 
   const goNext = useCallback(() => {
-    setCurrent((i) => (i + 1) % visible.length);
-  }, [visible.length]);
+    setCurrent((i) => (i + 1) % banners.length);
+  }, [banners.length]);
 
   useEffect(() => {
-    if (visible.length <= 1) return;
+    if (banners.length <= 1) return;
     const timer = window.setInterval(goNext, 4500);
     return () => window.clearInterval(timer);
-  }, [visible.length, goNext]);
+  }, [banners.length, goNext]);
 
-  if (!visible.length) return null;
+  if (!banners.length) return null;
 
-  const banner = visible[current];
+  const banner = banners[current];
 
   return (
     <section
       className="hero"
       aria-label="홈 배너"
-      style={{ background: banner.bgColor }}
+      style={banner.image_url ? undefined : { background: DEFAULT_BG }}
     >
-      <div className="hero-slider__content">
-        <h1 className="hero-slider__title">{banner.title}</h1>
-        {banner.subtitle && (
-          <p className="hero-slider__subtitle">{banner.subtitle}</p>
-        )}
-        <Link className="button button--primary hero-slider__cta" href="/consultation">
-          상담 신청하기
-        </Link>
-      </div>
+      {banner.image_url && (
+        <Image
+          key={banner.id}
+          src={banner.image_url}
+          alt={banner.title}
+          fill
+          priority={current === 0}
+          sizes="100vw"
+          style={{ objectFit: "cover" }}
+        />
+      )}
 
-      {visible.length > 1 && (
+      {banner.link_url && (
+        <Link
+          className="hero-slider__link"
+          href={banner.link_url}
+          aria-label={banner.title}
+        />
+      )}
+
+      {banners.length > 1 && (
         <>
           <button
             aria-label="이전 배너"
             className="hero-slider__arrow hero-slider__arrow--prev"
             type="button"
-            onClick={() => setCurrent((i) => (i - 1 + visible.length) % visible.length)}
+            onClick={() =>
+              setCurrent((i) => (i - 1 + banners.length) % banners.length)
+            }
           >
             ‹
           </button>
@@ -64,7 +75,7 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
             ›
           </button>
           <div className="hero-slider__dots">
-            {visible.map((_, i) => (
+            {banners.map((_, i) => (
               <button
                 aria-label={`${i + 1}번째 배너`}
                 className={`hero-slider__dot${i === current ? " is-active" : ""}`}

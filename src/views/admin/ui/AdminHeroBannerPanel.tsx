@@ -1,88 +1,108 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
-import { heroBanners } from "@/entities/content/model/mock-content";
-import type { HeroBanner } from "@/entities/content/model/types";
-
-const BG_PRESETS = [
-  "linear-gradient(130deg, #eff6ff 0%, #dbeafe 100%)",
-  "linear-gradient(130deg, #f0fdf4 0%, #dcfce7 100%)",
-  "linear-gradient(130deg, #fefce8 0%, #fef9c3 100%)",
-  "linear-gradient(130deg, #fdf4ff 0%, #f3e8ff 100%)"
-];
+import { useEffect, useState } from "react";
+import { deleteAdminBanner, fetchAdminBanners } from "@/entities/banner/api/admin";
+import type { AdminBanner } from "@/entities/banner/model/types";
+import { AdminBannerEditForm } from "@/features/admin/ui/AdminBannerEditForm";
+import { AdminBannerForm } from "@/features/admin/ui/AdminBannerForm";
 
 export function AdminHeroBannerPanel() {
-  const [banners, setBanners] = useState<HeroBanner[]>(heroBanners);
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
+  const [banners, setBanners] = useState<AdminBanner[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  function addBanner(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!title) return;
-    const next: HeroBanner = {
-      id: `hero-${Date.now()}`,
-      title,
-      subtitle,
-      bgColor: BG_PRESETS[banners.length % BG_PRESETS.length],
-      visible: true,
-      order: banners.length + 1
-    };
-    setBanners((prev) => [...prev, next]);
-    setTitle("");
-    setSubtitle("");
+  useEffect(() => {
+    fetchAdminBanners()
+      .then(setBanners)
+      .finally(() => setLoading(false));
+  }, []);
+
+  function handleCreated(banner: AdminBanner) {
+    setBanners((prev) => [...prev, banner]);
+  }
+
+  function handleUpdated(updated: AdminBanner) {
+    setBanners((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
+    setEditingId(null);
+  }
+
+  async function handleDelete(id: string) {
+    if (!window.confirm("배너를 삭제하시겠습니까?")) return;
+    setDeletingId(id);
+    try {
+      await deleteAdminBanner(id);
+      setBanners((prev) => prev.filter((b) => b.id !== id));
+      if (editingId === id) setEditingId(null);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
     <section className="admin-panel">
       <div className="section__header">
-        <p className="eyebrow">Hero Banner</p>
-        <h2>홈 배너 관리</h2>
+        <p className="eyebrow">Banner</p>
+        <h2>배너 관리</h2>
       </div>
-      <form
-        style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 10, marginBottom: 18 }}
-        onSubmit={addBanner}
-      >
-        <input
-          placeholder="배너 제목"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <input
-          placeholder="부제목 (선택)"
-          value={subtitle}
-          onChange={(e) => setSubtitle(e.target.value)}
-        />
-        <button className="button button--primary" type="submit">
-          배너 추가
-        </button>
-      </form>
+      <AdminBannerForm onCreated={handleCreated} />
       <div className="admin-table">
-        {banners.map((banner) => (
-          <article className="admin-row" key={banner.id}>
-            <div>
-              <strong>{banner.title}</strong>
-              <span>{banner.subtitle || "부제목 없음"}</span>
+        {loading ? (
+          <p style={{ color: "var(--muted)" }}>불러오는 중...</p>
+        ) : banners.length === 0 ? (
+          <p style={{ color: "var(--muted)" }}>등록된 배너가 없습니다.</p>
+        ) : (
+          banners.map((banner) => (
+            <div key={banner.id}>
+              <article className="admin-row">
+                <div>
+                  <strong>{banner.title}</strong>
+                  <span>
+                    {banner.type} · {banner.start_at ?? "시작일 없음"} ~{" "}
+                    {banner.end_at ?? "종료일 없음"}
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      padding: "3px 10px",
+                      borderRadius: 999,
+                      background: banner.is_active ? "#dcfce7" : "#f1f5f9",
+                      color: banner.is_active ? "#15803d" : "#64748b",
+                    }}
+                  >
+                    {banner.is_active ? "활성" : "비활성"}
+                  </span>
+                  <button
+                    className="button button--secondary"
+                    type="button"
+                    onClick={() =>
+                      setEditingId((prev) => (prev === banner.id ? null : banner.id))
+                    }
+                  >
+                    {editingId === banner.id ? "닫기" : "수정"}
+                  </button>
+                  <button
+                    className="button button--ghost"
+                    type="button"
+                    disabled={deletingId === banner.id}
+                    onClick={() => handleDelete(banner.id)}
+                  >
+                    {deletingId === banner.id ? "삭제 중..." : "삭제"}
+                  </button>
+                </div>
+              </article>
+              {editingId === banner.id && (
+                <AdminBannerEditForm
+                  banner={banner}
+                  onUpdated={handleUpdated}
+                  onCancel={() => setEditingId(null)}
+                />
+              )}
             </div>
-            <button
-              className="button button--secondary"
-              type="button"
-              onClick={() =>
-                setBanners((prev) =>
-                  prev.map((b) => b.id === banner.id ? { ...b, visible: !b.visible } : b)
-                )
-              }
-            >
-              {banner.visible ? "노출 중" : "숨김"}
-            </button>
-            <button
-              className="button button--ghost"
-              type="button"
-              onClick={() => setBanners((prev) => prev.filter((b) => b.id !== banner.id))}
-            >
-              삭제
-            </button>
-          </article>
-        ))}
+          ))
+        )}
       </div>
     </section>
   );

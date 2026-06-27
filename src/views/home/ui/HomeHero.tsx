@@ -1,6 +1,7 @@
-import { heroBanners } from "@/entities/content/model/mock-content";
+import { fetchBanners } from "@/entities/banner/api";
 import { HeroBannerSlider } from "@/features/hero-banner/ui/HeroBannerSlider";
 
-export function HomeHero() {
-  return <HeroBannerSlider banners={heroBanners} />;
+export async function HomeHero() {
+  const banners = await fetchBanners("main");
+  return <HeroBannerSlider banners={banners} />;
 }
