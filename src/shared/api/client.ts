@@ -4,17 +4,22 @@ const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 export async function apiFetch<T>(
   path: string,
   init?: RequestInit,
-  accessToken?: string
+  accessToken?: string,
+  timeoutMs = 10_000
 ): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
   const res = await fetch(`${BASE_URL}${path}`, {
     ...init,
+    signal: controller.signal,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken ?? ANON_KEY}`,
       apikey: ANON_KEY,
       ...init?.headers,
     },
-  });
+  }).finally(() => clearTimeout(timer));
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
