@@ -60,7 +60,7 @@ export function AdminDashboard() {
   }
 
   return (
-    <main className="grid min-h-screen grid-cols-[248px_minmax(0,1fr)] bg-zinc-100 pb-0 max-[900px]:grid-cols-1">
+    <main className="mx-auto grid w-full max-w-[1440px] min-h-screen grid-cols-[248px_minmax(0,1fr)] bg-zinc-100 pb-0 shadow-[0_0_0_1px_#e2e8f0] max-[900px]:grid-cols-1">
       <aside
         className="sticky top-0 flex h-screen flex-col gap-[34px] border-r border-slate-200 bg-white px-7 py-[30px] max-[900px]:static max-[900px]:grid max-[900px]:h-auto max-[900px]:gap-4 max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:p-5 max-[560px]:px-3.5 max-[560px]:py-[18px]"
         aria-label="관리자 메뉴"

@@ -22,13 +22,15 @@
   box-sizing: border-box;
 }
 
-html,
-body {
+html {
   min-height: 100%;
-  margin: 0;
+  background: #ffffff;
 }
 
 body {
+  min-height: 100%;
+  margin: 0 auto;
+  max-width: 1600px;
   background: var(--background-alt);
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', Arial, sans-serif;
