@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { QueryProvider } from "@/shared/lib/react-query/QueryProvider";
 import { SiteFooter } from "@/shared/ui/SiteFooter";
 import { SiteHeader } from "@/shared/ui/SiteHeader";
 import "./globals.css";
@@ -17,9 +18,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="ko">
       <body>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <QueryProvider>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </QueryProvider>
       </body>
     </html>
   );

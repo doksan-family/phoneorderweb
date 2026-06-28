@@ -96,8 +96,8 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
         <label>
           링크 URL
           <input
-            type="url"
-            placeholder="https://"
+            type="text"
+            placeholder="https://... 또는 /products"
             value={linkUrl}
             onChange={(e) => setLinkUrl(e.target.value)}
           />

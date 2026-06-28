@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { PublicBanner } from "@/entities/banner/model/types";
+import { isExternalHref } from "@/shared/lib/url";
 
 type HeroBannerSliderProps = {
   banners: PublicBanner[];
@@ -46,7 +47,15 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
         />
       )}
 
-      {banner.link_url && (
+      {banner.link_url && isExternalHref(banner.link_url) && (
+        <a
+          className="hero-slider__link"
+          href={banner.link_url}
+          aria-label={banner.title}
+        />
+      )}
+
+      {banner.link_url && !isExternalHref(banner.link_url) && (
         <Link
           className="hero-slider__link"
           href={banner.link_url}

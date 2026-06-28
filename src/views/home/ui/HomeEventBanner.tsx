@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { PublicBanner } from "@/entities/banner/model/types";
+import { isExternalHref } from "@/shared/lib/url";
 
 type HomeEventBannerProps = {
   banner: PublicBanner;
@@ -25,6 +26,14 @@ export function HomeEventBanner({ banner }: HomeEventBannerProps) {
       )}
     </>
   );
+
+  if (banner.link_url && isExternalHref(banner.link_url)) {
+    return (
+      <a className="event-banner" href={banner.link_url}>
+        {inner}
+      </a>
+    );
+  }
 
   if (banner.link_url) {
     return (

@@ -41,11 +41,7 @@ export function AdminDashboard() {
   return (
     <main className="page-main">
       <section className="admin-hero">
-        <div>
-          <p className="eyebrow">Admin</p>
-          <h1>기본 CMS 관리 화면</h1>
-          <p>상품, 상담 신청, 콘텐츠 노출 상태를 관리합니다.</p>
-        </div>
+        <div />
         <button
           className="button button--secondary"
           onClick={logout}
@@ -54,11 +50,6 @@ export function AdminDashboard() {
           로그아웃
         </button>
       </section>
-      <div className="admin-metrics">
-        <span>상담 신청 {applications.length}</span>
-        <span>상태 변경 가능</span>
-        <span>모바일 기본 대응</span>
-      </div>
       <div className="admin-tabs" role="tablist" aria-label="관리 메뉴">
         <button onClick={() => setActiveTab("applications")} type="button">
           상담 신청

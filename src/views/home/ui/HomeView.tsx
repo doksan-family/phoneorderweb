@@ -1,18 +1,12 @@
-import { fetchBanners } from "@/entities/banner/api";
 import { getVisibleProducts } from "@/entities/product/model/mock-products";
 import { ProductCard } from "@/shared/ui/ProductCard";
 import { MarketingConsentNotice } from "@/shared/ui/MarketingConsentNotice";
-import { HomeEventBanner } from "./HomeEventBanner";
+import { HomeEventBannerSection } from "./HomeEventBannerSection";
 import { HomeHero } from "./HomeHero";
 import { HomeReviewPreview } from "./HomeReviewPreview";
 
-export async function HomeView() {
-  const [eventBanners, visibleProducts] = await Promise.all([
-    fetchBanners("event"),
-    Promise.resolve(getVisibleProducts()),
-  ]);
-
-  const eventBanner = eventBanners[0] ?? null;
+export function HomeView() {
+  const visibleProducts = getVisibleProducts();
 
   return (
     <main>
@@ -26,11 +20,7 @@ export async function HomeView() {
         </div>
       </section>
 
-      {eventBanner ? (
-        <section className="section">
-          <HomeEventBanner banner={eventBanner} />
-        </section>
-      ) : null}
+      <HomeEventBannerSection />
 
       <section className="section section--split">
         <div>
