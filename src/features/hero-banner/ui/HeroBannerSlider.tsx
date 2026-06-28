@@ -30,39 +30,45 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
   if (!banners.length) return null;
 
-  const banner = banners[current];
+  const currentBanner = banners[current];
 
   return (
     <section
       className="relative w-full aspect-[12/5] min-h-[140px] overflow-hidden bg-slate-100 group"
       aria-label="홈 배너"
-      style={banner.image_url ? undefined : { background: DEFAULT_BG }}
+      style={!currentBanner.image_url ? { background: DEFAULT_BG } : undefined}
     >
-      {banner.image_url && (
-        <Image
-          key={banner.id}
-          src={banner.image_url}
-          alt={banner.title}
-          fill
-          priority={current === 0}
-          sizes="100vw"
-          style={{ objectFit: "cover" }}
-        />
-      )}
+      {banners.map((banner, i) => (
+        banner.image_url && (
+          <Image
+            key={banner.id}
+            src={banner.image_url}
+            alt={banner.title}
+            fill
+            priority={i === 0}
+            sizes="100vw"
+            style={{
+              objectFit: "cover",
+              opacity: i === current ? 1 : 0,
+              transition: "opacity 0.5s ease",
+            }}
+          />
+        )
+      ))}
 
-      {banner.link_url && isExternalHref(banner.link_url) && (
+      {currentBanner.link_url && isExternalHref(currentBanner.link_url) && (
         <a
           className="absolute inset-0 z-10"
-          href={banner.link_url}
-          aria-label={banner.title}
+          href={currentBanner.link_url}
+          aria-label={currentBanner.title}
         />
       )}
 
-      {banner.link_url && !isExternalHref(banner.link_url) && (
+      {currentBanner.link_url && !isExternalHref(currentBanner.link_url) && (
         <Link
           className="absolute inset-0 z-10"
-          href={banner.link_url}
-          aria-label={banner.title}
+          href={currentBanner.link_url}
+          aria-label={currentBanner.title}
         />
       )}
 
