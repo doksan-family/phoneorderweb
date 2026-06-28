@@ -9,7 +9,7 @@ export function HomeEventBannerSection() {
   const banner = banners[0] ?? null;
   if (!banner) return null;
   return (
-    <section className="section">
+    <section className="mx-auto w-[min(1120px,calc(100%_-_40px))] pt-[72px] max-[560px]:w-[min(100%_-_28px,1120px)]">
       <HomeEventBanner banner={banner} />
     </section>
   );

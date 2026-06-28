@@ -12,6 +12,9 @@ type HeroBannerSliderProps = {
 
 const DEFAULT_BG = "linear-gradient(130deg, #eff6ff 0%, #dbeafe 100%)";
 
+const arrowBase =
+  "absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 border-0 text-2xl cursor-pointer transition hover:bg-white opacity-0 group-hover:opacity-100";
+
 export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
   const [current, setCurrent] = useState(0);
 
@@ -31,7 +34,7 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
   return (
     <section
-      className="hero"
+      className="relative w-full h-[min(56vw,600px)] min-h-[280px] overflow-hidden bg-slate-100 group"
       aria-label="홈 배너"
       style={banner.image_url ? undefined : { background: DEFAULT_BG }}
     >
@@ -49,7 +52,7 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       {banner.link_url && isExternalHref(banner.link_url) && (
         <a
-          className="hero-slider__link"
+          className="absolute inset-0 z-10"
           href={banner.link_url}
           aria-label={banner.title}
         />
@@ -57,7 +60,7 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
       {banner.link_url && !isExternalHref(banner.link_url) && (
         <Link
-          className="hero-slider__link"
+          className="absolute inset-0 z-10"
           href={banner.link_url}
           aria-label={banner.title}
         />
@@ -67,7 +70,7 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
         <>
           <button
             aria-label="이전 배너"
-            className="hero-slider__arrow hero-slider__arrow--prev"
+            className={`${arrowBase} left-4`}
             type="button"
             onClick={() =>
               setCurrent((i) => (i - 1 + banners.length) % banners.length)
@@ -77,17 +80,17 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
           </button>
           <button
             aria-label="다음 배너"
-            className="hero-slider__arrow hero-slider__arrow--next"
+            className={`${arrowBase} right-4`}
             type="button"
             onClick={goNext}
           >
             ›
           </button>
-          <div className="hero-slider__dots">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {banners.map((_, i) => (
               <button
                 aria-label={`${i + 1}번째 배너`}
-                className={`hero-slider__dot${i === current ? " is-active" : ""}`}
+                className={`w-2 h-2 rounded-full border-0 cursor-pointer transition p-0 ${i === current ? "bg-white" : "bg-white/50"}`}
                 key={i}
                 type="button"
                 onClick={() => setCurrent(i)}

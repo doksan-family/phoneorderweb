@@ -50,7 +50,7 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
   const previewUrl = file ? URL.createObjectURL(file) : null;
 
   return (
-    <div className="banner-upload">
+    <div className="grid gap-2">
       <input
         ref={inputRef}
         type="file"
@@ -60,7 +60,7 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
       />
 
       {file && previewUrl ? (
-        <div className="banner-upload__preview">
+        <div className="relative w-full aspect-[3/1] rounded-xl overflow-hidden bg-slate-100">
           <Image
             src={previewUrl}
             alt="미리보기"
@@ -69,36 +69,36 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
             unoptimized
           />
           <button
-            className="banner-upload__remove"
+            className="absolute top-[10px] right-[10px] z-[1] w-7 h-7 rounded-full bg-black/55 text-white text-[0.75rem] flex items-center justify-center cursor-pointer border-0 transition hover:bg-black/80"
             type="button"
             onClick={remove}
             aria-label="이미지 제거"
           >
             ✕
           </button>
-          <div className="banner-upload__file-info">
+          <div className="absolute bottom-0 left-0 right-0 flex justify-between px-3 py-1.5 bg-black/45 text-white text-[0.75rem]">
             <span>{file.name}</span>
             <span>{(file.size / 1024).toFixed(0)} KB</span>
           </div>
         </div>
       ) : (
         <button
-          className={`banner-upload__zone${dragging ? " is-dragging" : ""}`}
+          className={`flex flex-col items-center justify-center gap-2 w-full py-9 px-6 border-2 border-dashed rounded-xl cursor-pointer transition text-center ${dragging ? "border-blue-700 bg-blue-50 text-blue-900" : "border-slate-200 bg-white text-slate-500 hover:border-blue-700 hover:bg-blue-50 hover:text-blue-900"}`}
           type="button"
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
         >
-          <span className="banner-upload__icon">⬆</span>
-          <strong>클릭 또는 드래그하여 이미지 업로드</strong>
-          <span className="banner-upload__specs">
+          <span className="text-[2rem] leading-none">⬆</span>
+          <strong className="text-[0.95rem] text-slate-950">클릭 또는 드래그하여 이미지 업로드</strong>
+          <span className="text-[0.78rem] text-slate-500">
             권장 크기 1920 × 640px · WebP / JPEG / PNG · 최대 2MB
           </span>
         </button>
       )}
 
-      {sizeError && <p className="form-card__error">{sizeError}</p>}
+      {sizeError && <p className="m-0 text-red-600 text-sm font-bold">{sizeError}</p>}
     </div>
   );
 }

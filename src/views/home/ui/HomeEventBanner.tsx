@@ -7,11 +7,14 @@ type HomeEventBannerProps = {
   banner: PublicBanner;
 };
 
+const bannerCls =
+  "grid grid-cols-[1fr_auto] gap-8 items-center p-8 border border-slate-200 rounded-2xl bg-white max-[560px]:grid-cols-1";
+
 export function HomeEventBanner({ banner }: HomeEventBannerProps) {
   const inner = (
     <>
       <div>
-        <p className="eyebrow">Event</p>
+        <p className="m-0 mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-blue-700">Event</p>
         <h2>{banner.title}</h2>
       </div>
       {banner.image_url && (
@@ -29,7 +32,7 @@ export function HomeEventBanner({ banner }: HomeEventBannerProps) {
 
   if (banner.link_url && isExternalHref(banner.link_url)) {
     return (
-      <a className="event-banner" href={banner.link_url}>
+      <a className={bannerCls} href={banner.link_url}>
         {inner}
       </a>
     );
@@ -37,11 +40,11 @@ export function HomeEventBanner({ banner }: HomeEventBannerProps) {
 
   if (banner.link_url) {
     return (
-      <Link className="event-banner" href={banner.link_url}>
+      <Link className={bannerCls} href={banner.link_url}>
         {inner}
       </Link>
     );
   }
 
-  return <article className="event-banner">{inner}</article>;
+  return <article className={bannerCls}>{inner}</article>;
 }

@@ -73,7 +73,10 @@ export function ConsultationForm() {
   }
 
   return (
-    <form className="form-card" onSubmit={submitForm}>
+    <form
+      className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]"
+      onSubmit={submitForm}
+    >
       <ConsultationContactFields
         name={form.name}
         phone={form.phone}
@@ -86,8 +89,11 @@ export function ConsultationForm() {
         marketingAgreed={form.marketingAgreed}
         onChange={updateCheckField}
       />
-      {error ? <p className="form-card__error">{error}</p> : null}
-      <button className="button button--primary" type="submit">
+      {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
+      <button
+        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+        type="submit"
+      >
         상담 신청하기
       </button>
     </form>

@@ -6,14 +6,14 @@ type ConsultationCompleteProps = {
 
 export function ConsultationComplete({ request }: ConsultationCompleteProps) {
   return (
-    <section className="form-card">
-      <p className="eyebrow">접수 완료</p>
+    <section className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]">
+      <p className="m-0 mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-blue-700">접수 완료</p>
       <h2>{request.productName} 상담 신청이 접수되었습니다.</h2>
       <p>
         신청 내역 조회에서 이름, 휴대폰 번호, 비밀번호를 입력하면 진행 상태를
         확인할 수 있습니다.
       </p>
-      <p className="form-card__note">
+      <p className="text-slate-500 text-[0.88rem] leading-[1.65]">
         관리자 이메일 알림은 운영 메일 연동 후 실제 발송됩니다.
       </p>
     </section>

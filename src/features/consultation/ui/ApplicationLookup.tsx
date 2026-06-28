@@ -30,36 +30,46 @@ export function ApplicationLookup() {
   }
 
   return (
-    <div className="lookup-grid">
-      <form className="form-card" onSubmit={submitForm}>
-        <label>
+    <div className="grid grid-cols-[0.8fr_1.2fr] gap-6 items-start max-[900px]:grid-cols-1">
+      <form className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]" onSubmit={submitForm}>
+        <label className="grid gap-2 font-bold">
           신청자 이름
           <input value={name} onChange={(event) => setName(event.target.value)} />
         </label>
-        <label>
+        <label className="grid gap-2 font-bold">
           휴대폰 번호
           <input value={phone} onChange={(event) => setPhone(event.target.value)} />
         </label>
-        <label>
+        <label className="grid gap-2 font-bold">
           신청 시 등록한 비밀번호
           <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
         </label>
-        <label className="check-row">
-          <input type="checkbox" checked={privacyAgreed} onChange={(event) => setPrivacyAgreed(event.target.checked)} />
+        <label className="flex gap-2.5 items-start text-slate-500 font-medium">
+          <input
+            type="checkbox"
+            checked={privacyAgreed}
+            onChange={(event) => setPrivacyAgreed(event.target.checked)}
+            className="w-[18px] min-w-[18px] mt-[3px]"
+          />
           신청 내역 조회를 위한 개인정보 이용에 동의합니다.
         </label>
-        {error ? <p className="form-card__error">{error}</p> : null}
-        <button className="button button--primary" type="submit">신청 내역 조회</button>
+        {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
+        <button
+          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+          type="submit"
+        >
+          신청 내역 조회
+        </button>
       </form>
-      <section className="result-panel">
-        <h2>조회 결과</h2>
-        {results === null ? <p>신청 정보를 입력하면 내역이 표시됩니다.</p> : null}
-        {results?.length === 0 ? <p>일치하는 신청 내역이 없습니다.</p> : null}
+      <section className="border border-slate-200 rounded-xl bg-white min-h-[320px] p-6">
+        <h2 className="m-0 text-[clamp(1.4rem,3vw,2.1rem)] tracking-[-0.5px]">조회 결과</h2>
+        {results === null ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">신청 정보를 입력하면 내역이 표시됩니다.</p> : null}
+        {results?.length === 0 ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">일치하는 신청 내역이 없습니다.</p> : null}
         {results?.map((item) => (
-          <article className="result-item" key={item.id}>
+          <article className="grid gap-1.5 mt-3 border border-slate-200 rounded-[10px] p-[18px] bg-white transition" key={item.id}>
             <strong>{item.productName}</strong>
-            <span>{new Date(item.createdAt).toLocaleDateString("ko-KR")}</span>
-            <span>{item.status}</span>
+            <span className="text-slate-500 text-[0.88rem] leading-[1.65]">{new Date(item.createdAt).toLocaleDateString("ko-KR")}</span>
+            <span className="text-slate-500 text-[0.88rem] leading-[1.65]">{item.status}</span>
           </article>
         ))}
       </section>

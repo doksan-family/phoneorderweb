@@ -50,13 +50,16 @@ export function AdminBannerEditForm({
   }
 
   return (
-    <form className="banner-edit-form" onSubmit={submit}>
-      <div className="banner-edit-form__grid">
-        <label>
+    <form
+      className="grid gap-3 p-4 px-5 bg-white border-l-[3px] border-blue-700 rounded-[0_8px_8px_0] mb-1"
+      onSubmit={submit}
+    >
+      <div className="grid grid-cols-[1fr_1fr] gap-2.5">
+        <label className="grid gap-1.5 text-[0.85rem] font-bold">
           제목 *
           <input value={title} onChange={(e) => setTitle(e.target.value)} required />
         </label>
-        <label>
+        <label className="grid gap-1.5 text-[0.85rem] font-bold">
           정렬 순서
           <input
             type="number"
@@ -65,7 +68,7 @@ export function AdminBannerEditForm({
             onChange={(e) => setDisplayOrder(Number(e.target.value))}
           />
         </label>
-        <label>
+        <label className="grid gap-1.5 text-[0.85rem] font-bold">
           링크 URL
           <input
             type="text"
@@ -74,7 +77,7 @@ export function AdminBannerEditForm({
             onChange={(e) => setLinkUrl(e.target.value)}
           />
         </label>
-        <label>
+        <label className="grid gap-1.5 text-[0.85rem] font-bold">
           CTA 라벨
           <input
             placeholder="자세히 보기"
@@ -82,7 +85,7 @@ export function AdminBannerEditForm({
             onChange={(e) => setCtaLabel(e.target.value)}
           />
         </label>
-        <label>
+        <label className="grid gap-1.5 text-[0.85rem] font-bold">
           노출 시작
           <input
             type="date"
@@ -90,7 +93,7 @@ export function AdminBannerEditForm({
             onChange={(e) => setStartAt(e.target.value)}
           />
         </label>
-        <label>
+        <label className="grid gap-1.5 text-[0.85rem] font-bold">
           노출 종료
           <input
             type="date"
@@ -99,20 +102,29 @@ export function AdminBannerEditForm({
           />
         </label>
       </div>
-      <label style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <label className="flex items-center gap-2 font-medium" style={{ flexDirection: "row" }}>
         <input
           type="checkbox"
           checked={isActive}
           onChange={(e) => setIsActive(e.target.checked)}
+          className="w-[18px] min-w-[18px]"
         />
         활성화
       </label>
-      {error && <p className="form-card__error">{error}</p>}
-      <div className="banner-edit-form__actions">
-        <button className="button button--primary" type="submit" disabled={loading}>
+      {error && <p className="m-0 text-red-600 text-sm font-bold">{error}</p>}
+      <div className="flex gap-2">
+        <button
+          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+          type="submit"
+          disabled={loading}
+        >
           {loading ? "저장 중..." : "저장"}
         </button>
-        <button className="button button--ghost" type="button" onClick={onCancel}>
+        <button
+          className="inline-flex items-center justify-center min-h-[48px] border-0 rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-transparent text-red-600"
+          type="button"
+          onClick={onCancel}
+        >
           취소
         </button>
       </div>

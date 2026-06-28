@@ -1,5 +1,6 @@
 import type { TextField } from "@/entities/consultation/model/types";
 import { products } from "@/entities/product/model/mock-products";
+import { fieldClass } from "./consultationStyles";
 
 type ConsultationContactFieldsProps = {
   name: string;
@@ -18,15 +19,15 @@ export function ConsultationContactFields({
 }: ConsultationContactFieldsProps) {
   return (
     <>
-      <label>
+      <label className={fieldClass}>
         이름
         <input value={name} onChange={(event) => onChange("name", event.target.value)} />
       </label>
-      <label>
+      <label className={fieldClass}>
         휴대폰 번호
         <input value={phone} onChange={(event) => onChange("phone", event.target.value)} />
       </label>
-      <label>
+      <label className={fieldClass}>
         문의 상품
         <select value={productId} onChange={(event) => onChange("productId", event.target.value)}>
           {products.map((product) => (
@@ -36,7 +37,7 @@ export function ConsultationContactFields({
           ))}
         </select>
       </label>
-      <label>
+      <label className={fieldClass}>
         신청 내역 조회용 비밀번호
         <input
           type="password"

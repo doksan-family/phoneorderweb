@@ -27,12 +27,12 @@ export function ProductDetailConfigurator({
   }, [planId, profile.plans]);
 
   return (
-    <div className="detail-config-grid">
-      <section className="detail-choice-card">
-        <header className="detail-card-header">
-          <p className="eyebrow">Consult Option</p>
-          <h2>상담 조건 선택</h2>
-          <p>복잡한 계산은 상담에서 확인하고, 화면에서는 필요한 조건만 고릅니다.</p>
+    <div className="grid grid-cols-1 gap-4 max-[900px]:grid-cols-1">
+      <section className="border border-slate-200 rounded-xl bg-white grid gap-[18px] p-[22px]">
+        <header>
+          <p className="m-0 mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-blue-700">Consult Option</p>
+          <h2 className="m-0 text-[1.45rem] tracking-[-0.5px]">상담 조건 선택</h2>
+          <p className="mt-2 text-slate-500 leading-[1.6]">복잡한 계산은 상담에서 확인하고, 화면에서는 필요한 조건만 고릅니다.</p>
         </header>
         <ColorChoiceList options={profile.colors} value={colorId} onChange={setColorId} />
         <OptionChoiceList label="용량" options={profile.capacities} value={capacityId} onChange={setCapacityId} />

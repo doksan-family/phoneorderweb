@@ -67,18 +67,18 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
   }
 
   return (
-    <form className="form-card" onSubmit={submit}>
+    <form className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]" onSubmit={submit}>
       <h3>배너 등록</h3>
       <BannerImageUpload file={file} onChange={setFile} />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <label>
+        <label className="grid gap-2 font-bold">
           타입 *
           <select value={type} onChange={(e) => setType(e.target.value as BannerType)}>
             <option value="main">메인 (main)</option>
             <option value="event">이벤트 (event)</option>
           </select>
         </label>
-        <label>
+        <label className="grid gap-2 font-bold">
           정렬 순서
           <input
             type="number"
@@ -88,12 +88,12 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
           />
         </label>
       </div>
-      <label>
+      <label className="grid gap-2 font-bold">
         제목 *
         <input value={title} onChange={(e) => setTitle(e.target.value)} required />
       </label>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <label>
+        <label className="grid gap-2 font-bold">
           링크 URL
           <input
             type="text"
@@ -102,7 +102,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
             onChange={(e) => setLinkUrl(e.target.value)}
           />
         </label>
-        <label>
+        <label className="grid gap-2 font-bold">
           CTA 라벨
           <input
             placeholder="자세히 보기"
@@ -112,7 +112,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
         </label>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <label>
+        <label className="grid gap-2 font-bold">
           노출 시작
           <input
             type="date"
@@ -120,7 +120,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
             onChange={(e) => setStartAt(e.target.value)}
           />
         </label>
-        <label>
+        <label className="grid gap-2 font-bold">
           노출 종료
           <input
             type="date"
@@ -129,16 +129,21 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
           />
         </label>
       </div>
-      <label style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <label className="flex items-center gap-2 font-medium" style={{ flexDirection: "row" }}>
         <input
           type="checkbox"
           checked={isActive}
           onChange={(e) => setIsActive(e.target.checked)}
+          className="w-[18px] min-w-[18px]"
         />
         활성화
       </label>
-      {error && <p className="form-card__error">{error}</p>}
-      <button className="button button--primary" type="submit" disabled={loading}>
+      {error && <p className="m-0 text-red-600 text-sm font-bold">{error}</p>}
+      <button
+        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+        type="submit"
+        disabled={loading}
+      >
         {loading ? "등록 중..." : "배너 등록"}
       </button>
     </form>

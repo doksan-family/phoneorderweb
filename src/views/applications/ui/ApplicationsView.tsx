@@ -3,7 +3,7 @@ import { PageHeader } from "@/shared/ui/PageHeader";
 
 export function ApplicationsView() {
   return (
-    <main className="page-main">
+    <main className="w-[min(1120px,calc(100%-40px))] mx-auto pt-14 pb-20 max-[560px]:w-[calc(100%-28px)]">
       <PageHeader
         eyebrow="Lookup"
         title="신청 내역 조회"
