@@ -29,21 +29,21 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isAdminLogin = request.nextUrl.pathname === "/admin/login";
+  const isAdminLogin = request.nextUrl.pathname === "/po-console/login";
   const isAdminArea =
-    request.nextUrl.pathname.startsWith("/admin") && !isAdminLogin;
+    request.nextUrl.pathname.startsWith("/po-console") && !isAdminLogin;
 
   if (isAdminArea && !user) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return NextResponse.redirect(new URL("/po-console/login", request.url));
   }
 
   if (isAdminLogin && user) {
-    return NextResponse.redirect(new URL("/admin", request.url));
+    return NextResponse.redirect(new URL("/po-console", request.url));
   }
 
   return supabaseResponse;
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/po-console/:path*"],
 };

@@ -2,12 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import { createAdminBanner } from "@/entities/banner/api/admin";
-import {
-  oneMonthLaterDateString,
-  toApiEndAt,
-  toApiStartAt,
-  todayDateString,
-} from "@/features/admin/model/dateUtils";
+import { toApiEndAt, toApiStartAt } from "@/features/admin/model/dateUtils";
 import type { AdminBanner, BannerType } from "@/entities/banner/model/types";
 import { BannerImageUpload } from "./BannerImageUpload";
 
@@ -23,8 +18,9 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
   const [ctaLabel, setCtaLabel] = useState("");
   const [displayOrder, setDisplayOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
-  const [startAt, setStartAt] = useState(todayDateString);
-  const [endAt, setEndAt] = useState(oneMonthLaterDateString);
+  const [showDateRange, setShowDateRange] = useState(false);
+  const [startAt, setStartAt] = useState("");
+  const [endAt, setEndAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -47,8 +43,8 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
         cta_label: ctaLabel || undefined,
         display_order: displayOrder,
         is_active: isActive,
-        start_at: toApiStartAt(startAt) ?? undefined,
-        end_at: toApiEndAt(endAt) ?? undefined,
+        start_at: showDateRange ? (toApiStartAt(startAt) ?? undefined) : undefined,
+        end_at: showDateRange ? (toApiEndAt(endAt) ?? undefined) : undefined,
       });
       onCreated(banner);
       setFile(null);
@@ -57,8 +53,9 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
       setCtaLabel("");
       setDisplayOrder(0);
       setIsActive(true);
-      setStartAt(todayDateString());
-      setEndAt(oneMonthLaterDateString());
+      setShowDateRange(false);
+      setStartAt("");
+      setEndAt("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "등록에 실패했습니다.");
     } finally {
@@ -70,7 +67,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
     <form className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]" onSubmit={submit}>
       <h3>배너 등록</h3>
       <BannerImageUpload file={file} onChange={setFile} />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      <div className="grid grid-cols-2 gap-2.5">
         <label className="grid gap-2 font-bold">
           타입 *
           <select value={type} onChange={(e) => setType(e.target.value as BannerType)}>
@@ -92,7 +89,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
         제목 *
         <input value={title} onChange={(e) => setTitle(e.target.value)} required />
       </label>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      <div className="grid grid-cols-2 gap-2.5">
         <label className="grid gap-2 font-bold">
           링크 URL
           <input
@@ -111,25 +108,51 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
           />
         </label>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <label className="grid gap-2 font-bold">
-          노출 시작
-          <input
-            type="date"
-            value={startAt}
-            onChange={(e) => setStartAt(e.target.value)}
-          />
-        </label>
-        <label className="grid gap-2 font-bold">
-          노출 종료
-          <input
-            type="date"
-            value={endAt}
-            onChange={(e) => setEndAt(e.target.value)}
-          />
-        </label>
+
+      <div className="grid gap-2.5">
+        {showDateRange ? (
+          <div className="grid gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5">
+              <label className="grid gap-2 font-bold">
+                노출 시작
+                <input
+                  type="date"
+                  value={startAt}
+                  onChange={(e) => setStartAt(e.target.value)}
+                />
+              </label>
+              <label className="grid gap-2 font-bold">
+                노출 종료
+                <input
+                  type="date"
+                  value={endAt}
+                  onChange={(e) => setEndAt(e.target.value)}
+                />
+              </label>
+            </div>
+            <button
+              type="button"
+              className="text-left text-sm text-slate-400 hover:text-slate-600 transition"
+              onClick={() => { setShowDateRange(false); setStartAt(""); setEndAt(""); }}
+            >
+              기간 설정 해제
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+            <p className="m-0 text-sm text-slate-500">설정하지 않으면 무제한으로 보여집니다.</p>
+            <button
+              type="button"
+              className="shrink-0 text-sm font-bold text-blue-700 hover:text-blue-900 transition"
+              onClick={() => setShowDateRange(true)}
+            >
+              노출기간 설정하기
+            </button>
+          </div>
+        )}
       </div>
-      <label className="flex items-center gap-2 font-medium" style={{ flexDirection: "row" }}>
+
+      <label className="flex items-center gap-2 font-medium">
         <input
           type="checkbox"
           checked={isActive}

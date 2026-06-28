@@ -60,7 +60,7 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
       />
 
       {file && previewUrl ? (
-        <div className="relative w-full aspect-[3/1] rounded-xl overflow-hidden bg-slate-100">
+        <div className="relative w-full aspect-[12/5] rounded-xl overflow-hidden bg-slate-100">
           <Image
             src={previewUrl}
             alt="미리보기"
@@ -93,7 +93,7 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
           <span className="text-[2rem] leading-none">⬆</span>
           <strong className="text-[0.95rem] text-slate-950">클릭 또는 드래그하여 이미지 업로드</strong>
           <span className="text-[0.78rem] text-slate-500">
-            권장 크기 1920 × 640px · WebP / JPEG / PNG · 최대 2MB
+            권장 크기 1920 × 800px · WebP / JPEG / PNG · 최대 2MB
           </span>
         </button>
       )}

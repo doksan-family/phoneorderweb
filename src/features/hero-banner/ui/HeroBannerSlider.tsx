@@ -34,7 +34,7 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
 
   return (
     <section
-      className="relative w-full h-[min(56vw,600px)] min-h-[280px] overflow-hidden bg-slate-100 group"
+      className="relative w-full aspect-[12/5] min-h-[140px] overflow-hidden bg-slate-100 group"
       aria-label="홈 배너"
       style={banner.image_url ? undefined : { background: DEFAULT_BG }}
     >

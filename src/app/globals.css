@@ -46,15 +46,24 @@ select {
   font: inherit;
 }
 
-input,
-select,
-textarea {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 12px 14px;
-  background: #fff;
-  color: var(--foreground);
+button,
+[role="button"],
+label[for],
+select {
+  cursor: pointer;
+}
+
+@layer base {
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: #fff;
+    color: var(--foreground);
+  }
 }
 
 main {

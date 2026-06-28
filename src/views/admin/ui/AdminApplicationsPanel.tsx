@@ -18,10 +18,6 @@ export function AdminApplicationsPanel({
 }: AdminApplicationsPanelProps) {
   return (
     <section className="border border-slate-200 rounded-xl bg-white p-[22px]">
-      <div className="mb-7">
-        <p className="m-0 mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-blue-700">Consultation</p>
-        <h2 className="m-0 text-[clamp(1.4rem,3vw,2.1rem)] tracking-[-0.5px]">상담 신청 관리</h2>
-      </div>
       <div className="grid gap-2.5">
         {items.map((item) => (
           <article className="grid grid-cols-[1fr_1fr_auto] gap-3 items-center p-[14px] border border-slate-200 rounded-[10px] bg-white max-[900px]:grid-cols-1" key={item.id}>

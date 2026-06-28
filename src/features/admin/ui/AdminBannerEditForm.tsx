@@ -21,6 +21,7 @@ export function AdminBannerEditForm({
   const [ctaLabel, setCtaLabel] = useState(banner.cta_label ?? "");
   const [displayOrder, setDisplayOrder] = useState(banner.display_order);
   const [isActive, setIsActive] = useState(banner.is_active);
+  const [showDateRange, setShowDateRange] = useState(!!(banner.start_at || banner.end_at));
   const [startAt, setStartAt] = useState(toDateOnly(banner.start_at));
   const [endAt, setEndAt] = useState(toDateOnly(banner.end_at));
   const [loading, setLoading] = useState(false);
@@ -38,8 +39,8 @@ export function AdminBannerEditForm({
         cta_label: ctaLabel || null,
         display_order: displayOrder,
         is_active: isActive,
-        start_at: toApiStartAt(startAt),
-        end_at: toApiEndAt(endAt),
+        start_at: showDateRange ? toApiStartAt(startAt) : null,
+        end_at: showDateRange ? toApiEndAt(endAt) : null,
       });
       onUpdated(updated);
     } catch (err) {
@@ -85,24 +86,52 @@ export function AdminBannerEditForm({
             onChange={(e) => setCtaLabel(e.target.value)}
           />
         </label>
-        <label className="grid gap-1.5 text-[0.85rem] font-bold">
-          노출 시작
-          <input
-            type="date"
-            value={startAt}
-            onChange={(e) => setStartAt(e.target.value)}
-          />
-        </label>
-        <label className="grid gap-1.5 text-[0.85rem] font-bold">
-          노출 종료
-          <input
-            type="date"
-            value={endAt}
-            onChange={(e) => setEndAt(e.target.value)}
-          />
-        </label>
       </div>
-      <label className="flex items-center gap-2 font-medium" style={{ flexDirection: "row" }}>
+
+      <div className="grid gap-2">
+        {showDateRange ? (
+          <div className="grid gap-2">
+            <div className="grid grid-cols-2 gap-2.5">
+              <label className="grid gap-1.5 text-[0.85rem] font-bold">
+                노출 시작
+                <input
+                  type="date"
+                  value={startAt}
+                  onChange={(e) => setStartAt(e.target.value)}
+                />
+              </label>
+              <label className="grid gap-1.5 text-[0.85rem] font-bold">
+                노출 종료
+                <input
+                  type="date"
+                  value={endAt}
+                  onChange={(e) => setEndAt(e.target.value)}
+                />
+              </label>
+            </div>
+            <button
+              type="button"
+              className="text-left text-sm text-slate-400 hover:text-slate-600 transition"
+              onClick={() => { setShowDateRange(false); setStartAt(""); setEndAt(""); }}
+            >
+              기간 설정 해제
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+            <p className="m-0 text-sm text-slate-500">설정하지 않으면 무제한으로 보여집니다.</p>
+            <button
+              type="button"
+              className="shrink-0 text-sm font-bold text-blue-700 hover:text-blue-900 transition"
+              onClick={() => setShowDateRange(true)}
+            >
+              노출기간 설정하기
+            </button>
+          </div>
+        )}
+      </div>
+
+      <label className="flex items-center gap-2 font-medium">
         <input
           type="checkbox"
           checked={isActive}
