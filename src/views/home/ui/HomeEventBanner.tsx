@@ -8,13 +8,12 @@ type HomeEventBannerProps = {
 };
 
 const bannerCls =
-  "grid grid-cols-[1fr_auto] gap-8 items-center p-8 border border-slate-200 rounded-2xl bg-white max-[560px]:grid-cols-1";
+  "brand-card grid grid-cols-[1fr_auto] items-center gap-8 overflow-hidden p-8 transition hover:border-[var(--brand-primary-strong)] max-[560px]:grid-cols-1";
 
 export function HomeEventBanner({ banner }: HomeEventBannerProps) {
   const inner = (
     <>
       <div>
-        <p className="m-0 mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-blue-700">Event</p>
         <h2>{banner.title}</h2>
       </div>
       {banner.image_url && (

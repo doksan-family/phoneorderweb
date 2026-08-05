@@ -16,17 +16,23 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
         const isActive = activeId === item.id;
 
         return (
-          <article className="border border-slate-200 rounded-[10px] p-[18px] bg-white transition" key={item.id}>
+          <article className="brand-card overflow-hidden" key={item.id}>
             <button
               aria-expanded={isActive}
-              className="flex justify-between w-full border-0 bg-transparent text-slate-950 cursor-pointer p-0 text-left font-extrabold"
+              className="flex w-full cursor-pointer items-center justify-between gap-2.5 border-0 bg-transparent p-4 text-left text-[0.88rem] font-bold text-slate-950"
               onClick={() => setActiveId(isActive ? "" : item.id)}
               type="button"
             >
               <span>{item.question}</span>
-              <span aria-hidden>{isActive ? "−" : "+"}</span>
+              <span aria-hidden className="shrink-0 text-[var(--brand-primary-strong)]">
+                {isActive ? "−" : "+"}
+              </span>
             </button>
-            {isActive ? <p className="text-slate-500 text-[0.88rem] leading-[1.65] mt-3">{item.answer}</p> : null}
+            {isActive ? (
+              <p className="m-0 px-4 pb-4 text-[0.82rem] leading-[1.6] text-slate-500">
+                {item.answer}
+              </p>
+            ) : null}
           </article>
         );
       })}

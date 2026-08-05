@@ -1,56 +1,109 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { Product } from "@/entities/product/model/types";
+import { badgeGlassClass, badgeHotClass, badgeInkClass } from "./badgeStyles";
 
 type ProductCardProps = {
   product: Product;
+  priority?: boolean;
 };
 
-const btnPrimary =
-  "inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900";
+export function ProductCard({ product, priority = false }: ProductCardProps) {
+  const badges = (product.badges ?? []).filter((badge) => badge !== product.cardTag);
+  const saleTypeLabel = product.saleTypes.join(" · ") || product.categoryName;
+  // API가 대표 요금제/월 예상 납부금액을 안 준 상품은 이 줄을 아예 그리지 않는다.
+  const planLine = [
+    product.planName,
+    product.monthlyEstimate > 0
+      ? `월 ${product.monthlyEstimate.toLocaleString("ko-KR")}원`
+      : ""
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
-export function ProductCard({ product }: ProductCardProps) {
   return (
-    <article className="grid border border-slate-200 rounded-xl bg-white overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition-all duration-200 hover:shadow-[0_8px_28px_rgba(0,0,0,0.12)] hover:-translate-y-0.5">
-      <Link href={`/products/${product.id}`} className="relative grid min-h-[240px] place-items-center bg-slate-100 max-[900px]:min-h-[160px]">
-        <Image
-          alt={product.imageAlt}
-          height={280}
-          src={product.imageUrl}
-          width={240}
-          className="w-[78%] h-[220px] object-contain max-[900px]:h-[140px]"
-        />
-        <span className="absolute top-[10px] left-[10px] rounded-md px-2 py-1 bg-blue-900 text-white text-[0.72rem] font-extrabold tracking-[0.5px]">
-          {product.cardTag}
-        </span>
-        <span className="absolute right-[10px] bottom-[10px] rounded-md px-2 py-1 bg-red-600 text-white text-[0.88rem] font-black">
-          {product.discountRate}%
-        </span>
+    <article className="h-full min-w-0">
+      <Link
+        className="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-[border-color,box-shadow] duration-200 hover:border-[var(--brand-primary-strong)] hover:shadow-[0_14px_36px_rgba(21,24,15,0.09)]"
+        href={`/products/${product.id}`}
+      >
+        <div className="relative aspect-square overflow-hidden bg-slate-100">
+          <Image
+            alt={product.imageAlt}
+            fill
+            src={product.imageUrl}
+            priority={priority}
+            sizes="(max-width: 900px) 45vw, (max-width: 1100px) 27vw, 20vw"
+            className="object-cover"
+          />
+          {product.cardTag || badges.length ? (
+            <div className="absolute left-2 top-2 flex max-w-[calc(100%-16px)] flex-wrap gap-1.5">
+              {product.cardTag ? (
+                <span className={`${badgeGlassClass} ${badgeHotClass}`}>
+                  {product.cardTag}
+                </span>
+              ) : null}
+              {badges.map((badge) => (
+                <span className={`${badgeGlassClass} ${badgeInkClass}`} key={badge}>
+                  {badge}
+                </span>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-1 p-3">
+          {saleTypeLabel ? (
+            <ScrollLine className="text-[0.68rem] font-bold text-[var(--brand-primary-strong)]">
+              {saleTypeLabel}
+            </ScrollLine>
+          ) : null}
+          <h2 className="m-0 line-clamp-2 text-[0.88rem] font-bold leading-[1.3] tracking-[-0.01em] text-slate-950">
+            {product.name}
+          </h2>
+          <ScrollLine className="text-[0.74rem] text-slate-500">
+            {product.summary}
+          </ScrollLine>
+
+          <div className="mt-auto min-w-0 border-t border-slate-100 pt-2">
+            {planLine ? (
+              <ScrollLine className="text-[0.68rem] text-slate-500">{planLine}</ScrollLine>
+            ) : null}
+            <ScrollLine className="text-[0.72rem] text-slate-400 line-through">
+              {product.originalPrice.toLocaleString("ko-KR")}원
+            </ScrollLine>
+            <div className="flex min-w-0 flex-wrap items-baseline gap-1">
+              <span className="text-[1rem] font-extrabold text-slate-950">
+                {product.salePrice.toLocaleString("ko-KR")}원
+              </span>
+              {product.discountRate > 0 ? (
+                <span className="text-[0.72rem] font-bold text-[var(--brand-hot)]">
+                  {product.discountRate}%↓
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          <span className="mt-2.5 block rounded-[10px] bg-slate-950 py-2.5 text-center text-[0.78rem] font-bold text-white">
+            상담 신청
+          </span>
+        </div>
       </Link>
-      <div className="grid gap-2.5 p-5 max-[900px]:p-3 max-[900px]:gap-1.5">
-        <p className="m-0 text-blue-700 text-[0.75rem] font-bold uppercase tracking-[0.5px]">{product.categoryName}</p>
-        <h2 className="m-0 text-[1.08rem] font-extrabold tracking-[-0.3px]">{product.name}</h2>
-        <p className="text-slate-500 text-[0.88rem] leading-[1.65]">{product.summary}</p>
-        <div className="flex flex-col gap-0.5">
-          <span className="text-slate-500 text-[0.82rem] line-through">
-            {product.originalPrice.toLocaleString("ko-KR")}원
-          </span>
-          <strong className="text-slate-950 text-[1.25rem] font-black tracking-[-0.5px]">
-            {product.salePrice.toLocaleString("ko-KR")}원
-          </strong>
-        </div>
-        <div className="flex flex-col gap-[3px] border-t border-slate-200 pt-2.5 mt-0.5">
-          <span className="text-slate-500 text-[0.78rem]">
-            {product.planName} · 월 {product.planMonthlyPrice.toLocaleString("ko-KR")}원
-          </span>
-          <span className="text-slate-500 text-[0.82rem]">
-            월 납부 예상 <strong className="text-blue-900 font-extrabold">{product.monthlyEstimate.toLocaleString("ko-KR")}원</strong>
-          </span>
-        </div>
-        <Link className={btnPrimary} href={`/products/${product.id}`}>
-          자세히 보기
-        </Link>
-      </div>
     </article>
+  );
+}
+
+function ScrollLine({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span className={`block min-w-0 overflow-hidden text-ellipsis whitespace-nowrap ${className}`}>
+      {children}
+    </span>
   );
 }

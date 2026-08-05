@@ -1,58 +1,144 @@
 @import "tailwindcss";
 
+/*
+ * 핵폰 디자인 컨셉
+ * ink(#15180F) 다크 서피스 + 로고 라임(#ADFF4F) 메인 컬러.
+ * 라임은 밝아서 채움색으로만 쓰고(글자는 ink), 흰 배경 위 텍스트는
+ * 같은 색상의 어두운 변형(--brand-primary-strong)을 쓴다.
+ * 뉴트럴 램프도 보라를 걷어내고 라임 쪽으로 아주 옅게 기울인 그레이를 쓴다.
+ */
+@theme {
+  --color-slate-50: #fafbf7;
+  --color-slate-100: #f4f6ef;
+  --color-slate-200: #e9ece2;
+  --color-slate-300: #dfe3d6;
+  --color-slate-400: #b4b9aa;
+  --color-slate-500: #888e7e;
+  --color-slate-600: #6b7062;
+  --color-slate-700: #3d4235;
+  --color-slate-800: #2b2f24;
+  --color-slate-900: #1f2319;
+  --color-slate-950: #15180f;
+
+  --color-zinc-50: #fafbf7;
+  --color-zinc-100: #f4f6ef;
+  --color-zinc-200: #e9ece2;
+  --color-zinc-800: #2b2f24;
+}
+
 :root {
   color-scheme: light;
   --background: #ffffff;
-  --background-alt: #f8fafc;
-  --foreground: #0f172a;
-  --muted: #64748b;
+  --background-alt: #fafbf7;
+  --foreground: #15180f;
+  --muted: #888e7e;
   --surface: #ffffff;
-  --surface-strong: #f1f5f9;
-  --line: #e2e8f0;
-  --primary: #1d4ed8;
-  --primary-dark: #1e3a8a;
-  --primary-light: #eff6ff;
+  --surface-strong: #f4f6ef;
+  --line: #e9ece2;
+  --line-strong: #dfe3d6;
+  --primary: #adff4f;
+  --primary-dark: #15180f;
+  --primary-light: #f2ffe0;
+  /* 로고 라임 — 버튼·뱃지 채움색. 그 위 글자는 항상 ink */
+  --brand-primary: #adff4f;
+  --brand-primary-hover: #9bf52e;
+  --brand-primary-shadow: rgba(173, 255, 79, 0.4);
+  --brand-primary-soft: #f2ffe0;
+  /* 흰 배경 위 텍스트·보더용 (대비 5.1:1) */
+  --brand-primary-strong: #4f7a0f;
+  --brand-on-primary: #15180f;
+  --brand-accent: #adff4f;
+  --brand-hot: #ff5c8a;
+  --brand-star: #ffb020;
+  --brand-ink: #15180f;
   --accent: #dc2626;
   --accent-soft: #fef2f2;
   --success: #16a34a;
+  /* 카카오 브랜드 가이드: 배경 #FEE500 + 라벨 검정 85% */
   --kakao: #fee500;
+  --kakao-label: rgba(0, 0, 0, 0.85);
 }
 
-* {
-  box-sizing: border-box;
+/*
+ * 요소 기본값은 반드시 @layer base 안에 둔다.
+ * 레이어 밖 규칙은 Tailwind의 utilities 레이어보다 우선순위가 높아서,
+ * 밖에 두면 `a { color: inherit }`가 text-white 같은 유틸리티를 이겨버린다.
+ */
+@layer base {
+  * {
+    box-sizing: border-box;
+    scrollbar-width: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  html {
+    min-height: 100%;
+    background: var(--background-alt);
+  }
+
+  body {
+    min-height: 100%;
+    margin: 0;
+    background: var(--background-alt);
+    color: var(--foreground);
+    font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', Arial, sans-serif;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  main {
+    padding-bottom: 80px;
+  }
+
+  main.admin-dashboard-shell {
+    padding-bottom: 0;
+  }
 }
 
-html {
-  min-height: 100%;
-  background: #ffffff;
-}
-
-body {
-  min-height: 100%;
-  margin: 0 auto;
-  max-width: 1600px;
-  background: var(--background-alt);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', Arial, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
+a[href],
+a[href] *,
 button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-button,
+button *,
 [role="button"],
+[role="button"] *,
 label[for],
-select {
-  cursor: pointer;
+label[for] *,
+summary,
+summary *,
+select,
+.cursor-pointer,
+input[type="button"],
+input[type="checkbox"],
+input[type="file"],
+input[type="radio"],
+input[type="reset"],
+input[type="submit"] {
+  cursor: pointer !important;
+}
+
+button:disabled,
+button:disabled *,
+[aria-disabled="true"],
+[aria-disabled="true"] *,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed !important;
 }
 
 @layer base {
@@ -60,14 +146,70 @@ select {
   select,
   textarea {
     width: 100%;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 12px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    padding: 13px 15px;
     background: #fff;
     color: var(--foreground);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px var(--brand-primary-shadow);
   }
 }
 
-main {
-  padding-bottom: 80px;
+/* 공용 클래스는 components 레이어에 둬야 유틸리티로 덮어쓸 수 있다. */
+@layer components {
+  .site-container {
+    width: min(80vw, 1440px);
+    margin-inline: auto;
+  }
+
+  @media (max-width: 900px) {
+    .site-container {
+      width: calc(100% - 32px);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .site-container {
+      width: calc(100% - 24px);
+    }
+  }
+
+  /* 컨셉 공용 타이포 · 서피스 */
+  .brand-eyebrow {
+    color: var(--brand-primary-strong);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 6px;
+  }
+
+  .brand-title {
+    margin: 0;
+    font-size: clamp(1.32rem, 2.4vw, 1.85rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+  }
+
+  .brand-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .brand-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
 }
