@@ -30,7 +30,7 @@ export function AdminLoginForm() {
 
   return (
     <form
-      className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)] max-w-[480px] mx-auto"
+      className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(21,24,15,0.08)] max-w-[480px] mx-auto"
       onSubmit={submitForm}
     >
       <label className="grid gap-2 font-bold">
@@ -53,7 +53,7 @@ export function AdminLoginForm() {
       </label>
       {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
       <button
-        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-primary)] text-slate-950 shadow-[0_2px_8px_var(--brand-primary-shadow)] hover:bg-[var(--brand-primary-hover)]"
         type="submit"
         disabled={loading}
       >

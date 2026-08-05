@@ -4,6 +4,8 @@ import type {
   ConsultationRequest,
   ConsultationStatus
 } from "@/entities/consultation/model/types";
+import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
+import { adminFullPanelClass } from "@/shared/ui/adminPanelStyles";
 
 const statuses: ConsultationStatus[] = ["접수", "상담중", "완료", "보류"];
 
@@ -17,8 +19,11 @@ export function AdminApplicationsPanel({
   onStatusChange
 }: AdminApplicationsPanelProps) {
   return (
-    <section className="border border-slate-200 rounded-xl bg-white p-[22px]">
+    <section className={adminFullPanelClass}>
       <div className="grid gap-2.5">
+        {!items.length ? (
+          <AdminEmptyState message="등록된 상담 신청이 없습니다." />
+        ) : null}
         {items.map((item) => (
           <article className="grid grid-cols-[1fr_1fr_auto] gap-3 items-center p-[14px] border border-slate-200 rounded-[10px] bg-white max-[900px]:grid-cols-1" key={item.id}>
             <div className="grid gap-1">

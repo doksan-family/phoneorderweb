@@ -83,7 +83,7 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
         </div>
       ) : (
         <button
-          className={`flex flex-col items-center justify-center gap-2 w-full py-9 px-6 border-2 border-dashed rounded-xl cursor-pointer transition text-center ${dragging ? "border-blue-700 bg-blue-50 text-blue-900" : "border-slate-200 bg-white text-slate-500 hover:border-blue-700 hover:bg-blue-50 hover:text-blue-900"}`}
+          className={`flex flex-col items-center justify-center gap-2 w-full py-9 px-6 border-2 border-dashed rounded-xl cursor-pointer transition text-center ${dragging ? "border-slate-950 bg-[var(--brand-primary-soft)] text-slate-950" : "border-slate-200 bg-white text-slate-500 hover:border-slate-950 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"}`}
           type="button"
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}

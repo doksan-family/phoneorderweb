@@ -64,7 +64,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
   }
 
   return (
-    <form className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]" onSubmit={submit}>
+    <form className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(21,24,15,0.08)]" onSubmit={submit}>
       <h3>배너 등록</h3>
       <BannerImageUpload file={file} onChange={setFile} />
       <div className="grid grid-cols-2 gap-2.5">
@@ -143,7 +143,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
             <p className="m-0 text-sm text-slate-500">설정하지 않으면 무제한으로 보여집니다.</p>
             <button
               type="button"
-              className="shrink-0 text-sm font-bold text-blue-700 hover:text-blue-900 transition"
+              className="shrink-0 text-sm font-bold text-slate-800 underline decoration-[var(--brand-primary-strong)] decoration-2 underline-offset-4 transition hover:text-slate-950"
               onClick={() => setShowDateRange(true)}
             >
               노출기간 설정하기
@@ -163,7 +163,7 @@ export function AdminBannerForm({ onCreated }: AdminBannerFormProps) {
       </label>
       {error && <p className="m-0 text-red-600 text-sm font-bold">{error}</p>}
       <button
-        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-primary)] text-slate-950 shadow-[0_2px_8px_var(--brand-primary-shadow)] hover:bg-[var(--brand-primary-hover)]"
         type="submit"
         disabled={loading}
       >

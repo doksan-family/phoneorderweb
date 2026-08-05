@@ -52,7 +52,7 @@ export function AdminBannerEditForm({
 
   return (
     <form
-      className="grid gap-3 p-4 px-5 bg-white border-l-[3px] border-blue-700 rounded-[0_8px_8px_0] mb-1"
+      className="grid gap-3 p-4 px-5 bg-white border-l-[3px] border-[var(--brand-primary-strong)] rounded-[0_8px_8px_0] mb-1"
       onSubmit={submit}
     >
       <div className="grid grid-cols-[1fr_1fr] gap-2.5">
@@ -122,7 +122,7 @@ export function AdminBannerEditForm({
             <p className="m-0 text-sm text-slate-500">설정하지 않으면 무제한으로 보여집니다.</p>
             <button
               type="button"
-              className="shrink-0 text-sm font-bold text-blue-700 hover:text-blue-900 transition"
+              className="shrink-0 text-sm font-bold text-slate-800 underline decoration-[var(--brand-primary-strong)] decoration-2 underline-offset-4 transition hover:text-slate-950"
               onClick={() => setShowDateRange(true)}
             >
               노출기간 설정하기
@@ -143,7 +143,7 @@ export function AdminBannerEditForm({
       {error && <p className="m-0 text-red-600 text-sm font-bold">{error}</p>}
       <div className="flex gap-2">
         <button
-          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-primary)] text-slate-950 shadow-[0_2px_8px_var(--brand-primary-shadow)] hover:bg-[var(--brand-primary-hover)]"
           type="submit"
           disabled={loading}
         >
