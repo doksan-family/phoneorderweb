@@ -6,8 +6,7 @@ type ConsultationCompleteProps = {
 
 export function ConsultationComplete({ request }: ConsultationCompleteProps) {
   return (
-    <section className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]">
-      <p className="m-0 mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-blue-700">접수 완료</p>
+    <section className="grid gap-5 brand-card p-8">
       <h2>{request.productName} 상담 신청이 접수되었습니다.</h2>
       <p>
         신청 내역 조회에서 이름, 휴대폰 번호, 비밀번호를 입력하면 진행 상태를

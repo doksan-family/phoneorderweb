@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { QueryProvider } from "@/shared/lib/react-query/QueryProvider";
-import { SiteFooter } from "@/shared/ui/SiteFooter";
-import { SiteHeader } from "@/shared/ui/SiteHeader";
+import { InteractiveCursorStyle } from "@/shared/ui/InteractiveCursorStyle";
+import { SiteFooterGate } from "@/shared/ui/SiteFooterGate";
+import { SiteHeaderGate } from "@/shared/ui/SiteHeaderGate";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Phone Order",
-  description: "휴대폰 상품 상담 신청 웹사이트"
+  title: "핵폰 · 핸드폰도 인터넷도 핵 싸게",
+  description:
+    "삼성·애플 최신폰부터 키즈폰, 인터넷+TV 결합까지 실시간 최저가를 상담으로 확인하세요."
 };
 
 type RootLayoutProps = {
@@ -17,11 +19,19 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="ko">
+      <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+        />
+      </head>
       <body>
         <QueryProvider>
-          <SiteHeader />
+          <InteractiveCursorStyle />
+          <SiteHeaderGate />
           {children}
-          <SiteFooter />
+          <SiteFooterGate />
         </QueryProvider>
       </body>
     </html>

@@ -3,14 +3,23 @@ import { PageHeader } from "@/shared/ui/PageHeader";
 
 export function NoticesView() {
   return (
-    <main className="w-[min(1120px,calc(100%-40px))] mx-auto pt-14 pb-20 max-[560px]:w-[calc(100%-28px)]">
-      <PageHeader eyebrow="Notice" title="공지사항" description="운영 안내와 상품 상담 관련 공지를 확인합니다." />
-      <section className="grid gap-2.5 max-w-[820px]">
+    <main className="site-container pt-14 pb-20">
+      <PageHeader eyebrow="공지사항" title="운영 안내 및 공지" description="운영 안내와 상품 상담 관련 공지를 확인합니다." />
+      <section className="grid max-w-[820px] gap-3">
         {notices.filter((notice) => notice.visible).map((notice) => (
-          <article className="border border-slate-200 rounded-[10px] p-[18px] bg-white transition hover:border-blue-700" key={notice.id}>
-            <span className="text-blue-700 text-[0.75rem] font-bold uppercase tracking-[0.5px]">{notice.createdAt}</span>
-            <strong className="block mt-1 text-[1.08rem] font-extrabold tracking-[-0.3px]">{notice.title}</strong>
-            <p className="text-slate-500 text-[0.88rem] leading-[1.65]">{notice.content}</p>
+          <article
+            className="brand-card p-[18px] transition hover:border-[var(--brand-primary-strong)] hover:shadow-[0_10px_28px_rgba(21,24,15,0.07)]"
+            key={notice.id}
+          >
+            <span className="text-[0.72rem] font-bold text-[var(--brand-primary-strong)]">
+              {notice.createdAt}
+            </span>
+            <strong className="mt-1 block text-[1rem] font-extrabold tracking-[-0.02em] text-slate-950">
+              {notice.title}
+            </strong>
+            <p className="m-0 mt-1.5 text-[0.86rem] leading-[1.6] text-slate-500">
+              {notice.content}
+            </p>
           </article>
         ))}
       </section>

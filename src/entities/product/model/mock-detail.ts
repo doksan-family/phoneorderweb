@@ -39,9 +39,14 @@ export const productDetailProfile: ProductDetailProfile = {
     { id: "contract", label: "선택약정할인", description: "24개월 요금 할인 기준", totalBenefit: 570000 }
   ],
   estimate: {
+    originalPrice: 1584000,
+    salePrice: 702000,
     devicePrice: 1584000,
+    planMonthlyFee: 95000,
+    monthlyPlanDiscount: 0,
     carrierSupport: 550000,
     storeSupport: 834000,
+    totalBenefit: 1384000,
     installmentMonths: 24,
     monthlyPlanPrice: 95000,
     monthlyInstallment: 8855,

@@ -6,30 +6,31 @@ type ProductDetailTabsProps = {
 
 export function ProductDetailTabs({ profile }: ProductDetailTabsProps) {
   return (
-    <section className="mt-6 border border-slate-200 rounded-xl bg-white overflow-hidden">
-      <div className="grid grid-cols-3 border-b border-slate-200 bg-slate-50 max-[560px]:grid-cols-1">
-        <span className="py-[15px] px-4 font-extrabold text-[0.88rem] text-center">모델정보</span>
-        <span className="py-[15px] px-4 font-extrabold text-[0.88rem] text-center">유의사항</span>
-        <span className="py-[15px] px-4 font-extrabold text-[0.88rem] text-center">구매후기</span>
-      </div>
-      <div className="grid grid-cols-3 gap-4 p-5 max-[900px]:grid-cols-1">
-        <InfoColumn title="모델정보" items={profile.detailTabs.modelInfo} />
-        <InfoColumn title="상담 유의사항" items={profile.detailTabs.cautions} />
-        <InfoColumn title="후기" items={["후기는 관리자 등록 방식으로 노출됩니다."]} />
-      </div>
-    </section>
+    <div className="mt-12 grid grid-cols-2 gap-8 max-[900px]:grid-cols-1 max-[900px]:gap-7">
+      <CheckList title="주요 특징" items={profile.detailTabs.modelInfo} />
+      <CheckList title="상담 유의사항" items={profile.detailTabs.cautions} />
+    </div>
   );
 }
 
-function InfoColumn({ title, items }: { title: string; items: string[] }) {
+function CheckList({ title, items }: { title: string; items: string[] }) {
+  if (!items.length) return null;
+
   return (
-    <article>
-      <h2 className="mt-0 text-[1.1rem]">{title}</h2>
-      <ul className="m-0 pl-[18px] text-slate-500 leading-[1.75]">
+    <section>
+      <h2 className="m-0 mb-3 text-[1rem] font-extrabold tracking-[-0.02em] text-slate-950">
+        {title}
+      </h2>
+      <ul className="m-0 grid list-none gap-2.5 p-0">
         {items.map((item) => (
-          <li key={item}>{item}</li>
+          <li className="flex items-start gap-2 text-[0.86rem] leading-[1.5] text-slate-700" key={item}>
+            <span aria-hidden className="shrink-0 text-[var(--brand-primary-strong)]">
+              ✓
+            </span>
+            {item}
+          </li>
         ))}
       </ul>
-    </article>
+    </section>
   );
 }

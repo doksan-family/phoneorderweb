@@ -2,11 +2,21 @@ import { reviews } from "@/entities/content/model/mock-content";
 
 export function HomeReviewPreview() {
   return (
-    <div className="grid gap-2.5">
+    <div className="grid grid-cols-2 gap-3 max-[900px]:grid-cols-1">
       {reviews.filter((review) => review.visible).map((review) => (
-        <article className="border border-slate-200 rounded-[10px] p-[18px] bg-white transition hover:border-blue-700" key={review.id}>
-          <strong className="block text-[1.08rem] font-extrabold tracking-[-0.3px]">{review.title}</strong>
-          <p className="text-slate-500 text-[0.88rem] leading-[1.65]">{review.content}</p>
+        <article
+          className="rounded-2xl border border-slate-200 bg-slate-50 p-[18px] transition hover:border-[var(--brand-primary-strong)] hover:bg-white"
+          key={review.id}
+        >
+          <strong className="block text-[1rem] font-extrabold tracking-[-0.02em] text-slate-950">
+            {review.title}
+          </strong>
+          <p className="m-0 mt-2 text-[0.86rem] leading-[1.55] text-slate-700">
+            {review.content}
+          </p>
+          <p className="m-0 mt-3 text-[0.75rem] font-bold text-[var(--brand-primary-strong)]">
+            {review.createdAt}
+          </p>
         </article>
       ))}
     </div>

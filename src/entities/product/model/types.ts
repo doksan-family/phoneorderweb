@@ -1,3 +1,5 @@
+import type { ProductEstimate, ProductPricingOption } from "./pricingTypes";
+
 export type ProductCategory = {
   id: string;
   name: string;
@@ -8,6 +10,12 @@ export type ProductCategory = {
 
 export type ProductSaleType = "번호이동" | "기기변경" | "신규가입";
 
+export type ProductImage = {
+  url: string;
+  alt: string;
+  displayOrder: number;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -17,6 +25,8 @@ export type Product = {
   imageAlt: string;
   summary: string;
   detail: string;
+  productImages?: ProductImage[];
+  descriptionImages?: ProductImage[];
   originalPrice: number;
   salePrice: number;
   planName: string;
@@ -26,7 +36,8 @@ export type Product = {
   planGuide: string;
   discountGuide: string;
   saleTypes: ProductSaleType[];
-  cardTag: "HOT" | "NEW" | "BEST";
+  badges?: string[];
+  cardTag: string;
   discountRate: number;
   visible: boolean;
   order: number;
@@ -51,17 +62,6 @@ export type ProductDiscountOption = ProductOption & {
   totalBenefit: number;
 };
 
-export type ProductEstimate = {
-  devicePrice: number;
-  carrierSupport: number;
-  storeSupport: number;
-  installmentMonths: number;
-  monthlyPlanPrice: number;
-  monthlyInstallment: number;
-  monthlyTotal: number;
-  note: string;
-};
-
 export type ProductDetailProfile = {
   colors: ProductColorOption[];
   capacities: ProductOption[];
@@ -69,9 +69,18 @@ export type ProductDetailProfile = {
   joiningCarriers: ProductOption[];
   plans: ProductPlanOption[];
   discounts: ProductDiscountOption[];
+  subscriptionTypes?: ProductOption[];
+  pricingOptions?: ProductPricingOption[];
   estimate: ProductEstimate;
   detailTabs: {
     modelInfo: string[];
     cautions: string[];
   };
 };
+
+export type {
+  ProductConsultationPayload,
+  ProductEstimate,
+  ProductInstallmentOption,
+  ProductPricingOption,
+} from "./pricingTypes";

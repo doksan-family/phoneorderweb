@@ -1,11 +1,12 @@
 import type { TextField } from "@/entities/consultation/model/types";
-import { products } from "@/entities/product/model/mock-products";
+import type { Product } from "@/entities/product/model/types";
 import { fieldClass } from "./consultationStyles";
 
 type ConsultationContactFieldsProps = {
   name: string;
   phone: string;
   productId: string;
+  products: Product[];
   password: string;
   onChange: (field: TextField, value: string) => void;
 };
@@ -14,6 +15,7 @@ export function ConsultationContactFields({
   name,
   phone,
   productId,
+  products,
   password,
   onChange
 }: ConsultationContactFieldsProps) {

@@ -6,14 +6,21 @@ type PlanBoxProps = {
 
 export function PlanBox({ plan }: PlanBoxProps) {
   return (
-    <div className="grid gap-3 border border-slate-200 rounded-[10px] p-[14px] bg-slate-50">
+    <div className="grid gap-2.5 rounded-xl bg-[var(--brand-primary-soft)] p-[14px]">
       <div className="flex justify-between gap-3">
-        <strong>{plan.label}</strong>
-        <span className="text-blue-900 font-extrabold">월 {plan.monthlyPrice.toLocaleString("ko-KR")}원</span>
+        <strong className="text-[0.86rem] font-extrabold text-slate-950">{plan.label}</strong>
+        <span className="text-[0.86rem] font-extrabold text-slate-950">
+          월 {plan.monthlyPrice.toLocaleString("ko-KR")}원
+        </span>
       </div>
-      <ul className="m-0 pl-[18px] text-slate-500 leading-[1.75]">
+      <ul className="m-0 grid list-none gap-1.5 p-0">
         {plan.benefits.map((benefit) => (
-          <li key={benefit}>{benefit}</li>
+          <li className="flex items-start gap-2 text-[0.8rem] leading-[1.5] text-slate-700" key={benefit}>
+            <span aria-hidden className="shrink-0 text-[var(--brand-primary-strong)]">
+              ✓
+            </span>
+            {benefit}
+          </li>
         ))}
       </ul>
     </div>

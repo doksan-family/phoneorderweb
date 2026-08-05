@@ -5,7 +5,7 @@ export const heroBanners: HeroBanner[] = [
     id: "hero-1",
     title: "갤럭시 S25 특가 상담",
     subtitle: "번호이동 시 최대 혜택 안내. 지금 바로 상담 신청하세요.",
-    bgColor: "linear-gradient(130deg, #eff6ff 0%, #dbeafe 100%)",
+    bgColor: "linear-gradient(130deg, #15180F 0%, #3A5210 55%, #ADFF4F 100%)",
     visible: true,
     order: 1
   },
@@ -13,7 +13,7 @@ export const heroBanners: HeroBanner[] = [
     id: "hero-2",
     title: "아이폰 16 시리즈 상담",
     subtitle: "최신 아이폰을 가장 저렴하게. 조건 비교 상담 신청.",
-    bgColor: "linear-gradient(130deg, #f0fdf4 0%, #dcfce7 100%)",
+    bgColor: "linear-gradient(130deg, #F2FFE0 0%, #DCE2D4 100%)",
     visible: true,
     order: 2
   },
@@ -21,7 +21,7 @@ export const heroBanners: HeroBanner[] = [
     id: "hero-3",
     title: "키즈폰 0원 특가",
     subtitle: "자녀 첫 번째 폰, 공짜폰으로 시작하세요.",
-    bgColor: "linear-gradient(130deg, #fefce8 0%, #fef9c3 100%)",
+    bgColor: "linear-gradient(130deg, #15180F 0%, #3A5210 55%, #ADFF4F 100%)",
     visible: true,
     order: 3
   }

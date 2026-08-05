@@ -2,9 +2,9 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { products } from "@/entities/product/model/mock-products";
 import { addStoredConsultation } from "@/entities/consultation/model/storage";
 import type { ConsultationRequest, TextField } from "@/entities/consultation/model/types";
+import { useStoredProducts } from "@/entities/product/model/useStoredProducts";
 import { ConsultationAgreementFields } from "./ConsultationAgreementFields";
 import { ConsultationComplete } from "./ConsultationComplete";
 import { ConsultationContactFields } from "./ConsultationContactFields";
@@ -20,6 +20,7 @@ type FormState = {
 
 export function ConsultationForm() {
   const searchParams = useSearchParams();
+  const { products } = useStoredProducts();
   const initialProductId = searchParams.get("productId") ?? products[0]?.id ?? "";
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -33,7 +34,7 @@ export function ConsultationForm() {
   const [completed, setCompleted] = useState<ConsultationRequest | null>(null);
   const selectedProduct = useMemo(() => {
     return products.find((product) => product.id === form.productId) ?? products[0];
-  }, [form.productId]);
+  }, [form.productId, products]);
 
   function updateTextField(field: TextField, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -74,13 +75,14 @@ export function ConsultationForm() {
 
   return (
     <form
-      className="grid gap-5 border border-slate-200 rounded-2xl p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.08)]"
+      className="grid gap-5 brand-card p-8"
       onSubmit={submitForm}
     >
       <ConsultationContactFields
         name={form.name}
         phone={form.phone}
         productId={form.productId}
+        products={products}
         password={form.password}
         onChange={updateTextField}
       />
@@ -91,7 +93,7 @@ export function ConsultationForm() {
       />
       {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
       <button
-        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
+        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-primary)] text-slate-950 shadow-[0_2px_8px_var(--brand-primary-shadow)] hover:bg-[var(--brand-primary-hover)]"
         type="submit"
       >
         상담 신청하기

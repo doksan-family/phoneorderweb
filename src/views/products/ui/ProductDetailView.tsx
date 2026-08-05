@@ -1,42 +1,111 @@
+"use client";
+
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import type { Product } from "@/entities/product/model/types";
 import { productDetailProfile } from "@/entities/product/model/mock-detail";
+import { productQueryOptions } from "@/entities/product/model/queries";
+import { useStoredProducts } from "@/entities/product/model/useStoredProducts";
 import { ProductDetailConfigurator } from "@/features/product-detail/ui/ProductDetailConfigurator";
+import { ProductDescriptionImages } from "./ProductDescriptionImages";
 import { ProductDetailTabs } from "./ProductDetailTabs";
 import { ProductGallery } from "./ProductGallery";
+import { ProductPriceSummary } from "./ProductPriceSummary";
 
 type ProductDetailViewProps = {
-  product: Product;
+  initialProduct: Product | null;
+  productId: string;
 };
 
-export function ProductDetailView({ product }: ProductDetailViewProps) {
-  return (
-    <main className="w-[min(1200px,calc(100%-40px))] mx-auto pt-[42px] pb-[112px]">
-      <section className="flex justify-between gap-[18px] items-start mb-6 max-[900px]:flex-col">
-        <div>
-          <p className="m-0 mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-blue-700">{product.categoryName}</p>
-          <h1 className="m-0 text-[clamp(2rem,4vw,3.5rem)] leading-[1.08] tracking-[-1px]">{product.name}</h1>
-          <p className="text-slate-500 text-[1.05rem] leading-[1.8] mt-2.5 max-w-[660px]">{product.detail}</p>
-        </div>
-        <Link
-          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-slate-200 rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-white text-blue-900 hover:border-blue-700 hover:text-blue-700"
-          href="/products"
-        >
-          목록으로
+export function ProductDetailView({
+  initialProduct,
+  productId,
+}: ProductDetailViewProps) {
+  const { products } = useStoredProducts();
+  const { data: apiDetail, isPending: isApiPending } = useQuery(
+    productQueryOptions.publicDetail(productId)
+  );
+  const [storageReady, setStorageReady] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setStorageReady(true), 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const storedProduct = storageReady
+    ? products.find((item) => item.id === productId)
+    : null;
+  const product = apiDetail?.product ?? storedProduct ?? initialProduct;
+  const profile = apiDetail?.profile ?? productDetailProfile;
+
+  if (!product && isApiPending) {
+    return (
+      <main className="site-container py-20">
+        <h1 className="m-0 text-2xl font-extrabold">상품을 불러오는 중입니다.</h1>
+      </main>
+    );
+  }
+
+  if (!product) {
+    return (
+      <main className="site-container py-20">
+        <h1 className="m-0 text-2xl font-extrabold">상품을 찾을 수 없습니다.</h1>
+        <Link className="mt-5 inline-flex font-bold underline" href="/products">
+          상품 목록으로
         </Link>
-      </section>
-      <section className="grid grid-cols-[auto_minmax(0,1fr)] gap-[22px] items-start max-[900px]:grid-cols-1">
+      </main>
+    );
+  }
+
+  const badges = product.badges ?? [];
+
+  return (
+    <main className="site-container pt-10 pb-[112px]">
+      <section className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-10 max-[900px]:grid-cols-1 max-[900px]:gap-6">
         <ProductGallery product={product} />
-        <div className="grid gap-[14px]">
-          <div className="flex flex-wrap gap-[7px]">
-            <span className="rounded-full px-2.5 py-[5px] text-[0.75rem] font-extrabold border-[1.5px] border-blue-700 text-blue-700">5G</span>
-            <span className="rounded-full px-2.5 py-[5px] text-[0.75rem] font-extrabold bg-blue-900 text-white">{product.cardTag}</span>
-            <span className="rounded-full px-2.5 py-[5px] text-[0.75rem] font-extrabold bg-red-50 text-red-600">{product.discountRate}% 상담 혜택</span>
-          </div>
-          <ProductDetailConfigurator productId={product.id} profile={productDetailProfile} />
+        <div>
+          {badges.length ? (
+            <div className="mb-1.5 flex flex-wrap gap-1.5">
+              {badges.map((badge) => (
+                <span
+                  className="brand-pill bg-[var(--brand-primary-soft)] px-2.5 py-1 text-[0.72rem] text-[var(--brand-primary-strong)]"
+                  key={badge}
+                >
+                  {badge}
+                </span>
+              ))}
+            </div>
+          ) : null}
+          <h1 className="m-0 text-[clamp(1.5rem,3vw,2.1rem)] font-extrabold leading-[1.25] tracking-[-0.02em] text-slate-950">
+            {product.name}
+          </h1>
+          <p className="mb-5 mt-1.5 text-[0.9rem] leading-[1.6] text-slate-500">
+            {product.summary}
+          </p>
+          <ProductDetailConfigurator
+            priceSummary={<ProductPriceSummary product={product} />}
+            productId={product.id}
+            profile={profile}
+          />
         </div>
       </section>
-      <ProductDetailTabs profile={productDetailProfile} />
+
+      <ProductDetailTabs profile={profile} />
+
+      {product.detail ? (
+        <section className="mt-12">
+          <h2 className="m-0 mb-3 text-[1rem] font-extrabold tracking-[-0.02em] text-slate-950">
+            상세 정보
+          </h2>
+          <p className="m-0 max-w-[760px] text-[0.9rem] leading-[1.7] text-slate-700">
+            {product.detail}
+          </p>
+        </section>
+      ) : null}
+
+      <ProductDescriptionImages images={product.descriptionImages ?? []} />
     </main>
   );
 }
