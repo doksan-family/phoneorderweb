@@ -1,36 +1,40 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import type { PublicBanner } from "@/entities/banner/model/types";
-import { isExternalHref } from "@/shared/lib/url";
+import { useHeroBannerAutoplay } from "@/features/hero-banner/model/useHeroBannerAutoplay";
+import { HeroBannerControls } from "./HeroBannerControls";
+import { HeroBannerLink } from "./HeroBannerLink";
 
 type HeroBannerSliderProps = {
   banners: PublicBanner[];
 };
 
-const DEFAULT_BG = "linear-gradient(130deg, #eff6ff 0%, #dbeafe 100%)";
-
-const arrowBase =
-  "absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 border-0 text-2xl cursor-pointer transition hover:bg-white opacity-0 group-hover:opacity-100";
+const DEFAULT_BG = "linear-gradient(130deg, #15180F 0%, #3A5210 55%, #ADFF4F 100%)";
+const AUTOPLAY_DELAY_MS = 4500;
 
 export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
   const [current, setCurrent] = useState(0);
 
   const goNext = useCallback(() => {
+    if (banners.length === 0) return;
     setCurrent((i) => (i + 1) % banners.length);
   }, [banners.length]);
 
-  useEffect(() => {
-    if (banners.length <= 1) return;
-    const timer = window.setInterval(goNext, 4500);
-    return () => window.clearInterval(timer);
-  }, [banners.length, goNext]);
+  useHeroBannerAutoplay({
+    delayMs: AUTOPLAY_DELAY_MS,
+    enabled: banners.length > 1,
+    onTick: goNext,
+  });
 
   if (!banners.length) return null;
 
-  const currentBanner = banners[current];
+  const safeCurrent = Math.min(current, banners.length - 1);
+  const currentBanner = banners[safeCurrent];
+  const goPrevious = () => {
+    setCurrent((i) => (i - 1 + banners.length) % banners.length);
+  };
 
   return (
     <section
@@ -38,73 +42,26 @@ export function HeroBannerSlider({ banners }: HeroBannerSliderProps) {
       aria-label="홈 배너"
       style={!currentBanner.image_url ? { background: DEFAULT_BG } : undefined}
     >
-      {banners.map((banner, i) => (
-        banner.image_url && (
-          <Image
-            key={banner.id}
-            src={banner.image_url}
-            alt={banner.title}
-            fill
-            priority={i === 0}
-            sizes="100vw"
-            style={{
-              objectFit: "cover",
-              opacity: i === current ? 1 : 0,
-              transition: "opacity 0.5s ease",
-            }}
-          />
-        )
-      ))}
-
-      {currentBanner.link_url && isExternalHref(currentBanner.link_url) && (
-        <a
-          className="absolute inset-0 z-10"
-          href={currentBanner.link_url}
-          aria-label={currentBanner.title}
+      {currentBanner.image_url && (
+        <Image
+          key={currentBanner.id}
+          src={currentBanner.image_url}
+          alt={currentBanner.title}
+          fill
+          priority={safeCurrent === 0}
+          sizes="100vw"
+          style={{ objectFit: "cover" }}
         />
       )}
 
-      {currentBanner.link_url && !isExternalHref(currentBanner.link_url) && (
-        <Link
-          className="absolute inset-0 z-10"
-          href={currentBanner.link_url}
-          aria-label={currentBanner.title}
-        />
-      )}
-
-      {banners.length > 1 && (
-        <>
-          <button
-            aria-label="이전 배너"
-            className={`${arrowBase} left-4`}
-            type="button"
-            onClick={() =>
-              setCurrent((i) => (i - 1 + banners.length) % banners.length)
-            }
-          >
-            ‹
-          </button>
-          <button
-            aria-label="다음 배너"
-            className={`${arrowBase} right-4`}
-            type="button"
-            onClick={goNext}
-          >
-            ›
-          </button>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-            {banners.map((_, i) => (
-              <button
-                aria-label={`${i + 1}번째 배너`}
-                className={`w-2 h-2 rounded-full border-0 cursor-pointer transition p-0 ${i === current ? "bg-white" : "bg-white/50"}`}
-                key={i}
-                type="button"
-                onClick={() => setCurrent(i)}
-              />
-            ))}
-          </div>
-        </>
-      )}
+      <HeroBannerLink banner={currentBanner} />
+      <HeroBannerControls
+        bannersLength={banners.length}
+        current={safeCurrent}
+        onNext={goNext}
+        onPrevious={goPrevious}
+        onSelect={setCurrent}
+      />
     </section>
   );
 }
