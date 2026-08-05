@@ -1,43 +1,108 @@
 import Link from "next/link";
-import type { ProductEstimate } from "@/entities/product/model/types";
+import type {
+  ProductConsultationPayload,
+  ProductEstimate,
+} from "@/entities/product/model/types";
 
 type EstimatePanelProps = {
+  colorValue: string;
+  consultationPayload?: ProductConsultationPayload;
   productId: string;
   estimate: ProductEstimate;
 };
 
-export function EstimatePanel({ productId, estimate }: EstimatePanelProps) {
+export function EstimatePanel({
+  colorValue,
+  consultationPayload,
+  productId,
+  estimate,
+}: EstimatePanelProps) {
+  const consultationHref = getConsultationHref(
+    productId,
+    consultationPayload,
+    colorValue
+  );
+
   return (
-    <aside className="sticky top-[144px] grid gap-3 p-4 border border-slate-200 rounded-xl bg-white max-[900px]:static max-[900px]:w-full">
-      <div className="grid gap-1 rounded-[10px] p-[14px] bg-[#fff7ed]">
-        <span>총 상담 혜택</span>
-        <strong className="text-red-600 text-[1.8rem] font-black">{(estimate.carrierSupport + estimate.storeSupport).toLocaleString("ko-KR")}원</strong>
-      </div>
-      <EstimateLine label="월 통신요금" value={estimate.monthlyPlanPrice} />
-      <EstimateLine
-        label={`월 할부금 (${estimate.installmentMonths}개월)`}
-        value={estimate.monthlyInstallment}
-      />
-      <div className="grid gap-1 rounded-[10px] p-[14px] bg-blue-50">
-        <span>월 예상납부금액</span>
-        <strong className="text-blue-900 text-[1.5rem] font-black">{estimate.monthlyTotal.toLocaleString("ko-KR")}원</strong>
-      </div>
-      <p className="text-slate-500">{estimate.note}</p>
+    <div className="grid gap-3">
+      <section className="rounded-2xl bg-slate-950 p-5 text-white">
+        <h3 className="m-0 mb-3.5 text-[0.92rem] font-extrabold">예상 견적</h3>
+        <dl className="m-0 grid gap-[9px]">
+          <EstimateLine label="출고가" value={estimate.originalPrice} />
+          <EstimateLine label="판매가" value={estimate.salePrice} />
+          <EstimateLine label="단말기 가격" value={estimate.devicePrice} />
+          <EstimateLine label="통신사 지원금" value={estimate.carrierSupport} negative />
+          <EstimateLine label="추가 지원금" value={estimate.storeSupport} negative />
+          <EstimateLine label="요금제 월정액" value={estimate.planMonthlyFee} />
+          <EstimateLine label="월 요금 할인" value={estimate.monthlyPlanDiscount} negative />
+          <EstimateLine label="월 통신 요금" value={estimate.monthlyPlanPrice} />
+          <EstimateLine
+            label={`월 할부금 (${estimate.installmentMonths}개월)`}
+            value={estimate.monthlyInstallment}
+          />
+        </dl>
+        <div className="mt-3.5 flex items-baseline justify-between gap-3 border-t border-white/15 pt-3.5">
+          <span className="text-[0.85rem] font-bold">월 예상 납부 금액</span>
+          <strong className="text-[1.35rem] font-extrabold text-[var(--brand-accent)]">
+            {estimate.monthlyTotal.toLocaleString("ko-KR")}원
+          </strong>
+        </div>
+      </section>
+
+      <p className="m-0 text-[0.78rem] leading-[1.6] text-slate-500">{estimate.note}</p>
+
       <Link
-        className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-blue-700 text-white shadow-[0_2px_8px_rgba(29,78,216,0.28)] hover:bg-blue-900"
-        href={`/consultation?productId=${productId}`}
+        className="inline-flex min-h-[52px] items-center justify-center rounded-[14px] bg-[var(--brand-primary)] px-6 text-[0.95rem] font-bold text-slate-950 transition hover:bg-[var(--brand-primary-hover)]"
+        href={consultationHref}
       >
-        상담 신청하기
+        이 조건으로 상담 신청하기
       </Link>
-    </aside>
+      <Link
+        className="inline-flex min-h-[48px] items-center justify-center rounded-[14px] border border-slate-300 px-6 text-[0.88rem] font-bold text-slate-700 transition hover:border-slate-950 hover:text-slate-950"
+        href="/products"
+      >
+        목록으로 돌아가기
+      </Link>
+    </div>
   );
 }
 
-function EstimateLine({ label, value }: { label: string; value: number }) {
+function EstimateLine({
+  label,
+  value,
+  negative = false,
+}: {
+  label: string;
+  value: number;
+  negative?: boolean;
+}) {
   return (
-    <dl className="flex justify-between gap-3 m-0 py-3 border-b border-slate-200">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="m-0 font-extrabold">{value.toLocaleString("ko-KR")}원</dd>
-    </dl>
+    <div className="flex justify-between gap-3 text-[0.78rem] text-slate-400">
+      <dt>{label}</dt>
+      <dd className="m-0 font-semibold text-white">
+        {negative && value > 0 ? "-" : ""}
+        {value.toLocaleString("ko-KR")}원
+      </dd>
+    </div>
   );
+}
+
+function getConsultationHref(
+  productId: string,
+  payload: ProductConsultationPayload | undefined,
+  colorValue: string
+) {
+  const search = new URLSearchParams({ productId: payload?.productId ?? productId });
+  if (payload?.pricingId) search.set("pricingId", payload.pricingId);
+  if (payload?.variantId) search.set("variantId", payload.variantId);
+  if (payload?.planId) search.set("planId", payload.planId);
+  if (payload?.subscriptionType) {
+    search.set("subscriptionType", payload.subscriptionType);
+  }
+  if (payload?.installmentMonths !== undefined) {
+    search.set("installmentMonths", String(payload.installmentMonths));
+  }
+  if (colorValue) search.set("colorValue", colorValue);
+
+  return `/consultation?${search.toString()}`;
 }

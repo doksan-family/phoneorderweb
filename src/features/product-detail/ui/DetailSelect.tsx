@@ -1,4 +1,5 @@
 import type { ProductOption } from "@/entities/product/model/types";
+import { chipGroupLabelClass } from "./choiceChipStyles";
 
 type DetailSelectProps = {
   label: string;
@@ -9,10 +10,10 @@ type DetailSelectProps = {
 
 export function DetailSelect({ label, options, value, onChange }: DetailSelectProps) {
   return (
-    <label className="grid gap-2">
-      <span className="text-slate-500 text-[0.88rem] font-bold">{label}</span>
+    <label className="block">
+      <span className={chipGroupLabelClass}>{label}</span>
       <select
-        className="min-h-[48px] border-slate-200 bg-[#fbfcfc] font-bold"
+        className="min-h-[46px] rounded-[10px] border-slate-300 bg-white py-2.5 text-[0.85rem] font-bold text-slate-700"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
