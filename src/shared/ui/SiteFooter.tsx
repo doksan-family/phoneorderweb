@@ -11,7 +11,14 @@ const footerLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="bg-slate-950 text-[0.82rem] leading-[1.8] text-slate-400">
+    <footer
+      className="bg-slate-950 text-[0.82rem] leading-[1.8] text-slate-400"
+      /* 히어로와 같은 라임 글로우. 배경 이미지라 별도 레이어 없이 콘텐츠 뒤에 깔린다. */
+      style={{
+        backgroundImage:
+          "radial-gradient(640px circle at 8% 0%, rgba(173,255,79,0.18), transparent 62%), radial-gradient(520px circle at 92% 100%, rgba(173,255,79,0.14), transparent 58%)"
+      }}
+    >
       <div className="site-container flex min-h-44 items-stretch justify-between gap-10 border-b border-white/[0.07] pb-8 pt-10 max-[900px]:flex-col-reverse max-[900px]:items-start max-[900px]:gap-6">
         <div className="grid content-start gap-1">
           <p className="m-0 mb-1 text-[1.05rem] font-extrabold text-white">

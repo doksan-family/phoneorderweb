@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const BASE_BOTTOM = 28;
@@ -47,16 +46,19 @@ export function FloatingConsultButton() {
       style={{ bottom }}
     >
       <a
-        className="brand-pill h-[46px] gap-2 bg-[var(--kakao)] px-5 text-[0.85rem] font-extrabold text-[var(--kakao-label)] shadow-[0_10px_28px_rgba(21,24,15,0.28)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(21,24,15,0.38)]"
+        className="brand-pill h-[46px] gap-2 border border-white/40 bg-[var(--kakao)] px-5 text-[0.85rem] font-extrabold text-[var(--kakao-label)] shadow-[0_10px_28px_rgba(21,24,15,0.28)] backdrop-blur-md backdrop-saturate-150 transition-[background-color,box-shadow] supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--kakao)_72%,transparent)] hover:shadow-[0_14px_34px_rgba(21,24,15,0.34)] supports-[backdrop-filter]:hover:bg-[color-mix(in_srgb,var(--kakao)_88%,transparent)]"
         href="/consultation"
       >
-        <Image
-          alt=""
+        {/* 노란 배경까지 들어간 이미지 대신 말풍선만. 색은 버튼 글자색을 따른다. */}
+        <svg
           aria-hidden="true"
-          height={20}
-          src="/images/logo/KakaoTalk_logo.svg.webp"
-          width={20}
-        />
+          fill="currentColor"
+          height={24}
+          viewBox="0 0 24 24"
+          width={24}
+        >
+          <path d="M12 3C6.5 3 2 6.48 2 10.78c0 2.79 1.86 5.23 4.65 6.6-.2.72-.74 2.68-.85 3.1-.13.52.19.51.4.37.17-.11 2.63-1.79 3.7-2.52.68.1 1.38.15 2.1.15 5.5 0 10-3.48 10-7.7C22 6.48 17.5 3 12 3Z" />
+        </svg>
         <span className="max-[560px]:hidden">카카오 상담</span>
       </a>
     </div>

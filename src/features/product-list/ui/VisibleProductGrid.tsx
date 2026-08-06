@@ -58,6 +58,14 @@ export function VisibleProductGrid({
     );
   }
 
+  if (!visibleProducts.length) {
+    return (
+      <div className="grid min-h-[260px] place-items-center rounded-2xl border border-dashed border-[var(--brand-primary)] bg-[var(--brand-primary-soft)] px-6 text-center text-[0.9rem] font-bold text-[var(--brand-primary-strong)] max-[900px]:min-h-[180px]">
+        등록된 상품이 없습니다
+      </div>
+    );
+  }
+
   return (
     <div className={gridClass}>
       {visibleProducts.map((product, index) => (
