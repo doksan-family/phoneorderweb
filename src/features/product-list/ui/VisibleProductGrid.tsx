@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { productQueryOptions } from "@/entities/product/model/queries";
 import { useStoredProducts } from "@/entities/product/model/useStoredProducts";
 import { ProductCard } from "@/shared/ui/ProductCard";
+import { ProductCardSkeleton } from "@/shared/ui/ProductCardSkeleton";
 
 type VisibleProductGridProps = {
   categoryId?: string;
@@ -23,7 +24,7 @@ export function VisibleProductGrid({
   limit,
 }: VisibleProductGridProps) {
   const { products } = useStoredProducts();
-  const { data: apiProducts } = useQuery(
+  const { data: apiProducts, isPending } = useQuery(
     productQueryOptions.publicList({ category: categoryId, featured, limit })
   );
   const sourceProducts = apiProducts ?? products;
@@ -35,6 +36,16 @@ export function VisibleProductGrid({
       }),
     [categoryId, sourceProducts]
   );
+
+  if (isPending && !visibleProducts.length) {
+    return (
+      <div className={gridClass}>
+        {Array.from({ length: firstRowCardCount }, (_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className={gridClass}>

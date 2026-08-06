@@ -12,9 +12,10 @@ type ProductMultiChoiceFieldProps<T extends ChoiceValue> = {
 const fieldClass = "grid gap-2 text-sm font-bold text-slate-700";
 const optionClass =
   "inline-flex h-10 min-w-[88px] cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-md border px-3 text-sm font-bold transition";
-const selectedClass = "border-slate-950 bg-slate-950 text-white shadow-sm";
+const selectedClass =
+  "border-[var(--brand-primary-strong)] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]";
 const idleClass =
-  "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50";
+  "border-slate-200 bg-white text-slate-600 hover:bg-[var(--brand-primary-soft)]";
 
 export function ProductMultiChoiceField<T extends ChoiceValue>({
   label,
@@ -49,7 +50,9 @@ export function ProductMultiChoiceField<T extends ChoiceValue>({
             >
               <span
                 className={`grid h-4 w-4 place-items-center rounded-full border ${
-                  isSelected ? "border-white" : "border-slate-300"
+                  isSelected
+                    ? "border-[var(--brand-primary-strong)] bg-white"
+                    : "border-slate-300"
                 }`}
               >
                 {isSelected ? <Check size={12} aria-hidden="true" /> : null}

@@ -2,35 +2,28 @@ import type {
   PublicConsultationPayload,
   PublicProductQuote,
 } from "@/entities/product/api/public";
-import type {
-  ProductDetailProfile,
-  ProductEstimate,
-} from "@/entities/product/model/types";
+import type { ProductEstimate } from "@/entities/product/model/types";
 
-export function mapQuoteToEstimate(
-  quote: PublicProductQuote,
-  fallback: ProductDetailProfile
-): ProductEstimate {
+export const ESTIMATE_NOTE =
+  "실제 조건은 상담 시점의 통신사 정책과 재고에 따라 달라질 수 있습니다.";
+
+/** 응답에 없는 금액은 0으로 둔다. 목업 값으로 채우지 않는다. */
+export function mapQuoteToEstimate(quote: PublicProductQuote): ProductEstimate {
   const carrierSupport = quote.support_amount ?? 0;
   const storeSupport = quote.extra_support_amount ?? 0;
 
   return {
-    ...fallback.estimate,
     carrierSupport,
-    devicePrice: quote.device_price ?? fallback.estimate.devicePrice,
-    installmentMonths:
-      quote.installment_months ?? fallback.estimate.installmentMonths,
-    monthlyInstallment:
-      quote.monthly_device_payment ?? fallback.estimate.monthlyInstallment,
-    monthlyPlanDiscount:
-      quote.monthly_plan_discount ?? fallback.estimate.monthlyPlanDiscount,
-    monthlyPlanPrice:
-      quote.discounted_plan_monthly_fee ?? fallback.estimate.monthlyPlanPrice,
-    monthlyTotal:
-      quote.estimated_monthly_payment ?? fallback.estimate.monthlyTotal,
-    originalPrice: quote.original_price ?? fallback.estimate.originalPrice,
-    planMonthlyFee: quote.plan_monthly_fee ?? fallback.estimate.planMonthlyFee,
-    salePrice: quote.sale_price ?? fallback.estimate.salePrice,
+    devicePrice: quote.device_price ?? 0,
+    installmentMonths: quote.installment_months ?? 0,
+    monthlyInstallment: quote.monthly_device_payment ?? 0,
+    monthlyPlanDiscount: quote.monthly_plan_discount ?? 0,
+    monthlyPlanPrice: quote.discounted_plan_monthly_fee ?? 0,
+    monthlyTotal: quote.estimated_monthly_payment ?? 0,
+    note: ESTIMATE_NOTE,
+    originalPrice: quote.original_price ?? 0,
+    planMonthlyFee: quote.plan_monthly_fee ?? 0,
+    salePrice: quote.sale_price ?? 0,
     storeSupport,
     totalBenefit: quote.total_benefit_amount ?? carrierSupport + storeSupport,
   };

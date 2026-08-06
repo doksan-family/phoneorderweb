@@ -23,7 +23,7 @@ export function ProductImagePreviewTile({
         <Image alt={alt} className="object-cover" fill src={url} unoptimized />
       </div>
       {badgeLabel ? (
-        <span className="absolute left-2 top-2 rounded-full bg-[var(--brand-primary)] px-2 py-1 text-[11px] font-black text-slate-950">
+        <span className="absolute left-2 top-2 rounded-full bg-[var(--brand-cta)] px-2 py-1 text-[11px] font-black text-white">
           {badgeLabel}
         </span>
       ) : null}

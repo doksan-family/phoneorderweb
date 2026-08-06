@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import type { Product } from "@/entities/product/model/types";
-import { productDetailProfile } from "@/entities/product/model/mock-detail";
+import { emptyProductDetailProfile } from "@/entities/product/model/publicProductProfile";
 import { productQueryOptions } from "@/entities/product/model/queries";
 import { useStoredProducts } from "@/entities/product/model/useStoredProducts";
 import { ProductDetailConfigurator } from "@/features/product-detail/ui/ProductDetailConfigurator";
@@ -12,6 +12,7 @@ import { ProductDescriptionImages } from "./ProductDescriptionImages";
 import { ProductDetailTabs } from "./ProductDetailTabs";
 import { ProductGallery } from "./ProductGallery";
 import { ProductPriceSummary } from "./ProductPriceSummary";
+import { ProductDetailSkeleton } from "./ProductDetailSkeleton";
 
 type ProductDetailViewProps = {
   initialProduct: Product | null;
@@ -38,14 +39,10 @@ export function ProductDetailView({
     ? products.find((item) => item.id === productId)
     : null;
   const product = apiDetail?.product ?? storedProduct ?? initialProduct;
-  const profile = apiDetail?.profile ?? productDetailProfile;
+  const profile = apiDetail?.profile ?? emptyProductDetailProfile;
 
   if (!product && isApiPending) {
-    return (
-      <main className="site-container py-20">
-        <h1 className="m-0 text-2xl font-extrabold">상품을 불러오는 중입니다.</h1>
-      </main>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (!product) {

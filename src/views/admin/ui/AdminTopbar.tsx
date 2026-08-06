@@ -5,7 +5,7 @@ type AdminTopbarProps = {
 };
 
 const secondaryActionClass =
-  "inline-flex min-h-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white px-3.5 text-sm font-bold text-slate-700 transition hover:border-[var(--brand-primary-strong)] hover:text-slate-950";
+  "inline-flex min-h-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white px-3.5 text-sm font-bold text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950";
 
 export function AdminTopbar({ onLogout }: AdminTopbarProps) {
   return (

@@ -1,6 +1,7 @@
 import type { AdminBanner } from "@/entities/banner/model/types";
 import { AdminBannerEditForm } from "@/features/admin/ui/AdminBannerEditForm";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
+import { SkeletonRows } from "@/shared/ui/SkeletonRows";
 
 type AdminBannerListProps = {
   banners: AdminBanner[];
@@ -14,7 +15,7 @@ type AdminBannerListProps = {
 };
 
 const btnSecondary =
-  "inline-flex items-center justify-center min-h-[34px] border border-slate-200 rounded-lg px-3.5 cursor-pointer text-sm font-bold transition-all bg-white text-slate-700 hover:border-slate-950 hover:text-slate-950";
+  "inline-flex items-center justify-center min-h-[34px] border border-slate-200 rounded-lg px-3.5 cursor-pointer text-sm font-bold transition-all bg-white text-slate-700 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950";
 const btnGhost =
   "inline-flex items-center justify-center min-h-[34px] border-0 rounded-lg px-3 cursor-pointer text-sm font-bold transition-all bg-transparent text-red-500 hover:text-red-700";
 
@@ -28,7 +29,7 @@ export function AdminBannerList({
   onToggleEdit,
   onUpdated,
 }: AdminBannerListProps) {
-  if (loading) return <AdminEmptyState fill message="불러오는 중..." />;
+  if (loading) return <SkeletonRows count={3} />;
   if (!banners.length) {
     return <AdminEmptyState fill message="등록된 배너가 없습니다." />;
   }

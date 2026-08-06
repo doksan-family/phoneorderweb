@@ -1,13 +1,16 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import type {
   ConsultationRequest,
-  ConsultationStatus
+  ConsultationStatus,
 } from "@/entities/consultation/model/types";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
 import { adminFullPanelClass } from "@/shared/ui/adminPanelStyles";
-
-const statuses: ConsultationStatus[] = ["접수", "상담중", "완료", "보류"];
+import { AdminApplicationDetailModal } from "./AdminApplicationDetailModal";
+import { AdminApplicationFilters } from "./AdminApplicationFilters";
+import { AdminApplicationRow } from "./AdminApplicationRow";
+import type { StatusFilter } from "./adminApplicationStatus";
 
 type AdminApplicationsPanelProps = {
   items: ConsultationRequest[];
@@ -16,40 +19,67 @@ type AdminApplicationsPanelProps = {
 
 export function AdminApplicationsPanel({
   items,
-  onStatusChange
+  onStatusChange,
 }: AdminApplicationsPanelProps) {
+  const [keyword, setKeyword] = useState("");
+  const [status, setStatus] = useState<StatusFilter>("전체");
+  const [selectedId, setSelectedId] = useState("");
+
+  // 최근 신청이 위로 오게 두고, 검색어와 상태로 좁힌다.
+  const visibleItems = useMemo(() => {
+    const search = keyword.trim().toLowerCase();
+
+    return [...items]
+      .sort((first, second) => second.createdAt.localeCompare(first.createdAt))
+      .filter((item) => status === "전체" || item.status === status)
+      .filter((item) => !search || matchesKeyword(item, search));
+  }, [items, keyword, status]);
+
+  const selectedItem = items.find((item) => item.id === selectedId);
+
   return (
-    <section className={adminFullPanelClass}>
+    <section className={`grid content-start gap-4 ${adminFullPanelClass}`}>
+      <AdminApplicationFilters
+        items={items}
+        keyword={keyword}
+        status={status}
+        onKeywordChange={setKeyword}
+        onStatusChange={setStatus}
+      />
+
       <div className="grid gap-2.5">
-        {!items.length ? (
-          <AdminEmptyState message="등록된 상담 신청이 없습니다." />
+        {!visibleItems.length ? (
+          <AdminEmptyState
+            message={
+              items.length
+                ? "조건에 맞는 상담 신청이 없습니다."
+                : "등록된 상담 신청이 없습니다."
+            }
+          />
         ) : null}
-        {items.map((item) => (
-          <article className="grid grid-cols-[1fr_1fr_auto] gap-3 items-center p-[14px] border border-slate-200 rounded-[10px] bg-white max-[900px]:grid-cols-1" key={item.id}>
-            <div className="grid gap-1">
-              <strong>{item.name}</strong>
-              <span className="text-slate-500 text-[0.88rem] leading-[1.65]">{item.phone}</span>
-            </div>
-            <div className="grid gap-1">
-              <strong>{item.productName}</strong>
-              <span className="text-slate-500 text-[0.88rem] leading-[1.65]">{new Date(item.createdAt).toLocaleString("ko-KR")}</span>
-            </div>
-            <select
-              className="min-w-[128px]"
-              value={item.status}
-              onChange={(event) => {
-                onStatusChange(item.id, event.target.value as ConsultationStatus);
-              }}
-            >
-              {statuses.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </article>
+        {visibleItems.map((item) => (
+          <AdminApplicationRow
+            item={item}
+            key={item.id}
+            onSelect={setSelectedId}
+          />
         ))}
       </div>
+
+      {selectedItem ? (
+        <AdminApplicationDetailModal
+          item={selectedItem}
+          onClose={() => setSelectedId("")}
+          onStatusChange={onStatusChange}
+        />
+      ) : null}
     </section>
   );
+}
+
+function matchesKeyword(item: ConsultationRequest, search: string) {
+  return [item.name, item.phone, item.productName, item.conditions ?? ""]
+    .join(" ")
+    .toLowerCase()
+    .includes(search);
 }

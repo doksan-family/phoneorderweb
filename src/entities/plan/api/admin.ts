@@ -5,12 +5,14 @@ import type {
   AdminPlanCreatePayload,
   AdminPlanListResponse,
   AdminPlanResponseItem,
+  AdminPlanUpdatePayload,
   FetchAdminPlansParams,
 } from "./types";
 
 export type {
   AdminPlan,
   AdminPlanCreatePayload,
+  AdminPlanUpdatePayload,
   CarrierCode,
   FetchAdminPlansParams,
 } from "./types";
@@ -30,6 +32,29 @@ export async function createAdminPlan(payload: AdminPlanCreatePayload) {
   return apiFetch<AdminPlan>(
     "/functions/v1/admin-plans",
     { method: "POST", body: JSON.stringify(payload) },
+    accessToken
+  );
+}
+
+/** 부분 수정. 재활성화는 is_active=true만 보내면 된다. */
+export async function updateAdminPlan(
+  id: string,
+  payload: AdminPlanUpdatePayload
+) {
+  const accessToken = await getAccessToken();
+  return apiFetch<AdminPlan>(
+    `/functions/v1/admin-plans?id=${encodeURIComponent(id)}`,
+    { method: "PATCH", body: JSON.stringify(payload) },
+    accessToken
+  );
+}
+
+/** 실제 삭제가 아니라 is_active=false로 비활성화한다. */
+export async function deactivateAdminPlan(id: string) {
+  const accessToken = await getAccessToken();
+  await apiFetch<unknown>(
+    `/functions/v1/admin-plans?id=${encodeURIComponent(id)}`,
+    { method: "DELETE" },
     accessToken
   );
 }

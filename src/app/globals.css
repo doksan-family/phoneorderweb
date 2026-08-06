@@ -46,6 +46,10 @@
   --brand-primary-soft: #f2ffe0;
   /* 흰 배경 위 텍스트·보더용 (대비 5.1:1) */
   --brand-primary-strong: #4f7a0f;
+  /* 흰 배경 위 주요 버튼. 형광 라임은 넓게 깔면 눈이 부셔 짙은 톤을 쓴다 */
+  --brand-cta: #5f8f14;
+  --brand-cta-hover: #4c760c;
+  --brand-cta-shadow: rgba(79, 122, 15, 0.28);
   --brand-on-primary: #15180f;
   --brand-accent: #adff4f;
   --brand-hot: #ff5c8a;
@@ -211,5 +215,41 @@ textarea:disabled {
     border-radius: 999px;
     font-weight: 700;
     white-space: nowrap;
+  }
+
+  /* 로딩 자리표시. 왼쪽에서 오른쪽으로 빛이 지나간다. */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background: #e3e6e1;
+    border-radius: 10px;
+  }
+
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.35) 40%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.35) 60%,
+      transparent 80%
+    );
+    animation: skeleton-sheen 1.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton::after {
+      animation: none;
+    }
+  }
+}
+
+@keyframes skeleton-sheen {
+  100% {
+    transform: translateX(100%);
   }
 }

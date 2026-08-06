@@ -8,7 +8,7 @@ export function NoticesView() {
       <section className="grid max-w-[820px] gap-3">
         {notices.filter((notice) => notice.visible).map((notice) => (
           <article
-            className="brand-card p-[18px] transition hover:border-[var(--brand-primary-strong)] hover:shadow-[0_10px_28px_rgba(21,24,15,0.07)]"
+            className="brand-card p-[18px] transition hover:bg-[var(--brand-primary-soft)] hover:shadow-[0_10px_28px_rgba(21,24,15,0.07)]"
             key={notice.id}
           >
             <span className="text-[0.72rem] font-bold text-[var(--brand-primary-strong)]">

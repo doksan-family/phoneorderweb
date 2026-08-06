@@ -3,9 +3,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { bannerQueryOptions } from "@/entities/banner/model/queries";
 import { HeroBannerSlider } from "@/features/hero-banner/ui/HeroBannerSlider";
+import { Skeleton } from "@/shared/ui/Skeleton";
 
 export function HomeHeroBanner() {
-  const { data: banners = [] } = useQuery(bannerQueryOptions.list("main"));
+  const { data: banners = [], isPending } = useQuery(
+    bannerQueryOptions.list("main")
+  );
+
+  if (isPending) {
+    return (
+      <Skeleton className="aspect-[16/7] w-full rounded-[20px] max-[560px]:aspect-[4/3]" />
+    );
+  }
 
   if (!banners.length) return null;
 

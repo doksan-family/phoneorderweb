@@ -8,6 +8,8 @@ type AdminCreateDialogProps = {
   children: ReactNode;
   title: string;
   widthClassName?: string;
+  /** 내용 양과 상관없이 높이를 고정하고 싶을 때 쓴다. */
+  heightClassName?: string;
   onClose: () => void;
 };
 
@@ -15,6 +17,7 @@ export function AdminCreateDialog({
   children,
   title,
   widthClassName = "w-[min(920px,100%)]",
+  heightClassName = "",
   onClose,
 }: AdminCreateDialogProps) {
   const portalTarget = typeof document === "undefined" ? null : document.body;
@@ -48,7 +51,7 @@ export function AdminCreateDialog({
       <section
         aria-label={title}
         aria-modal="true"
-        className={`grid max-h-[calc(100vh_-_40px)] ${widthClassName} cursor-default grid-rows-[auto_1fr] overflow-hidden rounded-xl bg-white shadow-[0_24px_80px_rgba(21,24,15,0.32)]`}
+        className={`grid max-h-[calc(100vh_-_40px)] ${widthClassName} ${heightClassName} cursor-default grid-rows-[auto_1fr] overflow-hidden rounded-xl bg-white shadow-[0_24px_80px_rgba(21,24,15,0.32)]`}
         role="dialog"
         onMouseDown={(event) => event.stopPropagation()}
       >
@@ -56,7 +59,7 @@ export function AdminCreateDialog({
           <h2 className="m-0 text-xl font-black text-slate-950">{title}</h2>
           <button
             aria-label={`${title} 닫기`}
-            className="grid h-10 w-10 cursor-pointer place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:border-slate-950 hover:text-slate-950"
+            className="grid h-10 w-10 cursor-pointer place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"
             type="button"
             onClick={onClose}
           >

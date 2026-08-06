@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { updateAdminBanner } from "@/entities/banner/api/admin";
 import { toApiEndAt, toApiStartAt, toDateOnly } from "@/features/admin/model/dateUtils";
 import type { AdminBanner } from "@/entities/banner/model/types";
+import { LoadingOverlay } from "@/shared/ui/LoadingOverlay";
 
 type AdminBannerEditFormProps = {
   banner: AdminBanner;
@@ -143,7 +144,7 @@ export function AdminBannerEditForm({
       {error && <p className="m-0 text-red-600 text-sm font-bold">{error}</p>}
       <div className="flex gap-2">
         <button
-          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-primary)] text-slate-950 shadow-[0_2px_8px_var(--brand-primary-shadow)] hover:bg-[var(--brand-primary-hover)]"
+          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] hover:bg-[var(--brand-cta-hover)]"
           type="submit"
           disabled={loading}
         >
@@ -157,6 +158,7 @@ export function AdminBannerEditForm({
           취소
         </button>
       </div>
+      {loading ? <LoadingOverlay /> : null}
     </form>
   );
 }

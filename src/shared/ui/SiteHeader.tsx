@@ -20,7 +20,7 @@ export function SiteHeader() {
             />
           </Link>
           <Link
-            className="brand-pill shrink-0 bg-slate-950 px-4 py-2.5 text-[0.82rem] text-white transition hover:bg-slate-800"
+            className="brand-pill shrink-0 px-4 py-2.5 text-[0.82rem] bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]"
             href="/consultation"
           >
             상담 신청

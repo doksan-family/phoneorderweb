@@ -34,10 +34,11 @@ export async function apiFetch<T>(
 export async function apiFetchMultipart<T>(
   path: string,
   body: FormData,
-  accessToken?: string
+  accessToken?: string,
+  method: "POST" | "PATCH" = "POST"
 ): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
-    method: "POST",
+    method,
     body,
     headers: {
       Authorization: `Bearer ${accessToken ?? ANON_KEY}`,

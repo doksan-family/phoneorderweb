@@ -12,16 +12,27 @@ import {
   mapSubscriptionTypes,
 } from "./publicProductProfileOptions";
 
+/** API 응답이 없을 때 쓰는 빈 프로필. 목업 값을 화면에 내보내지 않는다. */
+export const emptyProductDetailProfile: ProductDetailProfile = {
+  colors: [],
+  capacities: [],
+  currentCarriers: [],
+  joiningCarriers: [],
+  plans: [],
+  discounts: [],
+  subscriptionTypes: [],
+  pricingOptions: [],
+  estimate: null,
+  detailTabs: { modelInfo: [], cautions: [] },
+};
+
 export function mapPublicProductDetailToProfile(
-  detail: PublicProductDetail,
-  fallback: ProductDetailProfile
+  detail: PublicProductDetail
 ): ProductDetailProfile {
   const pricing = getDefaultPricingOption(detail);
 
-  // fallback(목업)에서 넘어오는 값이 화면에 노출되지 않도록
-  // API가 내려주지 않는 항목은 명시적으로 비운다.
   return {
-    ...fallback,
+    ...emptyProductDetailProfile,
     colors: mapColors(detail.colors),
     capacities: mapCapacities(detail),
     currentCarriers: [],
@@ -30,7 +41,7 @@ export function mapPublicProductDetailToProfile(
     discounts: [],
     detailTabs: { modelInfo: [], cautions: [] },
     subscriptionTypes: mapSubscriptionTypes(detail),
-    pricingOptions: mapPricingOptions(detail, fallback),
-    estimate: pricing ? mapEstimate(pricing, fallback) : fallback.estimate,
+    pricingOptions: mapPricingOptions(detail),
+    estimate: pricing ? mapEstimate(pricing) : null,
   };
 }

@@ -52,6 +52,6 @@ function getBadgeClass(active: boolean) {
   const base = "rounded-lg border px-3 py-1.5 text-sm font-bold transition";
 
   return active
-    ? `${base} border-slate-950 bg-slate-950 text-white`
-    : `${base} border-slate-200 bg-white text-slate-500 hover:border-slate-950 hover:text-slate-950`;
+    ? `${base} border-[var(--brand-primary-strong)] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]`
+    : `${base} border-slate-200 bg-white text-slate-500 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950`;
 }

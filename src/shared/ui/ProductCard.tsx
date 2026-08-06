@@ -10,7 +10,10 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
-  const badges = (product.badges ?? []).filter((badge) => badge !== product.cardTag);
+  // 뱃지가 많으면 카드가 밀리므로 cardTag 포함 앞 3개까지만 보여준다.
+  const badges = (product.badges ?? [])
+    .filter((badge) => badge !== product.cardTag)
+    .slice(0, product.cardTag ? 2 : 3);
   const saleTypeLabel = product.saleTypes.join(" · ") || product.categoryName;
   // API가 대표 요금제/월 예상 납부금액을 안 준 상품은 이 줄을 아예 그리지 않는다.
   const planLine = [
@@ -25,7 +28,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <article className="h-full min-w-0">
       <Link
-        className="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-[border-color,box-shadow] duration-200 hover:border-[var(--brand-primary-strong)] hover:shadow-[0_14px_36px_rgba(21,24,15,0.09)]"
+        className="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-[background-color,box-shadow] duration-200 hover:bg-[var(--brand-primary-soft)] hover:shadow-[0_14px_36px_rgba(21,24,15,0.09)]"
         href={`/products/${product.id}`}
       >
         <div className="relative aspect-square overflow-hidden bg-slate-100">
@@ -85,7 +88,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             </div>
           </div>
 
-          <span className="mt-2.5 block rounded-[10px] bg-slate-950 py-2.5 text-center text-[0.78rem] font-bold text-white">
+          <span className="mt-2.5 block rounded-[10px] bg-[var(--brand-primary-soft)] py-2.5 text-center text-[0.78rem] font-bold text-[var(--brand-primary-strong)]">
             상담 신청
           </span>
         </div>
