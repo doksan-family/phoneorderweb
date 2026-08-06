@@ -1,4 +1,7 @@
-import { productCategories } from "@/entities/product/model/mock-products";
+import {
+  productBrands,
+  productCategories,
+} from "@/entities/product/model/mock-products";
 import type { ProductDraft } from "./types";
 
 export { badgeOptionGroups, badgeOptions } from "./badgeOptions";
@@ -19,7 +22,7 @@ export function createEmptyProductDraft(): ProductDraft {
 
   return {
     category_code: category?.id ?? "samsung",
-    brand: category?.name ?? "삼성",
+    brand: productBrands[0].name,
     name: "",
     summary: "",
     badges: ["NEW"],

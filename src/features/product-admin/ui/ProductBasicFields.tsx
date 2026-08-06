@@ -1,4 +1,7 @@
-import { productCategories } from "@/entities/product/model/mock-products";
+import {
+  productBrands,
+  productCategories,
+} from "@/entities/product/model/mock-products";
 import type { ProductDraft } from "../model/types";
 
 type ProductDraftChange = <K extends keyof ProductDraft>(
@@ -18,13 +21,6 @@ export function ProductBasicFields({
   draft,
   onChange,
 }: ProductBasicFieldsProps) {
-  function changeCategory(categoryCode: string) {
-    const category = productCategories.find((item) => item.id === categoryCode);
-
-    onChange("category_code", categoryCode);
-    if (category) onChange("brand", category.name);
-  }
-
   return (
     <>
       <div className={grid2}>
@@ -32,7 +28,7 @@ export function ProductBasicFields({
           카테고리
           <select
             value={draft.category_code}
-            onChange={(event) => changeCategory(event.target.value)}
+            onChange={(event) => onChange("category_code", event.target.value)}
           >
             {productCategories.map((category) => (
               <option key={category.id} value={category.id}>
@@ -41,13 +37,19 @@ export function ProductBasicFields({
             ))}
           </select>
         </label>
+        {/* 브랜드는 카테고리와 별개다. 카테고리가 "특가"여도 브랜드는 삼성일 수 있다. */}
         <label className={fieldClass}>
           브랜드
-          <input
-            required
+          <select
             value={draft.brand}
             onChange={(event) => onChange("brand", event.target.value)}
-          />
+          >
+            {productBrands.map((brand) => (
+              <option key={brand.id} value={brand.name}>
+                {brand.name}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
       <label className={fieldClass}>

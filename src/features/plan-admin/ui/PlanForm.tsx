@@ -1,24 +1,23 @@
 "use client";
 
-import type { AdminPlan } from "@/entities/plan/api/admin";
+import type { AdminPlan, CarrierCode } from "@/entities/plan/api/admin";
 import { carrierOptions } from "../model/planDraft";
-import { usePlanCreateForm } from "../model/usePlanCreateForm";
-import { PlanActiveField } from "./PlanActiveField";
+import { LoadingOverlay } from "@/shared/ui/LoadingOverlay";
+import { usePlanForm } from "../model/usePlanForm";
 import { PlanFormActions } from "./PlanFormActions";
 import { PlanNumberField } from "./PlanNumberField";
 
-type PlanCreateFormProps = {
+type PlanFormProps = {
+  plan?: AdminPlan;
+  carrierCode?: CarrierCode;
   onCancel?: () => void;
-  onCreated?: (plan: AdminPlan) => void;
+  onSaved?: (plan: AdminPlan) => void;
 };
 
 const fieldClass = "grid gap-2 text-sm font-bold text-slate-700";
 
-export function PlanCreateForm({
-  onCancel,
-  onCreated,
-}: PlanCreateFormProps) {
-  const form = usePlanCreateForm({ onCreated });
+export function PlanForm({ plan, carrierCode, onCancel, onSaved }: PlanFormProps) {
+  const form = usePlanForm({ plan, carrierCode, onSaved });
 
   return (
     <form className="grid gap-4" onSubmit={form.submit}>
@@ -81,19 +80,14 @@ export function PlanCreateForm({
           onChange={(event) => form.update("descriptionText", event.target.value)}
         />
       </label>
-      <div className="grid grid-cols-[1fr_auto] items-end gap-3 max-[640px]:grid-cols-1">
-        <PlanNumberField
-          label="노출 순서"
-          value={form.draft.displayOrder}
-          onChange={(value) => form.update("displayOrder", value)}
-        />
-        <PlanActiveField
-          checked={form.draft.isActive}
-          onChange={(value) => form.update("isActive", value)}
-        />
-      </div>
+      <PlanNumberField
+        label="노출 순서"
+        value={form.draft.displayOrder}
+        onChange={(value) => form.update("displayOrder", value)}
+      />
       {form.error ? <p className="m-0 text-sm font-bold text-red-600">{form.error}</p> : null}
-      <PlanFormActions loading={form.loading} onCancel={onCancel} />
+      <PlanFormActions isEdit={form.isEdit} loading={form.loading} onCancel={onCancel} />
+      {form.loading ? <LoadingOverlay /> : null}
     </form>
   );
 }

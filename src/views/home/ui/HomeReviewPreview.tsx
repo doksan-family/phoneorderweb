@@ -5,7 +5,7 @@ export function HomeReviewPreview() {
     <div className="grid grid-cols-2 gap-3 max-[900px]:grid-cols-1">
       {reviews.filter((review) => review.visible).map((review) => (
         <article
-          className="rounded-2xl border border-slate-200 bg-slate-50 p-[18px] transition hover:border-[var(--brand-primary-strong)] hover:bg-white"
+          className="rounded-2xl border border-slate-200 bg-slate-50 p-[18px] transition hover:bg-[var(--brand-primary-soft)]"
           key={review.id}
         >
           <strong className="block text-[1rem] font-extrabold tracking-[-0.02em] text-slate-950">

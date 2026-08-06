@@ -15,7 +15,8 @@ type ProductsPageProps = {
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams;
-  const categoryId = params.category ?? params.brand ?? getDealCategory(params.deal);
+  const categoryId = params.category;
+  const brandId = params.brand;
   const featured = getFeaturedParam(params.featured, params.deal);
   const limit = getLimitParam(params.limit);
 
@@ -27,13 +28,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ProductsView categoryId={categoryId} featured={featured} limit={limit} />
+      <ProductsView
+        brandId={brandId}
+        categoryId={categoryId}
+        featured={featured}
+        limit={limit}
+      />
     </HydrationBoundary>
   );
-}
-
-function getDealCategory(deal?: string) {
-  return deal === "hot" ? "special" : undefined;
 }
 
 function getFeaturedParam(featured?: string, deal?: string) {
@@ -50,3 +52,4 @@ function getLimitParam(limit?: string) {
     ? parsedLimit
     : undefined;
 }
+

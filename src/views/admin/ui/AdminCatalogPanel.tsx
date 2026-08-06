@@ -1,42 +1,71 @@
 "use client";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { sortProducts } from "@/entities/product/model/storage";
-import { useStoredProducts } from "@/entities/product/model/useStoredProducts";
-import { ProductCreateModal } from "@/features/product-admin/ui/ProductCreateModal";
+import {
+  deactivateAdminProduct,
+  updateAdminProduct,
+} from "@/entities/product/api/admin";
+import {
+  adminProductsQueryKey,
+  productQueryOptions,
+} from "@/entities/product/model/queries";
+import { AdminProductDetailModal } from "@/features/product-admin/ui/AdminProductDetailModal";
+import { ProductFormModal } from "@/features/product-admin/ui/ProductFormModal";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { adminFullPanelWithFabClass } from "@/shared/ui/adminPanelStyles";
 import { AdminProductList } from "./AdminProductList";
 
 export function AdminCatalogPanel() {
-  const { products, replaceProducts } = useStoredProducts();
+  const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const nextOrder = products.length + 1;
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const { data: products = [], error, isPending } = useQuery(
+    productQueryOptions.adminList()
+  );
 
-  function addProduct(product: (typeof products)[number]) {
-    replaceProducts(sortProducts([...products, product]));
-    setIsCreateOpen(false);
+  function refetchProducts() {
+    return queryClient.invalidateQueries({ queryKey: adminProductsQueryKey });
   }
 
-  function toggleVisible(id: string) {
-    replaceProducts(
-      products.map((item) =>
-        item.id === id ? { ...item, visible: !item.visible } : item
-      )
-    );
-  }
+  const toggleActive = useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      updateAdminProduct(id, { is_active: !isActive }),
+    onSuccess: refetchProducts,
+  });
 
-  function deleteProduct(id: string) {
-    replaceProducts(products.filter((product) => product.id !== id));
-  }
+  const deactivate = useMutation({
+    mutationFn: (id: string) => deactivateAdminProduct(id),
+    onSuccess: refetchProducts,
+  });
+
+  const mutationError = toggleActive.error ?? deactivate.error;
 
   return (
     <section className={`grid content-start gap-5 ${adminFullPanelWithFabClass}`}>
+      {mutationError ? (
+        <p className="m-0 text-sm font-bold text-red-600">
+          {mutationError.message}
+        </p>
+      ) : null}
+
       <AdminProductList
+        error={error}
+        isPending={isPending}
+        isMutating={toggleActive.isPending || deactivate.isPending}
         items={products}
-        onDelete={deleteProduct}
-        onToggleVisible={toggleVisible}
+        onDeactivate={(id) => deactivate.mutate(id)}
+        onSelect={setSelectedProductId}
+        onToggleActive={(id, isActive) => toggleActive.mutate({ id, isActive })}
       />
+
+      {selectedProductId ? (
+        <AdminProductDetailModal
+          fallback={products.find((item) => item.id === selectedProductId)}
+          productId={selectedProductId}
+          onClose={() => setSelectedProductId("")}
+        />
+      ) : null}
 
       <FloatingActionButton
         label="상품 등록"
@@ -44,10 +73,13 @@ export function AdminCatalogPanel() {
       />
 
       {isCreateOpen ? (
-        <ProductCreateModal
-          order={nextOrder}
+        <ProductFormModal
+          order={products.length + 1}
           onClose={() => setIsCreateOpen(false)}
-          onCreate={addProduct}
+          onCreate={() => {
+            void refetchProducts();
+            setIsCreateOpen(false);
+          }}
         />
       ) : null}
     </section>

@@ -1,12 +1,9 @@
 import type { TextField } from "@/entities/consultation/model/types";
-import type { Product } from "@/entities/product/model/types";
 import { fieldClass } from "./consultationStyles";
 
 type ConsultationContactFieldsProps = {
   name: string;
   phone: string;
-  productId: string;
-  products: Product[];
   password: string;
   onChange: (field: TextField, value: string) => void;
 };
@@ -14,8 +11,6 @@ type ConsultationContactFieldsProps = {
 export function ConsultationContactFields({
   name,
   phone,
-  productId,
-  products,
   password,
   onChange
 }: ConsultationContactFieldsProps) {
@@ -28,16 +23,6 @@ export function ConsultationContactFields({
       <label className={fieldClass}>
         휴대폰 번호
         <input value={phone} onChange={(event) => onChange("phone", event.target.value)} />
-      </label>
-      <label className={fieldClass}>
-        문의 상품
-        <select value={productId} onChange={(event) => onChange("productId", event.target.value)}>
-          {products.map((product) => (
-            <option key={product.id} value={product.id}>
-              {product.name}
-            </option>
-          ))}
-        </select>
       </label>
       <label className={fieldClass}>
         신청 내역 조회용 비밀번호

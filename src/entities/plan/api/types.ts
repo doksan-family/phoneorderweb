@@ -52,6 +52,9 @@ export type AdminPlanCreatePayload = {
   is_active: boolean;
 };
 
+/** PATCH /functions/v1/admin-plans?id= 본문 (부분 수정) */
+export type AdminPlanUpdatePayload = Partial<AdminPlanCreatePayload>;
+
 export type FetchAdminPlansParams = {
   carrierCode?: CarrierCode;
   includeInactive?: boolean;

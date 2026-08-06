@@ -21,6 +21,8 @@ export type Product = {
   name: string;
   categoryId: string;
   categoryName: string;
+  /** 제조사. 카테고리(특가 등)와 별개로 브랜드 메뉴 필터에 쓴다. */
+  brand: string;
   imageUrl: string;
   imageAlt: string;
   summary: string;
@@ -71,7 +73,8 @@ export type ProductDetailProfile = {
   discounts: ProductDiscountOption[];
   subscriptionTypes?: ProductOption[];
   pricingOptions?: ProductPricingOption[];
-  estimate: ProductEstimate;
+  /** API가 견적을 못 주면 null. 화면은 "견적 준비 중"으로 처리한다. */
+  estimate: ProductEstimate | null;
   detailTabs: {
     modelInfo: string[];
     cautions: string[];

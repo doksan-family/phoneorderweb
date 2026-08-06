@@ -1,5 +1,8 @@
 import { useState } from "react";
-import type { ProductDetailProfile } from "@/entities/product/model/types";
+import type {
+  ProductDetailProfile,
+  ProductEstimate,
+} from "@/entities/product/model/types";
 import {
   getAvailableCarriers,
   getAvailableSubscriptions,
@@ -70,8 +73,9 @@ export function useProductDetailSelection(profile: ProductDetailProfile) {
   return {
     carrierOptions,
     consultationPayload,
-    estimate:
-      selectedInstallment?.estimate ?? selectedPricing?.estimate ?? profile.estimate,
+    estimate: (selectedInstallment?.estimate ??
+      selectedPricing?.estimate ??
+      profile.estimate) as ProductEstimate | null,
     installmentOptions,
     planOptions,
     selectedCapacityId,

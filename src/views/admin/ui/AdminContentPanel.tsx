@@ -12,7 +12,7 @@ import { initialContentItems } from "../model/adminContent";
 import { ContentCreateModal } from "./ContentCreateModal";
 
 const btnSecondary =
-  "inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-slate-200 rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-white text-slate-700 hover:border-slate-950 hover:text-slate-950";
+  "inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-slate-200 rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-white text-slate-700 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950";
 const btnGhost =
   "inline-flex items-center justify-center min-h-[48px] border-0 rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-transparent text-red-600";
 

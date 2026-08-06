@@ -8,7 +8,7 @@ type HomeEventBannerProps = {
 };
 
 const bannerCls =
-  "brand-card grid grid-cols-[1fr_auto] items-center gap-8 overflow-hidden p-8 transition hover:border-[var(--brand-primary-strong)] max-[560px]:grid-cols-1";
+  "brand-card grid grid-cols-[1fr_auto] items-center gap-8 overflow-hidden p-8 transition hover:bg-[var(--brand-primary-soft)] max-[560px]:grid-cols-1";
 
 export function HomeEventBanner({ banner }: HomeEventBannerProps) {
   const inner = (

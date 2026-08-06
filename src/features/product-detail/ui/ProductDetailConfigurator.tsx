@@ -13,12 +13,17 @@ type ProductDetailConfiguratorProps = {
   productId: string;
   profile: ProductDetailProfile;
   priceSummary?: ReactNode;
+  /** 상담 페이지 모달에서 쓸 때 목록 링크를 감춘다. */
+  hideBackLink?: boolean;
+  onConsultationSelect?: () => void;
 };
 
 export function ProductDetailConfigurator({
   productId,
   profile,
-  priceSummary
+  priceSummary,
+  hideBackLink,
+  onConsultationSelect
 }: ProductDetailConfiguratorProps) {
   const selection = useProductDetailSelection(profile);
 
@@ -70,6 +75,8 @@ export function ProductDetailConfigurator({
       </section>
 
       <EstimatePanel
+        hideBackLink={hideBackLink}
+        onConsultationSelect={onConsultationSelect}
         colorValue={selection.selectedColorId}
         consultationPayload={selection.consultationPayload}
         estimate={selection.estimate}

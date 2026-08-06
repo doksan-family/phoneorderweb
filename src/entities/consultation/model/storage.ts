@@ -1,6 +1,7 @@
 import type { ConsultationInput, ConsultationRequest } from "./types";
 
 const STORAGE_KEY = "phone-order-consultations";
+const SAMPLE_ID = "sample-consultation";
 
 export function getStoredConsultations(): ConsultationRequest[] {
   if (typeof window === "undefined") {
@@ -9,18 +10,21 @@ export function getStoredConsultations(): ConsultationRequest[] {
 
   const rawValue = window.localStorage.getItem(STORAGE_KEY);
 
-  if (!rawValue) {
-    return seedConsultations();
-  }
+  if (!rawValue) return [];
 
   try {
     const parsed: unknown = JSON.parse(rawValue);
-    if (Array.isArray(parsed)) {
-      return parsed as ConsultationRequest[];
-    }
-    return seedConsultations();
+    if (!Array.isArray(parsed)) return [];
+
+    // 예전 목데이터가 브라우저에 남아 있으면 걷어낸다.
+    const items = (parsed as ConsultationRequest[]).filter(
+      (item) => item.id !== SAMPLE_ID
+    );
+    if (items.length !== parsed.length) saveStoredConsultations(items);
+
+    return items;
   } catch {
-    return seedConsultations();
+    return [];
   }
 }
 
@@ -50,23 +54,6 @@ export function findStoredConsultations(
   return getStoredConsultations().filter((item) => {
     return item.name === name && item.phone === phone && item.password === password;
   });
-}
-
-function seedConsultations(): ConsultationRequest[] {
-  return [
-    {
-      id: "sample-consultation",
-      name: "홍길동",
-      phone: "010-1234-5678",
-      productId: "aurora-pro",
-      productName: "오로라 Pro 256GB",
-      password: "1234",
-      privacyAgreed: true,
-      marketingAgreed: false,
-      createdAt: "2026-06-18T09:00:00.000Z",
-      status: "접수"
-    }
-  ];
 }
 
 function createId() {

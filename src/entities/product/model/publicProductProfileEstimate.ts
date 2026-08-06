@@ -2,22 +2,18 @@ import type {
   PublicProductDetail,
   PublicProductPricingOption,
 } from "@/entities/product/api/public";
-import type { ProductDetailProfile, ProductPricingOption } from "./types";
+import type { ProductPricingOption } from "./types";
 import {
   mapConsultationPayload,
   mapQuoteToEstimate,
 } from "./publicProductQuoteMapper";
 
-export function mapEstimate(
-  option: PublicProductPricingOption,
-  fallback: ProductDetailProfile
-) {
-  return mapQuoteToEstimate(option.quote, fallback);
+export function mapEstimate(option: PublicProductPricingOption) {
+  return mapQuoteToEstimate(option.quote);
 }
 
 export function mapPricingOptions(
-  detail: PublicProductDetail,
-  fallback: ProductDetailProfile
+  detail: PublicProductDetail
 ): ProductPricingOption[] {
   if (!detail.pricing_options?.length) return [];
 
@@ -30,8 +26,8 @@ export function mapPricingOptions(
     planMonthlyPrice: option.plan_monthly_fee,
     subscriptionType: option.subscription_type,
     subscriptionTypeLabel: option.subscription_type_label,
-    estimate: mapEstimate(option, fallback),
-    installmentOptions: mapInstallmentOptions(option, fallback),
+    estimate: mapEstimate(option),
+    installmentOptions: mapInstallmentOptions(option),
     consultationPayload: mapConsultationPayload(option.consultation_payload),
   }));
 }
@@ -45,14 +41,11 @@ export function getDefaultPricingOption(detail: PublicProductDetail) {
   );
 }
 
-function mapInstallmentOptions(
-  option: PublicProductPricingOption,
-  fallback: ProductDetailProfile
-) {
+function mapInstallmentOptions(option: PublicProductPricingOption) {
   if (option.installment_options?.length) {
     return option.installment_options.map((installment) => ({
       consultationPayload: mapConsultationPayload(installment.consultation_payload),
-      estimate: mapQuoteToEstimate(installment.quote, fallback),
+      estimate: mapQuoteToEstimate(installment.quote),
       months: installment.installment_months,
     }));
   }
@@ -60,7 +53,7 @@ function mapInstallmentOptions(
   return [
     {
       consultationPayload: mapConsultationPayload(option.consultation_payload),
-      estimate: mapEstimate(option, fallback),
+      estimate: mapEstimate(option),
       months: option.quote.installment_months,
     },
   ];

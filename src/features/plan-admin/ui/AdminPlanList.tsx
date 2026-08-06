@@ -1,43 +1,66 @@
-import type { AdminPlan } from "@/entities/plan/api/admin";
-import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
+import { Plus } from "lucide-react";
+import type { AdminPlan, CarrierCode } from "@/entities/plan/api/admin";
 import { carrierOptions } from "../model/planDraft";
+import { AdminPlanCard } from "./AdminPlanCard";
 
 type AdminPlanListProps = {
   items: AdminPlan[];
+  togglingId?: string;
+  onCreate: (carrierCode: CarrierCode) => void;
+  onEdit: (plan: AdminPlan) => void;
+  onToggleActive: (plan: AdminPlan) => void;
 };
 
-export function AdminPlanList({ items }: AdminPlanListProps) {
-  if (!items.length) {
-    return <AdminEmptyState message="등록된 요금제가 없습니다." />;
-  }
+const addButtonClass =
+  "inline-flex size-7 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
 
+export function AdminPlanList({
+  items,
+  togglingId,
+  onCreate,
+  onEdit,
+  onToggleActive,
+}: AdminPlanListProps) {
   return (
-    <div className="grid gap-2.5">
-      {items.map((plan) => (
-        <article
-          className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[10px] border border-slate-200 bg-white p-[14px] max-[900px]:grid-cols-1"
-          key={plan.id}
-        >
-          <div className="grid min-w-0 gap-1">
-            <strong className="overflow-x-auto whitespace-nowrap">
-              {plan.name}
-            </strong>
-            <span className="overflow-x-auto whitespace-nowrap text-[0.88rem] leading-[1.65] text-slate-500">
-              {getCarrierLabel(plan.carrier_code)} ·{" "}
-              {plan.monthly_fee.toLocaleString("ko-KR")}원
-              {plan.data_amount ? ` · ${plan.data_amount}` : ""}
-              {plan.call_text_description ? ` · ${plan.call_text_description}` : ""}
-            </span>
-          </div>
-          <span className="inline-flex min-h-10 items-center justify-center rounded-[10px] border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700">
-            {plan.is_active === false ? "비활성" : "활성"}
-          </span>
-        </article>
-      ))}
+    <div className="grid grid-cols-3 items-start gap-3 max-[900px]:grid-cols-1">
+      {carrierOptions.map((carrier) => {
+        const carrierPlans = items.filter(
+          (plan) => plan.carrier_code === carrier.value,
+        );
+
+        return (
+          <section className="grid content-start gap-2.5" key={carrier.value}>
+            <header className="flex items-baseline justify-between gap-2 border-b border-slate-200 pb-2">
+              <strong className="text-[0.95rem]">{carrier.label}</strong>
+              <span className="flex items-center gap-2 text-[0.82rem] text-slate-500">
+                {carrierPlans.length}개
+                <button
+                  aria-label={`${carrier.label} 요금제 등록`}
+                  className={addButtonClass}
+                  title={`${carrier.label} 요금제 등록`}
+                  type="button"
+                  onClick={() => onCreate(carrier.value)}
+                >
+                  <Plus size={16} />
+                </button>
+              </span>
+            </header>
+            {carrierPlans.length ? (
+              carrierPlans.map((plan) => (
+                <AdminPlanCard
+                  key={plan.id}
+                  plan={plan}
+                  toggling={togglingId === plan.id}
+                  onEdit={onEdit}
+                  onToggleActive={onToggleActive}
+                />
+              ))
+            ) : (
+              <p className="m-0 text-[0.85rem] text-slate-400">요금제 없음</p>
+            )}
+          </section>
+        );
+      })}
     </div>
   );
-}
-
-function getCarrierLabel(value: string) {
-  return carrierOptions.find((carrier) => carrier.value === value)?.label ?? value;
 }

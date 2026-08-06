@@ -29,6 +29,7 @@ export function createLocalProductFromDraft(
     name: draft.name.trim(),
     categoryId: category.id,
     categoryName: category.name,
+    brand: draft.brand.trim() || category.name,
     imageUrl: representativeImageUrl,
     imageAlt: `${draft.name.trim()} 대표 이미지`,
     summary: draft.summary.trim() || "관리자가 등록한 상품입니다.",
