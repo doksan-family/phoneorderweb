@@ -3,10 +3,11 @@
 import { FormEvent, useState } from "react";
 import { findStoredConsultations } from "@/entities/consultation/model/storage";
 import type { ConsultationRequest } from "@/entities/consultation/model/types";
+import { PHONE_PREFIX, formatPhone, isPhoneComplete } from "@/shared/lib/phone";
 
 export function ApplicationLookup() {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(PHONE_PREFIX);
   const [password, setPassword] = useState("");
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [results, setResults] = useState<ConsultationRequest[] | null>(null);
@@ -16,7 +17,7 @@ export function ApplicationLookup() {
     event.preventDefault();
     setError("");
 
-    if (!name || !phone || !password) {
+    if (!name || !isPhoneComplete(phone) || !password) {
       setError("이름, 휴대폰 번호, 비밀번호를 입력해 주세요.");
       return;
     }
@@ -38,7 +39,12 @@ export function ApplicationLookup() {
         </label>
         <label className="grid gap-2 font-bold">
           휴대폰 번호
-          <input value={phone} onChange={(event) => setPhone(event.target.value)} />
+          <input
+            inputMode="numeric"
+            maxLength={13}
+            value={phone}
+            onChange={(event) => setPhone(formatPhone(event.target.value))}
+          />
         </label>
         <label className="grid gap-2 font-bold">
           신청 시 등록한 비밀번호

@@ -6,6 +6,7 @@ import type {
   ConsultationRequest,
   TextField,
 } from "@/entities/consultation/model/types";
+import { PHONE_PREFIX, isPhoneComplete } from "@/shared/lib/phone";
 import {
   formatConsultationConditions,
   useConsultationSelection,
@@ -24,7 +25,7 @@ export function useConsultationForm() {
   const selection = useConsultationSelection();
   const [form, setForm] = useState<FormState>({
     name: "",
-    phone: "",
+    phone: PHONE_PREFIX,
     password: "",
     privacyAgreed: false,
     marketingAgreed: false,
@@ -52,7 +53,7 @@ export function useConsultationForm() {
       return;
     }
 
-    if (!form.name || !form.phone || !form.password) {
+    if (!form.name || !isPhoneComplete(form.phone) || !form.password) {
       setError("이름, 휴대폰 번호, 조회용 비밀번호를 입력해 주세요.");
       return;
     }

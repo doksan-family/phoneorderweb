@@ -1,4 +1,5 @@
 import type { TextField } from "@/entities/consultation/model/types";
+import { formatPhone } from "@/shared/lib/phone";
 import { fieldClass } from "./consultationStyles";
 
 type ConsultationContactFieldsProps = {
@@ -22,7 +23,12 @@ export function ConsultationContactFields({
       </label>
       <label className={fieldClass}>
         휴대폰 번호
-        <input value={phone} onChange={(event) => onChange("phone", event.target.value)} />
+        <input
+          inputMode="numeric"
+          maxLength={13}
+          value={phone}
+          onChange={(event) => onChange("phone", formatPhone(event.target.value))}
+        />
       </label>
       <label className={fieldClass}>
         신청 내역 조회용 비밀번호
