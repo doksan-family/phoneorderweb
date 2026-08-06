@@ -1,5 +1,4 @@
 import { VisibleProductGrid } from "@/features/product-list/ui/VisibleProductGrid";
-import { MarketingConsentNotice } from "@/shared/ui/MarketingConsentNotice";
 import { HomeCtaBand } from "./HomeCtaBand";
 import { HomeEventBannerSection } from "./HomeEventBannerSection";
 import { HomeHero } from "./HomeHero";
@@ -18,8 +17,8 @@ export function HomeView() {
 
       <section className={`${sectionClass} max-[560px]:pt-8`}>
         <HomeSectionHeading
-          eyebrow="이달의 추천"
-          title="가장 잘나가는 상품"
+          eyebrow="Monthly Pick"
+          title="Bestsellers"
           moreHref="/products"
         />
         <VisibleProductGrid firstRowCardCount={FIRST_ROW_CARD_COUNT} />
@@ -31,15 +30,37 @@ export function HomeView() {
 
       <section className={sectionClass}>
         <HomeSectionHeading
+          eyebrow="Samsung"
+          title="Galaxy"
+          moreHref="/products?brand=samsung"
+        />
+        <VisibleProductGrid
+          brandId="samsung"
+          firstRowCardCount={FIRST_ROW_CARD_COUNT}
+          limit={FIRST_ROW_CARD_COUNT}
+        />
+      </section>
+
+      <section className={sectionClass}>
+        <HomeSectionHeading
+          eyebrow="Apple"
+          title="iPhone"
+          moreHref="/products?brand=apple"
+        />
+        <VisibleProductGrid
+          brandId="apple"
+          firstRowCardCount={FIRST_ROW_CARD_COUNT}
+          limit={FIRST_ROW_CARD_COUNT}
+        />
+      </section>
+
+      <section className={sectionClass}>
+        <HomeSectionHeading
           eyebrow="실제 고객 후기"
           title="먼저 개통한 분들 이야기"
           moreHref="/reviews"
         />
         <HomeReviewPreview />
-      </section>
-
-      <section className={sectionClass}>
-        <MarketingConsentNotice />
       </section>
 
       <HomeCtaBand />

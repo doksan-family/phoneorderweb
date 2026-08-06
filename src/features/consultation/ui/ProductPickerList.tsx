@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import { productCategories } from "@/entities/product/model/mock-products";
+import { pickerFilters } from "../model/pickerFilters";
 import { productQueryOptions } from "@/entities/product/model/queries";
 import { ProductCardSkeleton } from "@/shared/ui/ProductCardSkeleton";
 
@@ -32,7 +32,7 @@ export function ProductPickerList({
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap gap-2">
-        {productCategories.map((category) => (
+        {pickerFilters.map((category) => (
           <button
             aria-pressed={categoryId === category.id}
             className={`${chipClass} ${categoryId === category.id ? activeChipClass : idleChipClass}`}

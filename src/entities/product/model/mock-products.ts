@@ -51,3 +51,17 @@ export function getProductById(productId: string) {
 function sortByOrder(first: Product, second: Product) {
   return first.order - second.order;
 }
+
+/**
+ * 브랜드는 카테고리와 별개다.
+ * 카테고리가 "특가"인 갤럭시도 브랜드는 삼성이라 삼성 메뉴에 노출된다.
+ */
+export const productBrands = [
+  { id: "samsung", name: "삼성" },
+  { id: "apple", name: "애플" },
+  { id: "etc", name: "기타" },
+];
+
+export function findProductBrand(brandId?: string) {
+  return productBrands.find((brand) => brand.id === brandId);
+}

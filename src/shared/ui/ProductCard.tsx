@@ -9,7 +9,10 @@ type ProductCardProps = {
   priority?: boolean;
 };
 
+const SPECIAL_CATEGORY_ID = "special";
+
 export function ProductCard({ product, priority = false }: ProductCardProps) {
+  const isSpecial = product.categoryId === SPECIAL_CATEGORY_ID;
   // 뱃지가 많으면 카드가 밀리므로 cardTag 포함 앞 3개까지만 보여준다.
   const badges = (product.badges ?? [])
     .filter((badge) => badge !== product.cardTag)
@@ -28,7 +31,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <article className="h-full min-w-0">
       <Link
-        className="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-[background-color,box-shadow] duration-200 hover:bg-[var(--brand-primary-soft)] hover:shadow-[0_14px_36px_rgba(21,24,15,0.09)]"
+        className={`flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border bg-white transition-[background-color,box-shadow] duration-200 hover:bg-[var(--brand-primary-soft)] hover:shadow-[0_14px_36px_rgba(21,24,15,0.09)] ${
+          isSpecial
+            ? "border-[var(--brand-primary-strong)] shadow-[0_0_0_3px_var(--brand-primary-soft)]"
+            : "border-slate-200"
+        }`}
         href={`/products/${product.id}`}
       >
         <div className="relative aspect-square overflow-hidden bg-slate-100">
@@ -40,6 +47,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             sizes="(max-width: 900px) 45vw, (max-width: 1100px) 27vw, 20vw"
             className="object-cover"
           />
+          {isSpecial ? (
+            <span className="absolute right-2 top-2 rounded-full bg-[var(--brand-primary)] px-2.5 py-1 text-[0.68rem] font-black text-[var(--brand-on-primary)] shadow-[0_4px_12px_var(--brand-primary-shadow)]">
+              특가
+            </span>
+          ) : null}
           {product.cardTag || badges.length ? (
             <div className="absolute left-2 top-2 flex max-w-[calc(100%-16px)] flex-wrap gap-1.5">
               {product.cardTag ? (

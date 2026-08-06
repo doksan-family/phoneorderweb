@@ -1,7 +1,7 @@
-import { MessageCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { FloatingConsultButton } from "./FloatingConsultButton";
 import { SiteNav, SiteNavFallback } from "./SiteNav";
 
 export function SiteHeader() {
@@ -33,19 +33,7 @@ export function SiteHeader() {
         </nav>
       </header>
 
-      <div
-        className="fixed bottom-7 right-5 z-[200] flex flex-col items-end gap-2.5 max-[900px]:bottom-4 max-[900px]:right-3"
-        role="complementary"
-        aria-label="빠른 상담"
-      >
-        <a
-          className="brand-pill h-[46px] gap-2 bg-[var(--kakao)] px-5 text-[0.85rem] font-extrabold text-[var(--kakao-label)] shadow-[0_10px_28px_rgba(21,24,15,0.28)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(21,24,15,0.38)]"
-          href="/consultation"
-        >
-          <MessageCircle size={18} aria-hidden="true" />
-          <span className="max-[560px]:hidden">카카오 상담</span>
-        </a>
-      </div>
+      <FloatingConsultButton />
     </>
   );
 }

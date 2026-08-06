@@ -21,6 +21,8 @@ export type Product = {
   name: string;
   categoryId: string;
   categoryName: string;
+  /** 제조사. 카테고리(특가 등)와 별개로 브랜드 메뉴 필터에 쓴다. */
+  brand: string;
   imageUrl: string;
   imageAlt: string;
   summary: string;

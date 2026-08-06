@@ -8,12 +8,14 @@ type NavigationItem = {
   label: string;
   pathname: string;
   category?: string;
+  /** 삼성·애플은 카테고리가 아니라 제조사로 고른다. */
+  brand?: string;
 };
 
 const navigationItems: NavigationItem[] = [
   { href: "/products?category=special", label: "특가", pathname: "/products", category: "special" },
-  { href: "/products?category=samsung", label: "삼성", pathname: "/products", category: "samsung" },
-  { href: "/products?category=apple", label: "애플", pathname: "/products", category: "apple" },
+  { href: "/products?brand=samsung", label: "삼성", pathname: "/products", brand: "samsung" },
+  { href: "/products?brand=apple", label: "애플", pathname: "/products", brand: "apple" },
   { href: "/products?category=kids_free", label: "키즈폰/공짜폰", pathname: "/products", category: "kids_free" },
   { href: "/products?category=internet_tv", label: "인터넷/TV", pathname: "/products", category: "internet_tv" },
   { href: "/consultation", label: "상담신청", pathname: "/consultation" },
@@ -31,14 +33,20 @@ const inactiveClass = "text-slate-700 hover:bg-slate-100 hover:text-slate-950";
 
 export function SiteNav() {
   const pathname = usePathname();
-  const category = useSearchParams().get("category");
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+  const brand = searchParams.get("brand");
 
   return (
     <div className="site-container flex items-center gap-0.5 overflow-x-auto pb-2.5 max-[900px]:justify-start min-[901px]:justify-center">
       {navigationItems.map((item) => {
         const isActive =
           pathname === item.pathname &&
-          (item.category ? category === item.category : true);
+          (item.brand
+            ? brand === item.brand
+            : item.category
+              ? category === item.category
+              : !brand && !category);
 
         return (
           <Link

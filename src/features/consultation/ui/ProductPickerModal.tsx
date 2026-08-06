@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { productCategories } from "@/entities/product/model/mock-products";
+import { pickerFilters } from "../model/pickerFilters";
 import { AdminCreateDialog } from "@/shared/ui/AdminCreateDialog";
 import { ProductPickerDetail } from "./ProductPickerDetail";
 import { ProductPickerList } from "./ProductPickerList";
@@ -15,9 +15,7 @@ type ProductPickerModalProps = {
  * 목록 → 상세(조건 선택) 두 단계를 한 모달 안에서 처리한다.
  */
 export function ProductPickerModal({ onClose }: ProductPickerModalProps) {
-  const [categoryId, setCategoryId] = useState(
-    productCategories[0]?.id ?? "special"
-  );
+  const [categoryId, setCategoryId] = useState(pickerFilters[0].id);
   const [productId, setProductId] = useState("");
 
   return (

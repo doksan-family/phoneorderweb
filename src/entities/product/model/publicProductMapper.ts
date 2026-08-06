@@ -25,6 +25,7 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
     name: item.name,
     categoryId: categoryCode,
     categoryName: item.category_name || category?.name || item.brand,
+    brand: item.brand ?? "",
     imageUrl: representativeImageUrl,
     imageAlt: productImages?.[0]?.alt ?? `${item.name} 대표 이미지`,
     summary,
