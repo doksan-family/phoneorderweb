@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircle } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const BASE_BOTTOM = 28;
@@ -50,7 +50,13 @@ export function FloatingConsultButton() {
         className="brand-pill h-[46px] gap-2 bg-[var(--kakao)] px-5 text-[0.85rem] font-extrabold text-[var(--kakao-label)] shadow-[0_10px_28px_rgba(21,24,15,0.28)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(21,24,15,0.38)]"
         href="/consultation"
       >
-        <MessageCircle size={18} aria-hidden="true" />
+        <Image
+          alt=""
+          aria-hidden="true"
+          height={20}
+          src="/images/logo/KakaoTalk_logo.svg.webp"
+          width={20}
+        />
         <span className="max-[560px]:hidden">카카오 상담</span>
       </a>
     </div>

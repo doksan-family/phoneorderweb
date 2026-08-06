@@ -105,7 +105,18 @@
     font: inherit;
   }
 
+  /*
+   * 내용이 짧은 페이지에서 푸터가 화면 중간에 끝나 그 아래로 배경만 남지 않게,
+   * body를 세로 flex로 두고 main이 남은 높이를 먹게 한다.
+   */
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
   main {
+    flex: 1 0 auto;
     padding-bottom: 80px;
   }
 

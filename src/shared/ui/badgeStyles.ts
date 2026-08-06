@@ -18,3 +18,10 @@ export const badgeHotClass =
 /** 운영자 등록 뱃지 */
 export const badgeInkClass =
   "bg-[rgba(21,24,15,0.62)] supports-[backdrop-filter]:bg-[rgba(21,24,15,0.42)]";
+
+/**
+ * 특가 원형 뱃지. brand-pill과 달리 정사각 크기를 고정해 원을 만든다.
+ * 글래스 톤은 badgeGlassBase와 같되 글자색이 브랜드 대비색이라 따로 둔다.
+ */
+export const badgeCircleClass =
+  "inline-flex size-11 items-center justify-center rounded-full border border-white/40 text-[0.72rem] font-black text-[var(--brand-on-primary)] shadow-[0_4px_14px_rgba(21,24,15,0.22)] backdrop-blur-lg backdrop-saturate-150 bg-[color-mix(in_srgb,var(--brand-primary)_62%,transparent)] supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--brand-primary)_34%,transparent)] max-[900px]:size-10 max-[900px]:text-[0.68rem]";

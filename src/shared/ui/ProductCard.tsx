@@ -2,7 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Product } from "@/entities/product/model/types";
-import { badgeGlassClass, badgeHotClass, badgeInkClass } from "./badgeStyles";
+import {
+  badgeCircleClass,
+  badgeGlassClass,
+  badgeHotClass,
+  badgeInkClass,
+} from "./badgeStyles";
 
 type ProductCardProps = {
   product: Product;
@@ -48,7 +53,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             className="object-cover"
           />
           {isSpecial ? (
-            <span className="absolute right-2 top-2 rounded-full bg-[var(--brand-primary)] px-2.5 py-1 text-[0.68rem] font-black text-[var(--brand-on-primary)] shadow-[0_4px_12px_var(--brand-primary-shadow)]">
+            <span className={`absolute bottom-2 right-2 ${badgeCircleClass}`}>
               특가
             </span>
           ) : null}
