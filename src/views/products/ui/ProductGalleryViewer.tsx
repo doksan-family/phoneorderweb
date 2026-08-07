@@ -26,7 +26,7 @@ export function ProductGalleryViewer({
 
   return (
     <div
-      className="relative aspect-square touch-pan-y overflow-hidden rounded-2xl border border-[var(--brand-primary)] bg-slate-100"
+      className="relative aspect-square touch-pan-y overflow-hidden rounded-2xl bg-slate-100"
       {...(images.length > 1 ? handlers : null)}
     >
       <div
