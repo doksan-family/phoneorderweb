@@ -11,11 +11,19 @@ const submitClass =
   "inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]";
 
 export function ConsultationForm() {
-  const { completed, error, form, selection, submit, updateCheckField, updateTextField } =
-    useConsultationForm();
+  const {
+    completedProductName,
+    error,
+    form,
+    isSubmitting,
+    selection,
+    submit,
+    updateCheckField,
+    updateTextField,
+  } = useConsultationForm();
 
-  if (completed) {
-    return <ConsultationComplete request={completed} />;
+  if (completedProductName) {
+    return <ConsultationComplete productName={completedProductName} />;
   }
 
   return (
@@ -43,8 +51,12 @@ export function ConsultationForm() {
           onChange={updateCheckField}
         />
         {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
-        <button className={submitClass} type="submit">
-          상담 신청하기
+        <button
+          className={`${submitClass} disabled:cursor-not-allowed disabled:opacity-60`}
+          disabled={isSubmitting}
+          type="submit"
+        >
+          {isSubmitting ? "신청 중..." : "상담 신청하기"}
         </button>
       </form>
     </div>

@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { AdminProductSummary } from "@/entities/product/api/admin";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
 import { SkeletonRows } from "@/shared/ui/SkeletonRows";
-import { StatusBadge } from "@/shared/ui/StatusBadge";
+import { VisibilityToggle } from "@/shared/ui/VisibilityToggle";
 
 type AdminProductListProps = {
   items: AdminProductSummary[];
@@ -15,11 +15,6 @@ type AdminProductListProps = {
   onToggleActive: (id: string, isActive: boolean) => void;
   onSelect: (id: string) => void;
 };
-
-const btnSecondary =
-  "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60";
-const btnGhost =
-  "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border border-transparent bg-transparent px-4 text-sm font-bold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function AdminProductList({
   items,
@@ -46,7 +41,7 @@ export function AdminProductList({
     <div className="grid gap-2.5">
       {items.map((item) => (
         <article
-          className="grid grid-cols-[56px_1fr_auto_auto] items-center gap-3 rounded-[10px] border border-slate-200 bg-white p-[14px] max-[900px]:grid-cols-[56px_1fr]"
+          className="grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-3 rounded-[10px] border border-slate-200 bg-white p-[14px] max-[900px]:grid-cols-[56px_minmax(0,1fr)]"
           key={item.id}
         >
           <div className="relative h-14 w-14 overflow-hidden rounded-lg bg-slate-100">
@@ -74,23 +69,16 @@ export function AdminProductList({
                 .join(" · ") || "—"}
             </span>
           </button>
-          <StatusBadge
+          <VisibilityToggle
             active={item.isActive}
-            activeLabel="노출 중"
-            inactiveLabel="숨김"
-          />
-          <button
-            className={item.isActive ? btnGhost : btnSecondary}
             disabled={isMutating}
-            onClick={() =>
+            label={`${item.name || item.id} 노출`}
+            onChange={() =>
               item.isActive
                 ? onDeactivate(item.id)
                 : onToggleActive(item.id, item.isActive)
             }
-            type="button"
-          >
-            {item.isActive ? "숨기기" : "노출하기"}
-          </button>
+          />
         </article>
       ))}
     </div>

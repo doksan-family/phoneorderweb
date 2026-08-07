@@ -44,14 +44,15 @@ export function AdminCreateDialog({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[500] grid cursor-pointer place-items-center bg-slate-950/55 p-5"
+      /* 모바일 주소창을 뺀 실제 높이(dvh)로 잡아야 하단 버튼이 가려지지 않는다. */
+      className="fixed inset-0 z-[500] grid h-[100dvh] cursor-pointer place-items-center bg-slate-950/55 p-5"
       role="presentation"
       onMouseDown={onClose}
     >
       <section
         aria-label={title}
         aria-modal="true"
-        className={`grid max-h-[calc(100vh_-_40px)] ${widthClassName} ${heightClassName} cursor-default grid-rows-[auto_1fr] overflow-hidden rounded-xl bg-white shadow-[0_24px_80px_rgba(21,24,15,0.32)]`}
+        className={`grid max-h-[calc(100dvh_-_40px)] ${widthClassName} ${heightClassName} cursor-default grid-rows-[auto_1fr] overflow-hidden rounded-xl bg-white shadow-[0_24px_80px_rgba(21,24,15,0.32)]`}
         role="dialog"
         onMouseDown={(event) => event.stopPropagation()}
       >

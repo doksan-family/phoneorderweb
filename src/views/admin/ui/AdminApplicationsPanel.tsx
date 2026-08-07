@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type {
-  ConsultationRequest,
-  ConsultationStatus,
-} from "@/entities/consultation/model/types";
+import type { ConsultationUpdatePayload } from "@/entities/consultation/api/admin";
+import type { ConsultationRequest } from "@/entities/consultation/model/types";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
+import { SkeletonRows } from "@/shared/ui/SkeletonRows";
 import { adminFullPanelClass } from "@/shared/ui/adminPanelStyles";
 import { AdminApplicationDetailModal } from "./AdminApplicationDetailModal";
 import { AdminApplicationFilters } from "./AdminApplicationFilters";
@@ -14,15 +13,21 @@ import type { StatusFilter } from "./adminApplicationStatus";
 
 type AdminApplicationsPanelProps = {
   items: ConsultationRequest[];
-  onStatusChange: (id: string, status: ConsultationStatus) => void;
+  isPending?: boolean;
+  error?: Error | null;
+  isSaving?: boolean;
+  onUpdate: (id: string, payload: ConsultationUpdatePayload) => void;
 };
 
 export function AdminApplicationsPanel({
   items,
-  onStatusChange,
+  isPending,
+  error,
+  isSaving,
+  onUpdate,
 }: AdminApplicationsPanelProps) {
   const [keyword, setKeyword] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("전체");
+  const [status, setStatus] = useState<StatusFilter>("all");
   const [selectedId, setSelectedId] = useState("");
 
   // 최근 신청이 위로 오게 두고, 검색어와 상태로 좁힌다.
@@ -31,7 +36,7 @@ export function AdminApplicationsPanel({
 
     return [...items]
       .sort((first, second) => second.createdAt.localeCompare(first.createdAt))
-      .filter((item) => status === "전체" || item.status === status)
+      .filter((item) => status === "all" || item.status === status)
       .filter((item) => !search || matchesKeyword(item, search));
   }, [items, keyword, status]);
 
@@ -48,12 +53,15 @@ export function AdminApplicationsPanel({
       />
 
       <div className="grid gap-2.5">
-        {!visibleItems.length ? (
+        {isPending ? <SkeletonRows count={4} withThumbnail={false} /> : null}
+        {!isPending && !visibleItems.length ? (
           <AdminEmptyState
             message={
-              items.length
-                ? "조건에 맞는 상담 신청이 없습니다."
-                : "등록된 상담 신청이 없습니다."
+              error
+                ? `상담 신청을 불러오지 못했습니다. (${error.message})`
+                : items.length
+                  ? "조건에 맞는 상담 신청이 없습니다."
+                  : "등록된 상담 신청이 없습니다."
             }
           />
         ) : null}
@@ -68,9 +76,10 @@ export function AdminApplicationsPanel({
 
       {selectedItem ? (
         <AdminApplicationDetailModal
+          isSaving={isSaving}
           item={selectedItem}
           onClose={() => setSelectedId("")}
-          onStatusChange={onStatusChange}
+          onUpdate={onUpdate}
         />
       ) : null}
     </section>
@@ -78,7 +87,13 @@ export function AdminApplicationsPanel({
 }
 
 function matchesKeyword(item: ConsultationRequest, search: string) {
-  return [item.name, item.phone, item.productName, item.conditions ?? ""]
+  return [
+    item.name,
+    item.phone,
+    item.productName,
+    item.conditions ?? "",
+    item.applicationNumber ?? "",
+  ]
     .join(" ")
     .toLowerCase()
     .includes(search);

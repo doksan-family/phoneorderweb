@@ -1,26 +1,31 @@
 "use client";
 
+import type { ConsultationUpdatePayload } from "@/entities/consultation/api/admin";
 import type {
   ConsultationRequest,
   ConsultationStatus,
 } from "@/entities/consultation/model/types";
 import { AdminCreateDialog } from "@/shared/ui/AdminCreateDialog";
+import { AdminApplicationMemoField } from "./AdminApplicationMemoField";
 import {
   formatConsultationDateTime,
+  statusLabel,
   statusOptions,
   statusToneClass,
 } from "./adminApplicationStatus";
 
 type AdminApplicationDetailModalProps = {
   item: ConsultationRequest;
+  isSaving?: boolean;
   onClose: () => void;
-  onStatusChange: (id: string, status: ConsultationStatus) => void;
+  onUpdate: (id: string, payload: ConsultationUpdatePayload) => void;
 };
 
 export function AdminApplicationDetailModal({
   item,
+  isSaving,
   onClose,
-  onStatusChange,
+  onUpdate,
 }: AdminApplicationDetailModalProps) {
   return (
     <AdminCreateDialog
@@ -42,7 +47,7 @@ export function AdminApplicationDetailModal({
           <span
             className={`brand-pill px-2.5 py-1 text-[0.75rem] ${statusToneClass[item.status]}`}
           >
-            {item.status}
+            {statusLabel[item.status]}
           </span>
         </div>
 
@@ -58,24 +63,34 @@ export function AdminApplicationDetailModal({
             label="개인정보 수집"
             value={item.privacyAgreed ? "동의" : "미동의"}
           />
-          <Row label="신청 번호" value={item.id} />
+          <Row label="신청 번호" value={item.applicationNumber ?? item.id} />
         </dl>
 
         <label className="grid gap-2 text-sm font-bold text-slate-700">
           상담 상태
           <select
+            disabled={isSaving}
             value={item.status}
             onChange={(event) =>
-              onStatusChange(item.id, event.target.value as ConsultationStatus)
+              onUpdate(item.id, {
+                status: event.target.value as ConsultationStatus,
+              })
             }
           >
             {statusOptions.map((status) => (
               <option key={status} value={status}>
-                {status}
+                {statusLabel[status]}
               </option>
             ))}
           </select>
         </label>
+
+        <AdminApplicationMemoField
+          isSaving={isSaving}
+          key={item.adminMemo ?? ""}
+          memo={item.adminMemo ?? ""}
+          onSave={(memo) => onUpdate(item.id, { admin_memo: memo || null })}
+        />
       </div>
     </AdminCreateDialog>
   );

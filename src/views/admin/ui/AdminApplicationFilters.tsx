@@ -1,5 +1,9 @@
 import type { ConsultationRequest } from "@/entities/consultation/model/types";
-import { statusFilters, type StatusFilter } from "./adminApplicationStatus";
+import {
+  filterLabel,
+  statusFilters,
+  type StatusFilter,
+} from "./adminApplicationStatus";
 
 type AdminApplicationFiltersProps = {
   items: ConsultationRequest[];
@@ -33,7 +37,7 @@ export function AdminApplicationFilters({
       <div className="flex flex-wrap gap-2">
         {statusFilters.map((filter) => {
           const count =
-            filter === "전체"
+            filter === "all"
               ? items.length
               : items.filter((item) => item.status === filter).length;
 
@@ -45,7 +49,7 @@ export function AdminApplicationFilters({
               type="button"
               onClick={() => onStatusChange(filter)}
             >
-              {filter}
+              {filterLabel[filter]}
               <span className="text-[0.78rem] opacity-70">{count}</span>
             </button>
           );

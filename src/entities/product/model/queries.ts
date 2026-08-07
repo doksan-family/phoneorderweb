@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 import {
   fetchAdminProduct,
   fetchAdminProducts,
@@ -23,6 +23,8 @@ export const productQueryOptions = {
         const response = await fetchPublicProducts(params);
         return mapPublicProductsToProducts(response);
       },
+      // 카테고리를 바꿀 때 빈 스켈레톤 대신 직전 목록을 두고 교체한다.
+      placeholderData: keepPreviousData,
       retry: false,
       staleTime: 30_000,
     }),

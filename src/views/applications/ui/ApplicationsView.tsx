@@ -1,14 +1,11 @@
 import { ApplicationLookup } from "@/features/consultation/ui/ApplicationLookup";
-import { PageHeader } from "@/shared/ui/PageHeader";
 
 export function ApplicationsView() {
   return (
     <main className="site-container pt-14 pb-20">
-      <PageHeader
-        eyebrow="신청조회"
-        title="내 상담 신청 진행상황 확인"
-        description="회원가입 없이 신청 시 입력한 정보로 상담 신청 상태를 확인합니다."
-      />
+      <h1 className="m-0 mb-5 text-[clamp(1.2rem,2.4vw,1.6rem)] font-extrabold tracking-[-0.02em] text-slate-950">
+        신청 내역 조회
+      </h1>
       <ApplicationLookup />
     </main>
   );

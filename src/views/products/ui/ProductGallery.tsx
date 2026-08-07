@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import type { Product, ProductImage } from "@/entities/product/model/types";
+import { useSwipe } from "@/shared/lib/useSwipe";
 import { badgeGlassLargeClass, badgeHotClass } from "@/shared/ui/badgeStyles";
 
 type ProductGalleryProps = {
@@ -15,10 +16,18 @@ export function ProductGallery({ product }: ProductGalleryProps) {
   const safeIndex = Math.min(activeIndex, images.length - 1);
   const activeImage = images[safeIndex];
   const tag = product.cardTag;
+  const swipeHandlers = useSwipe((direction) => {
+    setActiveIndex(
+      Math.min(Math.max(safeIndex + direction, 0), images.length - 1),
+    );
+  });
 
   return (
     <div className="sticky top-[124px] grid w-[420px] grid-cols-1 gap-3 max-[900px]:static max-[900px]:w-full">
-      <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-100">
+      <div
+        className="relative aspect-square touch-pan-y overflow-hidden rounded-2xl bg-slate-100"
+        {...(images.length > 1 ? swipeHandlers : null)}
+      >
         <Image
           alt={activeImage.alt}
           fill
