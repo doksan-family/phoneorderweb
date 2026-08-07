@@ -1,17 +1,29 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
-import { findStoredConsultations } from "@/entities/consultation/model/storage";
-import type { ConsultationRequest } from "@/entities/consultation/model/types";
-import { PHONE_PREFIX, formatPhone, isPhoneComplete } from "@/shared/lib/phone";
+import { lookupConsultations } from "@/entities/consultation/api/public";
+import { ApplicationLookupResult } from "./ApplicationLookupResult";
+import {
+  PHONE_PREFIX,
+  formatPhone,
+  isPhoneComplete,
+  toPhoneDigits,
+} from "@/shared/lib/phone";
 
 export function ApplicationLookup() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState(PHONE_PREFIX);
   const [password, setPassword] = useState("");
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
-  const [results, setResults] = useState<ConsultationRequest[] | null>(null);
   const [error, setError] = useState("");
+
+  // 404는 "일치 내역 없음"이라 빈 목록으로 다룬다.
+  const lookupMutation = useMutation({
+    mutationFn: lookupConsultations,
+    onError: (cause: Error) => setError(cause.message),
+  });
+  const results = lookupMutation.isSuccess ? lookupMutation.data : null;
 
   function submitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +39,12 @@ export function ApplicationLookup() {
       return;
     }
 
-    setResults(findStoredConsultations(name, phone, password));
+    lookupMutation.mutate({
+      name: name.trim(),
+      phone: toPhoneDigits(phone),
+      password,
+      privacy_agreed: true,
+    });
   }
 
   return (
@@ -62,9 +79,10 @@ export function ApplicationLookup() {
         {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
         <button
           className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] hover:bg-[var(--brand-cta-hover)]"
+          disabled={lookupMutation.isPending}
           type="submit"
         >
-          신청 내역 조회
+          {lookupMutation.isPending ? "조회 중..." : "신청 내역 조회"}
         </button>
       </form>
       <section className="border border-slate-200 rounded-xl bg-white min-h-[320px] p-6">
@@ -72,11 +90,7 @@ export function ApplicationLookup() {
         {results === null ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">신청 정보를 입력하면 내역이 표시됩니다.</p> : null}
         {results?.length === 0 ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">일치하는 신청 내역이 없습니다.</p> : null}
         {results?.map((item) => (
-          <article className="grid gap-1.5 mt-3 border border-slate-200 rounded-[10px] p-[18px] bg-white transition" key={item.id}>
-            <strong>{item.productName}</strong>
-            <span className="text-slate-500 text-[0.88rem] leading-[1.65]">{new Date(item.createdAt).toLocaleDateString("ko-KR")}</span>
-            <span className="text-slate-500 text-[0.88rem] leading-[1.65]">{item.status}</span>
-          </article>
+          <ApplicationLookupResult item={item} key={item.id} />
         ))}
       </section>
     </div>

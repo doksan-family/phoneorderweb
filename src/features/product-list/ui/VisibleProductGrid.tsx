@@ -15,6 +15,8 @@ type VisibleProductGridProps = {
   featured?: boolean;
   firstRowCardCount?: number;
   limit?: number;
+  /** 목록 페이지에서만 "전체 상품 n개" 제목을 띄운다. */
+  showTotal?: boolean;
 };
 
 const gridClass =
@@ -26,10 +28,11 @@ export function VisibleProductGrid({
   featured,
   firstRowCardCount = 4,
   limit,
+  showTotal,
 }: VisibleProductGridProps) {
   const { products } = useStoredProducts();
   const brandName = findProductBrand(brandId)?.name;
-  const { data: apiProducts, isPending } = useQuery(
+  const { data: apiProducts, isFetching, isPending } = useQuery(
     productQueryOptions.publicList({
       category: categoryId,
       featured,
@@ -48,13 +51,22 @@ export function VisibleProductGrid({
     [brandName, categoryId, limit, sourceProducts]
   );
 
+  const total = showTotal ? (
+    <h1 className="m-0 mb-5 text-[clamp(1.2rem,2.4vw,1.6rem)] font-extrabold tracking-[-0.02em] text-slate-950">
+      전체 상품 {visibleProducts.length}개
+    </h1>
+  ) : null;
+
   if (isPending && !visibleProducts.length) {
     return (
-      <div className={gridClass}>
-        {Array.from({ length: firstRowCardCount }, (_, index) => (
-          <ProductCardSkeleton key={index} />
-        ))}
-      </div>
+      <>
+        {total}
+        <div className={gridClass}>
+          {Array.from({ length: firstRowCardCount }, (_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </>
     );
   }
 
@@ -67,14 +79,20 @@ export function VisibleProductGrid({
   }
 
   return (
-    <div className={gridClass}>
-      {visibleProducts.map((product, index) => (
-        <ProductCard
-          key={product.id}
-          priority={index < firstRowCardCount}
-          product={product}
-        />
-      ))}
-    </div>
+    <>
+      {total}
+      {/* 직전 목록을 두고 갱신하는 동안은 흐리게 해서 전환 중임을 알린다. */}
+      <div
+        className={`${gridClass} transition-opacity ${isFetching ? "opacity-60" : ""}`}
+      >
+        {visibleProducts.map((product, index) => (
+          <ProductCard
+            key={product.id}
+            priority={index < firstRowCardCount}
+            product={product}
+          />
+        ))}
+      </div>
+    </>
   );
 }

@@ -1,16 +1,15 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
-import { addStoredConsultation } from "@/entities/consultation/model/storage";
-import type {
-  ConsultationRequest,
-  TextField,
-} from "@/entities/consultation/model/types";
-import { PHONE_PREFIX, isPhoneComplete } from "@/shared/lib/phone";
+import { createConsultation } from "@/entities/consultation/api/public";
+import type { TextField } from "@/entities/consultation/model/types";
 import {
-  formatConsultationConditions,
-  useConsultationSelection,
-} from "./useConsultationSelection";
+  PHONE_PREFIX,
+  isPhoneComplete,
+  toPhoneDigits,
+} from "@/shared/lib/phone";
+import { useConsultationSelection } from "./useConsultationSelection";
 
 type FormState = {
   name: string;
@@ -31,7 +30,13 @@ export function useConsultationForm() {
     marketingAgreed: false,
   });
   const [error, setError] = useState("");
-  const [completed, setCompleted] = useState<ConsultationRequest | null>(null);
+  const [completedProductName, setCompletedProductName] = useState("");
+
+  const createMutation = useMutation({
+    mutationFn: createConsultation,
+    onSuccess: () => setCompletedProductName(selection.product?.name ?? ""),
+    onError: (cause: Error) => setError(cause.message),
+  });
 
   function updateTextField(field: TextField, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -53,6 +58,11 @@ export function useConsultationForm() {
       return;
     }
 
+    if (!selection.payload) {
+      setError("상품 상세에서 요금제와 조건을 다시 선택해 주세요.");
+      return;
+    }
+
     if (!form.name || !isPhoneComplete(form.phone) || !form.password) {
       setError("이름, 휴대폰 번호, 조회용 비밀번호를 입력해 주세요.");
       return;
@@ -63,20 +73,21 @@ export function useConsultationForm() {
       return;
     }
 
-    setCompleted(
-      addStoredConsultation({
-        ...form,
-        conditions: formatConsultationConditions(selection.conditions),
-        productId: selection.product.id,
-        productName: selection.product.name,
-      })
-    );
+    createMutation.mutate({
+      name: form.name.trim(),
+      phone: toPhoneDigits(form.phone),
+      password: form.password,
+      privacy_agreed: true,
+      marketing_agreed: form.marketingAgreed,
+      ...selection.payload,
+    });
   }
 
   return {
-    completed,
+    completedProductName,
     error,
     form,
+    isSubmitting: createMutation.isPending,
     selection,
     submit,
     updateCheckField,

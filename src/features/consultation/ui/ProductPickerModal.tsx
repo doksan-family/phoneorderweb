@@ -22,7 +22,7 @@ export function ProductPickerModal({ onClose }: ProductPickerModalProps) {
     <AdminCreateDialog
       title={productId ? "상담 조건 선택" : "상품 고르기"}
       widthClassName="w-[min(880px,100%)]"
-      heightClassName="h-[min(720px,calc(100vh_-_40px))]"
+      heightClassName="h-[min(720px,calc(100dvh_-_40px))]"
       onClose={onClose}
     >
       {productId ? (

@@ -15,6 +15,13 @@ export type AdminContentCreateInput = {
   type: AdminContentType;
 };
 
+/** 화면 제목·버튼 문구에 쓰는 유형별 표기. */
+export const contentTypeLabel: Record<AdminContentType, string> = {
+  후기: "구매후기",
+  공지: "공지사항",
+  FAQ: "FAQ",
+};
+
 export const initialContentItems: AdminContentItem[] = [
   ...reviews.map((item) => ({
     id: item.id,

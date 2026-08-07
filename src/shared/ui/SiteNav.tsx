@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 type NavigationItem = {
   href: string;
@@ -36,6 +37,12 @@ export function SiteNav() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const brand = searchParams.get("brand");
+  const activeItemRef = useRef<HTMLAnchorElement>(null);
+
+  // 가로 스크롤 메뉴에서 현재 메뉴가 화면 밖에 있으면 보이도록 맞춘다.
+  useEffect(() => {
+    activeItemRef.current?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "center" });
+  }, [pathname, category, brand]);
 
   return (
     <div className="site-container flex items-center gap-0.5 overflow-x-auto pb-2.5 max-[900px]:justify-start min-[901px]:justify-center">
@@ -54,6 +61,7 @@ export function SiteNav() {
             className={`${itemBaseClass} ${isActive ? activeClass : inactiveClass}`}
             href={item.href}
             key={item.href}
+            ref={isActive ? activeItemRef : undefined}
           >
             {item.label}
           </Link>

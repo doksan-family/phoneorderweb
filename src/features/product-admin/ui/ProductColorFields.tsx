@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { createEmptyColor } from "../model/productDraft";
 import type { ProductColorDraft } from "../model/types";
 import { ProductColorRow } from "./ProductColorRow";
 
@@ -15,14 +16,7 @@ export function ProductColorFields({
   onChange,
 }: ProductColorFieldsProps) {
   function addColor() {
-    onChange([
-      ...values,
-      {
-        id: `color-${Date.now()}`,
-        label: "",
-        colorHex: "",
-      },
-    ]);
+    onChange([...values, createEmptyColor()]);
   }
 
   function updateColor(id: string, nextColor: Partial<ProductColorDraft>) {

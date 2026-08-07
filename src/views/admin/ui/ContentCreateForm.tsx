@@ -1,14 +1,13 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
-import type {
-  AdminContentCreateInput,
-  AdminContentType,
-} from "../model/adminContent";
+import type { AdminContentType } from "../model/adminContent";
+import { contentTypeLabel } from "../model/adminContent";
 
 type ContentCreateFormProps = {
+  type: AdminContentType;
   onCancel: () => void;
-  onCreate: (input: AdminContentCreateInput) => void;
+  onCreate: (title: string) => void;
 };
 
 const fieldClass = "grid gap-2 text-sm font-bold text-slate-700";
@@ -18,34 +17,23 @@ const btnSecondary =
   "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-[10px] border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
 
 export function ContentCreateForm({
+  type,
   onCancel,
   onCreate,
 }: ContentCreateFormProps) {
   const [title, setTitle] = useState("");
-  const [type, setType] = useState<AdminContentType>("후기");
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!title.trim()) return;
-    onCreate({ title: title.trim(), type });
+    onCreate(title.trim());
     setTitle("");
   }
 
   return (
     <form className="grid gap-4" onSubmit={submit}>
       <label className={fieldClass}>
-        유형
-        <select
-          value={type}
-          onChange={(event) => setType(event.target.value as AdminContentType)}
-        >
-          <option value="후기">구매후기</option>
-          <option value="공지">공지사항</option>
-          <option value="FAQ">FAQ</option>
-        </select>
-      </label>
-      <label className={fieldClass}>
-        제목 또는 질문
+        {type === "FAQ" ? "질문" : "제목"}
         <input
           required
           value={title}
@@ -61,7 +49,7 @@ export function ContentCreateForm({
           취소
         </button>
         <button className={btnPrimary} type="submit">
-          콘텐츠 등록
+          {contentTypeLabel[type]} 등록
         </button>
       </div>
     </form>

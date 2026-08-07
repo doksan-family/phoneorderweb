@@ -51,7 +51,48 @@ export function useConsultationSelection() {
     estimate: pricing?.estimate ?? profile?.estimate ?? null,
     product: data?.product,
     productId,
+    /**
+     * 상담 신청 API는 product/pricing/variant/plan/subscription_type을 한 세트로 요구한다.
+     * 하나라도 비면 서버가 500을 주므로 아예 보내지 않고 null을 돌려준다.
+     */
+    payload: buildConsultationPayload({
+      product_id: productId,
+      pricing_id: pricing?.id || pricingId,
+      variant_id: pricing?.variantId ?? "",
+      plan_id: pricing?.planId || (searchParams.get("planId") ?? ""),
+      subscription_type:
+        pricing?.subscriptionType || (searchParams.get("subscriptionType") ?? ""),
+      color_value: colorValue || undefined,
+      installment_months: installmentMonths
+        ? Number(installmentMonths)
+        : undefined,
+    }),
   };
+}
+
+type ConsultationSelectionPayload = {
+  product_id: string;
+  pricing_id: string;
+  variant_id: string;
+  plan_id: string;
+  subscription_type: string;
+  color_value?: string;
+  installment_months?: number;
+};
+
+/** 필수 5개가 모두 채워졌을 때만 payload를 만든다. */
+export function buildConsultationPayload(
+  payload: ConsultationSelectionPayload
+): ConsultationSelectionPayload | null {
+  const required = [
+    payload.product_id,
+    payload.pricing_id,
+    payload.variant_id,
+    payload.plan_id,
+    payload.subscription_type,
+  ];
+
+  return required.every((value) => value !== "") ? payload : null;
 }
 
 /** 상담 신청 기록에 남길 한 줄 요약. */

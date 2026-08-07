@@ -1,6 +1,7 @@
 import type { ConsultationRequest } from "@/entities/consultation/model/types";
 import {
   formatConsultationDateTime,
+  statusLabel,
   statusToneClass,
 } from "./adminApplicationStatus";
 
@@ -32,7 +33,7 @@ export function AdminApplicationRow({
           <span
             className={`brand-pill shrink-0 px-2 py-0.5 text-[0.72rem] ${statusToneClass[item.status]}`}
           >
-            {item.status}
+            {statusLabel[item.status]}
           </span>
         </div>
         <a

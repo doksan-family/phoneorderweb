@@ -1,7 +1,11 @@
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { carrierOptions } from "../model/planDraft";
 
-/** 통신사 3열 목록 자리표시. */
+/**
+ * 통신사 3열 목록 자리표시.
+ * 카드 안쪽 높이를 AdminPlanCard와 똑같이(제목 24px + 간격 4px + 설명 23px) 잡아야
+ * 목록이 들어올 때 레이아웃이 튀지 않는다.
+ */
 export function AdminPlanListSkeleton() {
   return (
     <div className="grid grid-cols-3 items-start gap-3 max-[900px]:grid-cols-1">
@@ -13,11 +17,14 @@ export function AdminPlanListSkeleton() {
           </div>
           {Array.from({ length: 3 }, (_, index) => (
             <div
-              className="grid gap-2 rounded-[10px] border border-slate-200 bg-white p-3.5"
+              className="grid gap-1 rounded-[10px] border border-slate-200 bg-white p-3.5"
               key={index}
             >
-              <Skeleton className="h-3.5 w-3/5" />
-              <Skeleton className="h-2.5 w-4/5" />
+              <div className="flex items-center justify-between gap-2">
+                <Skeleton className="h-6 w-3/5" />
+                <Skeleton className="h-6 w-[72px] rounded-full" />
+              </div>
+              <Skeleton className="h-[23px] w-4/5" />
             </div>
           ))}
         </section>

@@ -1,26 +1,21 @@
+import {
+  statusLabel,
+  statusOptions,
+} from "@/entities/consultation/model/status";
 import type { ConsultationStatus } from "@/entities/consultation/model/types";
 
-export const statusOptions: ConsultationStatus[] = [
-  "접수",
-  "상담중",
-  "완료",
-  "보류",
-];
+export {
+  formatConsultationDateTime,
+  statusLabel,
+  statusOptions,
+  statusToneClass,
+} from "@/entities/consultation/model/status";
 
-export type StatusFilter = ConsultationStatus | "전체";
+export type StatusFilter = ConsultationStatus | "all";
 
-export const statusFilters: StatusFilter[] = ["전체", ...statusOptions];
+export const statusFilters: StatusFilter[] = ["all", ...statusOptions];
 
-export const statusToneClass: Record<ConsultationStatus, string> = {
-  접수: "bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]",
-  상담중: "bg-amber-50 text-amber-700",
-  완료: "bg-slate-100 text-slate-500",
-  보류: "bg-red-50 text-red-600",
+export const filterLabel: Record<StatusFilter, string> = {
+  all: "전체",
+  ...statusLabel,
 };
-
-export function formatConsultationDateTime(value: string) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? value
-    : date.toLocaleString("ko-KR", { dateStyle: "medium", timeStyle: "short" });
-}

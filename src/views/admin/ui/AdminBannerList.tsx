@@ -1,7 +1,9 @@
 import type { AdminBanner } from "@/entities/banner/model/types";
 import { AdminBannerEditForm } from "@/features/admin/ui/AdminBannerEditForm";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
+import { IconDeleteButton } from "@/shared/ui/IconDeleteButton";
 import { SkeletonRows } from "@/shared/ui/SkeletonRows";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
 
 type AdminBannerListProps = {
   banners: AdminBanner[];
@@ -16,8 +18,6 @@ type AdminBannerListProps = {
 
 const btnSecondary =
   "inline-flex items-center justify-center min-h-[34px] border border-slate-200 rounded-lg px-3.5 cursor-pointer text-sm font-bold transition-all bg-white text-slate-700 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950";
-const btnGhost =
-  "inline-flex items-center justify-center min-h-[34px] border-0 rounded-lg px-3 cursor-pointer text-sm font-bold transition-all bg-transparent text-red-500 hover:text-red-700";
 
 export function AdminBannerList({
   banners,
@@ -40,9 +40,11 @@ export function AdminBannerList({
         <div className="grid gap-1 min-w-0">
           <div className="flex items-center gap-2">
             <strong className="truncate text-sm">{banner.title}</strong>
-            <span className={getStatusClass(banner.is_active)}>
-              {banner.is_active ? "활성" : "비활성"}
-            </span>
+            <StatusBadge
+              active={banner.is_active}
+              activeLabel="노출"
+              inactiveLabel="숨김"
+            />
           </div>
           <span className="text-slate-400 text-[0.8rem]">
             {banner.type} · {banner.start_at ?? "무제한"} ~{" "}
@@ -57,14 +59,12 @@ export function AdminBannerList({
           >
             {editingId === banner.id ? "닫기" : "수정"}
           </button>
-          <button
-            className={btnGhost}
+          <IconDeleteButton
             disabled={deletingId === banner.id}
-            type="button"
+            label="배너 삭제"
+            targetName={banner.title}
             onClick={() => onDelete(banner.id)}
-          >
-            {deletingId === banner.id ? "삭제 중..." : "삭제"}
-          </button>
+          />
         </div>
       </article>
       {editingId === banner.id ? (
@@ -76,9 +76,4 @@ export function AdminBannerList({
       ) : null}
     </div>
   ));
-}
-
-function getStatusClass(isActive: boolean) {
-  const base = "shrink-0 rounded-full px-2.5 py-0.5 text-[0.72rem] font-bold";
-  return isActive ? `${base} bg-green-100 text-green-700` : `${base} bg-slate-100 text-slate-500`;
 }

@@ -23,12 +23,24 @@ export async function apiFetch<T>(
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(
-      typeof body.message === "string" ? body.message : `HTTP ${res.status}`
+    throw new ApiError(
+      typeof body.message === "string" ? body.message : `HTTP ${res.status}`,
+      res.status
     );
   }
 
   return res.json() as Promise<T>;
+}
+
+/** 호출부가 상태 코드로 분기할 수 있게 status를 실어 보낸다. */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
 }
 
 export async function apiFetchMultipart<T>(

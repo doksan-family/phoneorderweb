@@ -28,11 +28,19 @@ export function createEmptyProductDraft(): ProductDraft {
     badges: ["NEW"],
     is_featured: false,
     variants: [createEmptyVariant("variant-default")],
-    colors: [],
+    colors: [createEmptyColor("color-default")],
     planIds: [],
     subscriptionTypes: [subscriptionTypeOptions[0].value],
     installmentMonthOptions: [24],
     pricingOverrides: [],
+  };
+}
+
+export function createEmptyColor(id = `color-${Date.now()}`) {
+  return {
+    id,
+    label: "",
+    colorHex: "",
   };
 }
 
