@@ -3,8 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import type { Product, ProductImage } from "@/entities/product/model/types";
-import { useSwipe } from "@/shared/lib/useSwipe";
-import { badgeGlassLargeClass, badgeHotClass } from "@/shared/ui/badgeStyles";
+import { ProductGalleryViewer } from "./ProductGalleryViewer";
 
 type ProductGalleryProps = {
   product: Product;
@@ -14,36 +13,16 @@ export function ProductGallery({ product }: ProductGalleryProps) {
   const images = getProductGalleryImages(product);
   const [activeIndex, setActiveIndex] = useState(0);
   const safeIndex = Math.min(activeIndex, images.length - 1);
-  const activeImage = images[safeIndex];
   const tag = product.cardTag;
-  const swipeHandlers = useSwipe((direction) => {
-    setActiveIndex(
-      Math.min(Math.max(safeIndex + direction, 0), images.length - 1),
-    );
-  });
 
   return (
     <div className="sticky top-[124px] grid w-[420px] grid-cols-1 gap-3 max-[900px]:static max-[900px]:w-full">
-      <div
-        className="relative aspect-square touch-pan-y overflow-hidden rounded-2xl bg-slate-100"
-        {...(images.length > 1 ? swipeHandlers : null)}
-      >
-        <Image
-          alt={activeImage.alt}
-          fill
-          src={activeImage.url}
-          priority
-          sizes="(max-width: 900px) 100vw, 420px"
-          className="object-cover"
-        />
-        {tag ? (
-          <span
-            className={`${badgeGlassLargeClass} ${badgeHotClass} absolute left-3.5 top-3.5`}
-          >
-            {tag}
-          </span>
-        ) : null}
-      </div>
+      <ProductGalleryViewer
+        activeIndex={safeIndex}
+        images={images}
+        tag={tag}
+        onChange={setActiveIndex}
+      />
       {images.length > 1 ? (
         <div
           className="flex flex-row gap-2.5 overflow-x-auto pb-0.5"
@@ -59,7 +38,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
                 aria-selected={isActive}
                 className={`relative aspect-square w-[74px] flex-shrink-0 cursor-pointer overflow-hidden rounded-[10px] border-2 bg-slate-100 transition ${
                   isActive
-                    ? "border-slate-950"
+                    ? "border-[var(--brand-primary)]"
                     : "border-transparent opacity-70 hover:opacity-100"
                 }`}
                 key={`${image.url}-${index}`}
