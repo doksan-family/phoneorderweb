@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { lookupConsultations } from "@/entities/consultation/api/public";
 import { ApplicationLookupResult } from "./ApplicationLookupResult";
 import {
@@ -17,6 +17,7 @@ export function ApplicationLookup() {
   const [password, setPassword] = useState("");
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [error, setError] = useState("");
+  const resultSectionRef = useRef<HTMLElement>(null);
 
   // 404는 "일치 내역 없음"이라 빈 목록으로 다룬다.
   const lookupMutation = useMutation({
@@ -24,6 +25,21 @@ export function ApplicationLookup() {
     onError: (cause: Error) => setError(cause.message),
   });
   const results = lookupMutation.isSuccess ? lookupMutation.data : null;
+
+  useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 900px)").matches;
+    const shouldScroll = lookupMutation.isSuccess || (isMobile && lookupMutation.isPending);
+    if (!shouldScroll) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    resultSectionRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  }, [lookupMutation.isPending, lookupMutation.isSuccess]);
 
   function submitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,20 +94,48 @@ export function ApplicationLookup() {
         </label>
         {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
         <button
-          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] transition-all bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] hover:bg-[var(--brand-cta-hover)]"
+          className="inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] font-bold text-[0.95rem] transition-all bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] hover:bg-[var(--brand-cta-hover)]"
           disabled={lookupMutation.isPending}
           type="submit"
         >
-          {lookupMutation.isPending ? "조회 중..." : "신청 내역 조회"}
+          {lookupMutation.isPending ? (
+            <>
+              <span
+                aria-hidden
+                className="mr-2 size-4 animate-spin rounded-full border-2 border-white/35 border-t-white"
+              />
+              조회 중...
+            </>
+          ) : (
+            "신청 내역 조회"
+          )}
         </button>
       </form>
-      <section className="border border-slate-200 rounded-xl bg-white min-h-[320px] p-6">
+      <section
+        className="relative scroll-mt-24 border border-slate-200 rounded-xl bg-white min-h-[320px] p-6"
+        ref={resultSectionRef}
+      >
         <h2 className="m-0 text-[clamp(1.4rem,3vw,2.1rem)] tracking-[-0.5px]">조회 결과</h2>
-        {results === null ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">신청 정보를 입력하면 내역이 표시됩니다.</p> : null}
+        {results === null && !lookupMutation.isPending ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">신청 정보를 입력하면 내역이 표시됩니다.</p> : null}
         {results?.length === 0 ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">일치하는 신청 내역이 없습니다.</p> : null}
         {results?.map((item) => (
           <ApplicationLookupResult item={item} key={item.id} />
         ))}
+        {lookupMutation.isPending ? (
+          <div
+            aria-busy="true"
+            aria-live="polite"
+            className="absolute inset-0 z-10 grid place-items-center rounded-xl bg-white/80 backdrop-blur-sm"
+            role="status"
+          >
+            <div className="grid justify-items-center gap-3 text-center">
+              <span className="size-11 animate-spin rounded-full border-4 border-slate-200 border-t-[var(--brand-primary-strong)]" />
+              <p className="m-0 text-sm font-bold text-slate-700">
+                신청 내역을 확인하고 있습니다.
+              </p>
+            </div>
+          </div>
+        ) : null}
       </section>
     </div>
   );
