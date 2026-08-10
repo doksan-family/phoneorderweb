@@ -25,6 +25,9 @@ const navigationItems: NavigationItem[] = [
   { href: "/support", label: "고객센터", pathname: "/support" }
 ];
 
+/** 메뉴 라벨 목록. FAQ 분류 선택지처럼 메뉴와 같은 기준이 필요한 곳에서 재사용한다. */
+export const navigationLabels = navigationItems.map((item) => item.label);
+
 const itemBaseClass =
   "inline-flex shrink-0 items-center whitespace-nowrap rounded-[10px] px-[13px] py-[9px] text-[0.84rem] font-bold transition";
 

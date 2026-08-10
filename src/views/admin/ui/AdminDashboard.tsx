@@ -14,9 +14,12 @@ import {
 import { logoutAdmin } from "@/features/admin/model/auth";
 import { AdminPlanManager } from "@/features/plan-admin/ui/AdminPlanManager";
 import { AdminApplicationsPanel } from "./AdminApplicationsPanel";
+import { AdminAuditLogPanel } from "./AdminAuditLogPanel";
 import { AdminCatalogPanel } from "./AdminCatalogPanel";
 import { AdminContentPanel } from "./AdminContentPanel";
 import { AdminHeroBannerPanel } from "./AdminHeroBannerPanel";
+import { AdminOverviewPanel } from "./AdminOverviewPanel";
+import { AdminReviewPanel } from "./AdminReviewPanel";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminTopbar } from "./AdminTopbar";
 import { contentTypeByTab, type AdminTab } from "./adminDashboardConfig";
@@ -24,7 +27,7 @@ import { contentTypeByTab, type AdminTab } from "./adminDashboardConfig";
 export function AdminDashboard() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<AdminTab>("applications");
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
   const applicationsQuery = useQuery(consultationQueryOptions.adminList());
   const contentType = contentTypeByTab[activeTab];
@@ -68,9 +71,12 @@ export function AdminDashboard() {
               onUpdate={updateApplication}
             />
           ) : null}
+          {activeTab === "overview" ? <AdminOverviewPanel /> : null}
           {activeTab === "banner" ? <AdminHeroBannerPanel /> : null}
           {activeTab === "catalog" ? <AdminCatalogPanel /> : null}
           {activeTab === "plans" ? <AdminPlanManager /> : null}
+          {activeTab === "reviews" ? <AdminReviewPanel /> : null}
+          {activeTab === "audit" ? <AdminAuditLogPanel /> : null}
           {contentType ? <AdminContentPanel key={activeTab} type={contentType} /> : null}
         </div>
       </section>

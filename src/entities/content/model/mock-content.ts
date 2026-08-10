@@ -1,4 +1,4 @@
-import type { Banner, Faq, HeroBanner, Notice, Review } from "./types";
+import type { Banner, Faq, HeroBanner, Notice } from "./types";
 
 export const heroBanners: HeroBanner[] = [
   {
@@ -35,25 +35,6 @@ export const banners: Banner[] = [
     imageUrl: "/images/event-banner.svg",
     visible: true,
     order: 1
-  }
-];
-
-export const reviews: Review[] = [
-  {
-    id: "review-1",
-    title: "기기변경 상담이 빨랐어요",
-    content: "원하는 모델과 요금제를 기준으로 설명을 받아 결정하기 쉬웠습니다.",
-    imageUrl: "/images/phone-core.svg",
-    createdAt: "2026-06-10",
-    visible: true
-  },
-  {
-    id: "review-2",
-    title: "부모님 폰 상담 완료",
-    content: "복잡한 조건을 정리해서 안내받아 실속형 모델로 진행했습니다.",
-    imageUrl: "/images/phone-aurora.svg",
-    createdAt: "2026-06-14",
-    visible: true
   }
 ];
 

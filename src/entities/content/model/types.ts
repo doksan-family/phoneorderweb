@@ -7,15 +7,6 @@ export type Banner = {
   order: number;
 };
 
-export type Review = {
-  id: string;
-  title: string;
-  content: string;
-  imageUrl: string;
-  createdAt: string;
-  visible: boolean;
-};
-
 export type Notice = {
   id: string;
   title: string;
