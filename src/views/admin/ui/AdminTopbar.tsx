@@ -24,12 +24,6 @@ export function AdminTopbar({ onLogout }: AdminTopbarProps) {
             ADMIN
           </strong>
         </div>
-        <span
-          className="inline-flex h-9.5 w-9.5 items-center justify-center rounded-full bg-zinc-800 text-sm font-black text-white"
-          aria-hidden="true"
-        >
-          관
-        </span>
       </div>
     </header>
   );
