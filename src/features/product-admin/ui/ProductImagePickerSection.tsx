@@ -14,7 +14,8 @@ type ProductImagePickerSectionProps = {
   previews: FilePreview[];
   /** 서버에 이미 올라가 있어 그대로 유지할 이미지 */
   existingImages?: AdminProductImage[];
-  onAdd: () => void;
+  /** 없으면 추가 버튼을 감춘다. (수정 API가 새 파일을 못 받는 화면용) */
+  onAdd?: () => void;
   onRemove: (index: number) => void;
   onRemoveExisting?: (index: number) => void;
 };
@@ -59,11 +60,13 @@ export function ProductImagePickerSection({
             onRemove={() => onRemove(index)}
           />
         ))}
-        <ProductImageDropButton
-          icon={dropIcon}
-          label={dropLabel}
-          onClick={onAdd}
-        />
+        {onAdd ? (
+          <ProductImageDropButton
+            icon={dropIcon}
+            label={dropLabel}
+            onClick={onAdd}
+          />
+        ) : null}
       </div>
     </section>
   );

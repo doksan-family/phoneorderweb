@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { Faq } from "@/entities/content/model/types";
+import type { PublicFaq } from "@/entities/content/model/customerCenterTypes";
 
 type FaqAccordionProps = {
-  items: Faq[];
+  items: PublicFaq[];
 };
 
 export function FaqAccordion({ items }: FaqAccordionProps) {
