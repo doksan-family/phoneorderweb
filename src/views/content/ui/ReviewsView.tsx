@@ -20,23 +20,27 @@ export function ReviewsView() {
         <p className="m-0 text-[0.9rem] text-slate-500">등록된 후기가 없습니다.</p>
       ) : null}
       <section className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-1">
-        {reviews.map((review) => {
+        {reviews.map((review, index) => {
           const cover = review.images[0];
           return (
             <button
-              className="brand-card grid cursor-pointer overflow-hidden text-left"
+              className="brand-card grid overflow-hidden text-left"
               key={review.id}
               type="button"
               onClick={() => setOpenedReviewId(review.id)}
             >
               {cover ? (
-                <Image
-                  alt={cover.alt ?? ""}
-                  height={160}
-                  src={cover.image_url}
-                  width={220}
-                  className="h-[170px] w-full bg-slate-100 object-cover"
-                />
+                <div className="relative h-[170px] w-full bg-slate-100">
+                  <Image
+                    alt={cover.alt ?? ""}
+                    className="object-cover"
+                    fill
+                    // 첫 줄 카드는 화면에 바로 보이므로 지연 없이 받는다
+                    priority={index < 3}
+                    sizes="(max-width: 900px) 92vw, 30vw"
+                    src={cover.image_url}
+                  />
+                </div>
               ) : null}
               <div className="p-[18px]">
                 <span className="text-[0.72rem] font-bold text-[var(--brand-primary-strong)]">
@@ -65,9 +69,8 @@ export function ReviewsView() {
       {openedReviewId ? (
         <ReviewDetailModal
           reviewId={openedReviewId}
-          reviewIds={reviews.map((review) => review.id)}
+          initialReview={reviews.find((review) => review.id === openedReviewId)}
           onClose={() => setOpenedReviewId("")}
-          onSelect={setOpenedReviewId}
         />
       ) : null}
     </main>

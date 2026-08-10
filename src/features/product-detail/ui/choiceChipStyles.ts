@@ -1,5 +1,5 @@
 export const chipBaseClass =
-  "inline-flex cursor-pointer items-center gap-2 rounded-[10px] border px-[15px] py-[9px] text-[0.82rem] font-bold transition";
+  "inline-flex items-center gap-2 rounded-[10px] border px-[15px] py-[9px] text-[0.82rem] font-bold transition";
 
 /* 헤더 메뉴 활성 상태와 같은 톤. 형광 라임을 넓게 깔면 눈이 부신다. */
 export const chipSelectedClass =

@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAdminReview, updateAdminReview } from "@/entities/review/api/admin";
 import { adminReviewsQueryKey } from "@/entities/review/model/queries";
 import type { AdminReview } from "@/entities/review/model/types";
+import { downscaleImageFile } from "@/shared/lib/image";
 import {
   emptyReviewFormValue,
   findOversizedImage,
@@ -57,7 +58,7 @@ export function useReviewForm({ review, onSaved }: UseReviewFormParams) {
     setValue((current) => ({ ...current, [key]: next }));
   }
 
-  function addImages(files: File[]) {
+  async function addImages(files: File[]) {
     const oversized = findOversizedImage(files);
     if (oversized) {
       setFileError(`${oversized.name}은(는) 10MB를 넘어 등록할 수 없습니다.`);
@@ -65,7 +66,12 @@ export function useReviewForm({ review, onSaved }: UseReviewFormParams) {
     }
 
     setFileError("");
-    update("imageFiles", [...value.imageFiles, ...files]);
+    // 원본 그대로 올리면 목록 썸네일 생성이 느려져 업로드 전에 줄인다
+    const resized = await Promise.all(files.map((file) => downscaleImageFile(file)));
+    setValue((current) => ({
+      ...current,
+      imageFiles: [...current.imageFiles, ...resized],
+    }));
   }
 
   function removeImage(index: number) {

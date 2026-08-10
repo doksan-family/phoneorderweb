@@ -45,7 +45,7 @@ export function AdminOverviewPanel() {
           {dayOptions.map((option) => (
             <button
               aria-pressed={option === days}
-              className={`cursor-pointer rounded-lg px-3.5 py-2 text-[0.8rem] font-bold transition ${
+              className={`rounded-lg px-3.5 py-2 text-[0.8rem] font-bold transition ${
                 option === days
                   ? "bg-white text-slate-950 shadow-sm"
                   : "text-slate-500 hover:text-slate-800"

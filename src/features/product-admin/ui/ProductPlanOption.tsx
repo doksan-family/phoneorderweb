@@ -8,7 +8,7 @@ type ProductPlanOptionProps = {
 };
 
 const baseClass =
-  "flex w-full cursor-pointer items-center gap-2 rounded-md border px-2.5 py-2 text-left text-[0.82rem] font-bold transition";
+  "flex w-full items-center gap-2 rounded-md border px-2.5 py-2 text-left text-[0.82rem] font-bold transition";
 const selectedClass =
   "border-[var(--brand-primary-strong)] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]";
 const idleClass =

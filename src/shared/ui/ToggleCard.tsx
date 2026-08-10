@@ -16,7 +16,7 @@ export function ToggleCard({
 }: ToggleCardProps) {
   return (
     <label
-      className={`flex cursor-pointer items-start gap-2.5 rounded-lg border p-3 transition-colors ${
+      className={`flex items-start gap-2.5 rounded-lg border p-3 transition-colors ${
         checked ? "border-slate-900 bg-slate-50" : "border-slate-200"
       }`}
     >

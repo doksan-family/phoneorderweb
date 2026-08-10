@@ -45,7 +45,7 @@ export function AdminCreateDialog({
   return createPortal(
     <div
       /* 모바일 주소창을 뺀 실제 높이(dvh)로 잡아야 하단 버튼이 가려지지 않는다. */
-      className="fixed inset-0 z-[500] grid h-[100dvh] cursor-pointer place-items-center bg-slate-950/55 p-5"
+      className="fixed inset-0 z-[500] grid h-[100dvh] place-items-center bg-slate-950/55 p-5"
       role="presentation"
       onMouseDown={onClose}
     >
@@ -60,7 +60,7 @@ export function AdminCreateDialog({
           <h2 className="m-0 text-xl font-black text-slate-950">{title}</h2>
           <button
             aria-label={`${title} 닫기`}
-            className="grid h-10 w-10 cursor-pointer place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"
+            className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"
             type="button"
             onClick={onClose}
           >

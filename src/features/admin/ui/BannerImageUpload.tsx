@@ -69,7 +69,7 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
             unoptimized
           />
           <button
-            className="absolute top-[10px] right-[10px] z-[1] w-7 h-7 rounded-full bg-black/55 text-white text-[0.75rem] flex items-center justify-center cursor-pointer border-0 transition hover:bg-black/80"
+            className="absolute top-[10px] right-[10px] z-[1] w-7 h-7 rounded-full bg-black/55 text-white text-[0.75rem] flex items-center justify-center border-0 transition hover:bg-black/80"
             type="button"
             onClick={remove}
             aria-label="이미지 제거"
@@ -83,7 +83,7 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
         </div>
       ) : (
         <button
-          className={`flex flex-col items-center justify-center gap-2 w-full py-9 px-6 border-2 border-dashed rounded-xl cursor-pointer transition text-center ${dragging ? "border-slate-950 bg-[var(--brand-primary-soft)] text-slate-950" : "border-slate-200 bg-white text-slate-500 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"}`}
+          className={`flex flex-col items-center justify-center gap-2 w-full py-9 px-6 border-2 border-dashed rounded-xl transition text-center ${dragging ? "border-slate-950 bg-[var(--brand-primary-soft)] text-slate-950" : "border-slate-200 bg-white text-slate-500 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"}`}
           type="button"
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}

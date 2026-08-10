@@ -16,7 +16,7 @@ export const errorClass = "m-0 font-bold text-red-600";
 export const noteClass = "text-sm leading-relaxed text-slate-500";
 
 export const primaryButtonClass =
-  "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-[10px] border border-transparent bg-[var(--brand-cta)] px-5 text-sm font-bold text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]";
+  "inline-flex min-h-12 items-center justify-center rounded-[10px] border border-transparent bg-[var(--brand-cta)] px-5 text-sm font-bold text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]";
 
 export const resultPanelClass =
   "brand-card min-h-80 p-6";

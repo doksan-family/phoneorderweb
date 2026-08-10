@@ -14,7 +14,7 @@ type AdminApplicationFiltersProps = {
 };
 
 const chipClass =
-  "inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border px-3 text-sm font-bold transition";
+  "inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-3 text-sm font-bold transition";
 const activeChipClass =
   "border-[var(--brand-primary-strong)] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]";
 const idleChipClass =

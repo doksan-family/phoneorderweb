@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { QueryProvider } from "@/shared/lib/react-query/QueryProvider";
-import { InteractiveCursorStyle } from "@/shared/ui/InteractiveCursorStyle";
 import { LegacyStorageCleanup } from "@/shared/ui/LegacyStorageCleanup";
 import { SiteFooterGate } from "@/shared/ui/SiteFooterGate";
 import { SiteHeaderGate } from "@/shared/ui/SiteHeaderGate";
@@ -46,7 +45,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <QueryProvider>
-          <InteractiveCursorStyle />
           <LegacyStorageCleanup />
           <SiteHeaderGate />
           {children}

@@ -12,7 +12,7 @@ type AdminPlanListProps = {
 };
 
 const addButtonClass =
-  "inline-flex size-7 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
+  "inline-flex size-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
 
 export function AdminPlanList({
   items,

@@ -19,7 +19,7 @@ export function ReviewRatingInput({ value, onChange }: ReviewRatingInputProps) {
             key={rating}
             aria-label={`별점 ${rating}점`}
             aria-pressed={value === rating}
-            className={`cursor-pointer border-0 bg-transparent p-0 ${
+            className={`border-0 bg-transparent p-0 ${
               rating <= value ? "text-amber-400" : "text-slate-300"
             }`}
             type="button"

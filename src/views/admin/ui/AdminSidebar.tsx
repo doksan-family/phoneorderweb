@@ -8,7 +8,7 @@ type AdminSidebarProps = {
 
 function navButtonClass(isActive: boolean) {
   return [
-    "w-full cursor-pointer rounded-md px-3.5 py-3 text-left text-sm transition max-[900px]:text-center max-[900px]:whitespace-nowrap",
+    "w-full rounded-md px-3.5 py-3 text-left text-sm transition max-[900px]:text-center max-[900px]:whitespace-nowrap",
     isActive
       ? "bg-[var(--brand-primary-soft)] font-extrabold text-slate-950"
       : "bg-transparent font-bold text-slate-500 hover:bg-zinc-50 hover:text-slate-900",
@@ -23,7 +23,7 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
     >
       <button
         aria-label="대시보드로 이동"
-        className="relative block h-12 w-28 cursor-pointer"
+        className="relative block h-12 w-28 "
         type="button"
         onClick={() => onTabChange("overview")}
       >

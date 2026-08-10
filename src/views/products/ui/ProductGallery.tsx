@@ -36,7 +36,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
               <button
                 aria-label={`${image.alt} 보기`}
                 aria-selected={isActive}
-                className={`relative aspect-square w-[74px] flex-shrink-0 cursor-pointer overflow-hidden rounded-[10px] border-2 bg-slate-100 transition ${
+                className={`relative aspect-square w-[74px] flex-shrink-0 overflow-hidden rounded-[10px] border-2 bg-slate-100 transition ${
                   isActive
                     ? "border-[var(--brand-primary)]"
                     : "border-transparent opacity-70 hover:opacity-100"

@@ -21,7 +21,7 @@ export function AdminContentRow({
 }: AdminContentRowProps) {
   return (
     <article
-      className="flex cursor-pointer items-center gap-3.5 rounded-[10px] border border-slate-200 bg-white p-[14px] text-left transition hover:border-slate-300 hover:bg-slate-50"
+      className="flex items-center gap-3.5 rounded-[10px] border border-slate-200 bg-white p-[14px] text-left transition hover:border-slate-300 hover:bg-slate-50"
       role="button"
       tabIndex={0}
       onClick={onSelect}

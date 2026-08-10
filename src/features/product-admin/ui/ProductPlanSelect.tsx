@@ -3,7 +3,7 @@ import { carrierOptions } from "@/entities/plan/model/carriers";
 import { ProductPlanOption } from "./ProductPlanOption";
 
 const selectAllClass =
-  "cursor-pointer rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[0.72rem] font-bold text-slate-600 transition hover:bg-[var(--brand-primary-soft)]";
+  "rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[0.72rem] font-bold text-slate-600 transition hover:bg-[var(--brand-primary-soft)]";
 
 type ProductPlanSelectProps = {
   plans: AdminPlan[];

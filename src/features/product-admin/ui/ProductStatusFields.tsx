@@ -26,7 +26,7 @@ type StatusCheckboxProps = {
 
 function StatusCheckbox({ checked, label, onChange }: StatusCheckboxProps) {
   const className = [
-    "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-3.5 text-sm font-bold transition",
+    "inline-flex min-h-11 items-center gap-2 rounded-lg px-3.5 text-sm font-bold transition",
     checked ? "bg-[var(--brand-primary-soft)] text-slate-950" : "bg-zinc-50 text-slate-600",
   ].join(" ");
 

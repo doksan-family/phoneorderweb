@@ -26,7 +26,7 @@ export function AdminPlanCard({
     >
       <div className="flex items-center justify-between gap-2">
         <button
-          className="min-w-0 cursor-pointer overflow-x-auto whitespace-nowrap text-left font-bold hover:underline"
+          className="min-w-0 overflow-x-auto whitespace-nowrap text-left font-bold hover:underline"
           type="button"
           onClick={() => onEdit(plan)}
         >

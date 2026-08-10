@@ -14,9 +14,9 @@ type IconDeleteButtonProps = {
 };
 
 const btnDanger =
-  "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border border-transparent bg-red-600 px-5 text-sm font-extrabold text-white transition hover:bg-red-700";
+  "inline-flex min-h-11 items-center justify-center rounded-[10px] border border-transparent bg-red-600 px-5 text-sm font-extrabold text-white transition hover:bg-red-700";
 const btnCancel =
-  "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50";
+  "inline-flex min-h-11 items-center justify-center rounded-[10px] border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50";
 
 /** 목록 행에서 쓰는 휴지통 삭제 버튼. 확인 다이얼로그를 거쳐야 실행된다. */
 export function IconDeleteButton({
@@ -30,7 +30,7 @@ export function IconDeleteButton({
   return (
     <>
       <button
-        className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-lg border-0 bg-transparent text-slate-400 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+        className="grid size-10 shrink-0 place-items-center rounded-lg border-0 bg-transparent text-slate-400 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
         disabled={disabled}
         title={label}
         type="button"
