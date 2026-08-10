@@ -19,7 +19,7 @@ export function SiteFooter() {
           "radial-gradient(640px circle at 8% 0%, rgba(173,255,79,0.18), transparent 62%), radial-gradient(520px circle at 92% 100%, rgba(173,255,79,0.14), transparent 58%)",
       }}
     >
-      <div className="site-container flex min-h-44 items-stretch justify-between gap-10 border-b border-white/[0.07] pb-8 pt-10 max-[900px]:flex-col-reverse max-[900px]:items-start max-[900px]:gap-6">
+      <div className="site-container relative flex min-h-44 items-stretch justify-between gap-10 border-b border-white/[0.07] pb-8 pt-10 max-[900px]:min-h-0 max-[900px]:flex-col-reverse max-[900px]:items-start max-[900px]:gap-2 max-[900px]:pb-6 max-[900px]:pt-6">
         <div className="grid content-start gap-1">
           <p className="m-0 mb-1 text-[1.05rem] font-extrabold text-white">
             핵<span className="text-[var(--brand-accent)]">폰</span>
@@ -34,14 +34,14 @@ export function SiteFooter() {
             &nbsp;(평일 10:00 – 19:00)
           </p>
         </div>
-        {/* 배지 배경을 푸터색으로 맞춘 버전이라 경계 없이 얹힌다. */}
-        <div className="relative w-64 shrink-0 self-stretch max-[900px]:h-40 max-[900px]:w-40 max-[900px]:self-auto">
+        {/* 투명 배경 로고라 푸터의 그라데이션 위에서도 자연스럽게 보인다. */}
+        <div className="absolute right-32 top-0 h-48 w-56 max-[900px]:relative max-[900px]:right-auto max-[900px]:top-auto max-[900px]:h-20 max-[900px]:w-24">
           <Image
             alt="핵폰"
-            className="object-contain object-right max-[900px]:object-left"
+            className="object-contain object-right"
             fill
-            sizes="(max-width: 900px) 160px, 256px"
-            src="/images/logo/hack_phone_logo_1_footer.png"
+            sizes="(max-width: 900px) 96px, 224px"
+            src="/images/logo/hack_phone_logo_1_footer-transparent.png"
           />
         </div>
       </div>
