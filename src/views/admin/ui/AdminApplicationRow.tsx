@@ -16,7 +16,7 @@ export function AdminApplicationRow({
 }: AdminApplicationRowProps) {
   return (
     <article
-      className="grid cursor-pointer grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] items-center gap-3 rounded-[10px] border border-slate-200 bg-white p-3.5 transition hover:bg-[var(--brand-primary-soft)] max-[900px]:grid-cols-1"
+      className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] items-center gap-3 rounded-[10px] border border-slate-200 bg-white p-3.5 transition hover:bg-[var(--brand-primary-soft)] max-[900px]:grid-cols-1"
       role="button"
       tabIndex={0}
       onClick={() => onSelect(item.id)}

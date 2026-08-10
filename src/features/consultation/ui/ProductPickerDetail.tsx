@@ -23,7 +23,7 @@ export function ProductPickerDetail({
   return (
     <div className="grid gap-4">
       <button
-        className="w-fit cursor-pointer text-sm font-bold text-slate-500 underline-offset-4 hover:underline"
+        className="w-fit text-sm font-bold text-slate-500 underline-offset-4 hover:underline"
         type="button"
         onClick={onBack}
       >

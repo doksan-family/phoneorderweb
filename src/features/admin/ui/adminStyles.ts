@@ -29,13 +29,13 @@ export const adminCheckboxClass = "h-4 w-4";
 export const adminErrorClass = "m-0 font-bold text-red-600";
 
 export const primaryButtonClass =
-  "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-[10px] border border-transparent bg-[var(--brand-cta)] px-5 text-sm font-extrabold text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)] disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex min-h-12 items-center justify-center rounded-[10px] border border-transparent bg-[var(--brand-cta)] px-5 text-sm font-extrabold text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)] disabled:cursor-not-allowed disabled:opacity-60";
 
 export const secondaryButtonClass =
-  "inline-flex min-h-10 cursor-pointer items-center justify-center rounded-[10px] border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex min-h-10 items-center justify-center rounded-[10px] border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60";
 
 export const ghostButtonClass =
-  "inline-flex min-h-10 cursor-pointer items-center justify-center rounded-[10px] border border-transparent bg-transparent px-4 text-sm font-bold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex min-h-10 items-center justify-center rounded-[10px] border border-transparent bg-transparent px-4 text-sm font-bold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60";
 
 export const adminCardFormClass =
   "mb-6 grid max-w-none gap-4 rounded-[14px] border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(21,24,15,0.08)]";

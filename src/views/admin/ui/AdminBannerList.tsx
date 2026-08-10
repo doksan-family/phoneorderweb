@@ -17,7 +17,7 @@ type AdminBannerListProps = {
 };
 
 const btnSecondary =
-  "inline-flex items-center justify-center min-h-[34px] border border-slate-200 rounded-lg px-3.5 cursor-pointer text-sm font-bold transition-all bg-white text-slate-700 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950";
+  "inline-flex items-center justify-center min-h-[34px] border border-slate-200 rounded-lg px-3.5 text-sm font-bold transition-all bg-white text-slate-700 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950";
 
 export function AdminBannerList({
   banners,

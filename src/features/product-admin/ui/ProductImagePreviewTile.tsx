@@ -29,7 +29,7 @@ export function ProductImagePreviewTile({
       ) : null}
       <button
         aria-label={`${label} 제거`}
-        className="absolute right-2 top-2 grid h-8 w-8 cursor-pointer place-items-center rounded-full border-0 bg-slate-950/75 text-white transition hover:bg-slate-950"
+        className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full border-0 bg-slate-950/75 text-white transition hover:bg-slate-950"
         type="button"
         onClick={onRemove}
       >

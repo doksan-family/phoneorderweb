@@ -100,7 +100,7 @@ export function AdminAuditLogPanel() {
 
       {data && items.length < data.total ? (
         <button
-          className="mt-5 w-full cursor-pointer rounded-[10px] border border-slate-200 bg-white py-3 text-sm font-bold text-slate-500 transition hover:bg-slate-50"
+          className="mt-5 w-full rounded-[10px] border border-slate-200 bg-white py-3 text-sm font-bold text-slate-500 transition hover:bg-slate-50"
           type="button"
           onClick={() => setLimit((current) => current + PAGE_SIZE)}
         >

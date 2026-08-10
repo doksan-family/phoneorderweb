@@ -22,7 +22,7 @@ export function ConsultationProductPicker() {
         </span>
       </div>
       <button
-        className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-[14px] px-6 text-[0.9rem] font-bold bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]"
+        className="inline-flex min-h-12 items-center justify-center rounded-[14px] px-6 text-[0.9rem] font-bold bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]"
         type="button"
         onClick={() => setIsPickerOpen(true)}
       >

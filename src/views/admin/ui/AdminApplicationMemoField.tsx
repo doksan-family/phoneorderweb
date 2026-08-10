@@ -26,7 +26,7 @@ export function AdminApplicationMemoField({
         onChange={(event) => setDraft(event.target.value)}
       />
       <button
-        className="w-fit cursor-pointer rounded-[12px] bg-slate-950 px-4 py-2 text-[0.85rem] font-bold text-white disabled:cursor-default disabled:opacity-50"
+        className="w-fit rounded-[12px] bg-slate-950 px-4 py-2 text-[0.85rem] font-bold text-white disabled:cursor-default disabled:opacity-50"
         disabled={isSaving || draft === memo}
         type="button"
         onClick={() => onSave(draft)}

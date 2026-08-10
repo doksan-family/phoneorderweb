@@ -16,7 +16,6 @@ const baseValue: AdminReviewFormValue = {
   rating: 5,
   isFeatured: false,
   isPublished: false,
-  displayOrder: 0,
   imageFiles: [],
 };
 
@@ -27,6 +26,7 @@ test("toReviewCreatePayload", () => {
   assert.equal(payload.author_name, "김**");
   assert.equal(payload.product_id, undefined);
   assert.equal(payload.image_files, undefined);
+  assert.equal(payload.display_order, 0);
 
   const withProduct = toReviewCreatePayload({
     ...baseValue,

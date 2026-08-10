@@ -11,7 +11,7 @@ type ProductMultiChoiceFieldProps<T extends ChoiceValue> = {
 
 const fieldClass = "grid gap-2 text-sm font-bold text-slate-700";
 const optionClass =
-  "inline-flex h-10 min-w-[88px] cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-md border px-3 text-sm font-bold transition";
+  "inline-flex h-10 min-w-[88px] items-center justify-center gap-1.5 whitespace-nowrap rounded-md border px-3 text-sm font-bold transition";
 const selectedClass =
   "border-[var(--brand-primary-strong)] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]";
 const idleClass =

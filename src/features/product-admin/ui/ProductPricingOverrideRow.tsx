@@ -17,7 +17,7 @@ type ProductPricingOverrideRowProps = {
 
 const fieldClass = "grid gap-2 text-sm font-bold text-slate-700";
 const iconButtonClass =
-  "grid h-11 w-11 cursor-pointer place-items-center rounded-lg bg-zinc-50 text-slate-500 transition hover:bg-zinc-100 hover:text-slate-950";
+  "grid h-11 w-11 place-items-center rounded-lg bg-zinc-50 text-slate-500 transition hover:bg-zinc-100 hover:text-slate-950";
 
 export function ProductPricingOverrideRow({
   override,

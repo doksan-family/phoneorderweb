@@ -42,7 +42,7 @@ export function HeroBannerControls({
         {Array.from({ length: bannersLength }, (_, index) => (
           <button
             aria-label={`${index + 1}번째 배너`}
-            className={`h-2 w-2 cursor-pointer rounded-full border-0 p-0 transition ${index === current ? "bg-white" : "bg-white/50"}`}
+            className={`h-2 w-2 rounded-full border-0 p-0 transition ${index === current ? "bg-white" : "bg-white/50"}`}
             key={index}
             type="button"
             onClick={() => onSelect(index)}

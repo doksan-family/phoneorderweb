@@ -8,7 +8,7 @@ import { ConsultationProductPicker } from "./ConsultationProductPicker";
 import { ConsultationSelectionSummary } from "./ConsultationSelectionSummary";
 
 const submitClass =
-  "inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] cursor-pointer font-bold text-[0.95rem] bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]";
+  "inline-flex items-center justify-center min-h-[48px] border-[1.5px] border-transparent rounded-[10px] px-[22px] font-bold text-[0.95rem] bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]";
 
 export function ConsultationForm() {
   const {

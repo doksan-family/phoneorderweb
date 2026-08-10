@@ -18,7 +18,7 @@ export function HomeReviewPreview() {
     <div className="grid grid-cols-2 gap-3 max-[900px]:grid-cols-1">
       {reviews.map((review) => (
         <button
-          className="cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 p-[18px] text-left transition hover:bg-[var(--brand-primary-soft)]"
+          className="rounded-2xl border border-slate-200 bg-slate-50 p-[18px] text-left transition hover:bg-[var(--brand-primary-soft)]"
           key={review.id}
           type="button"
           onClick={() => setOpenedReviewId(review.id)}
@@ -43,9 +43,8 @@ export function HomeReviewPreview() {
       {openedReviewId ? (
         <ReviewDetailModal
           reviewId={openedReviewId}
-          reviewIds={reviews.map((review) => review.id)}
+          initialReview={reviews.find((review) => review.id === openedReviewId)}
           onClose={() => setOpenedReviewId("")}
-          onSelect={setOpenedReviewId}
         />
       ) : null}
     </div>

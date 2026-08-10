@@ -17,7 +17,7 @@ type AdminProductDetailModalProps = {
 };
 
 const editButtonClass =
-  "inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
+  "inline-flex min-h-11 items-center justify-center rounded-[10px] border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
 
 export function AdminProductDetailModal({
   productId,

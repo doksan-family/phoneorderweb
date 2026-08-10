@@ -19,7 +19,7 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
           <article className="brand-card overflow-hidden" key={item.id}>
             <button
               aria-expanded={isActive}
-              className="flex w-full cursor-pointer items-center justify-between gap-2.5 border-0 bg-transparent p-4 text-left text-[0.88rem] font-bold text-slate-950"
+              className="flex w-full items-center justify-between gap-2.5 border-0 bg-transparent p-4 text-left text-[0.88rem] font-bold text-slate-950"
               onClick={() => setActiveId(isActive ? "" : item.id)}
               type="button"
             >

@@ -56,7 +56,7 @@ export function AdminProductList({
             ) : null}
           </div>
           <button
-            className="grid min-w-0 cursor-pointer gap-1 border-0 bg-transparent p-0 text-left"
+            className="grid min-w-0 gap-1 border-0 bg-transparent p-0 text-left"
             onClick={() => onSelect(item.id)}
             type="button"
           >

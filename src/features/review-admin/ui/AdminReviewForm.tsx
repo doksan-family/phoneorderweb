@@ -9,7 +9,6 @@ import {
   adminErrorClass,
   adminFieldClass,
   primaryButtonClass,
-  twoColumnFieldGridClass,
 } from "@/features/admin/ui/adminStyles";
 import { useFilePreviews } from "@/features/product-admin/model/useFilePreviews";
 import { ProductImagePickerSection } from "@/features/product-admin/ui/ProductImagePickerSection";
@@ -84,26 +83,15 @@ export function AdminReviewForm({ review, onSaved }: AdminReviewFormProps) {
         />
       </label>
 
-      <div className={twoColumnFieldGridClass}>
-        <label className={adminFieldClass}>
-          작성자 표시명 *
-          <input
-            placeholder="김**"
-            required
-            value={value.authorName}
-            onChange={(event) => update("authorName", event.target.value)}
-          />
-        </label>
-        <label className={adminFieldClass}>
-          노출 순서
-          <input
-            min={0}
-            type="number"
-            value={value.displayOrder}
-            onChange={(event) => update("displayOrder", Number(event.target.value))}
-          />
-        </label>
-      </div>
+      <label className={adminFieldClass}>
+        작성자 표시명 *
+        <input
+          placeholder="김**"
+          required
+          value={value.authorName}
+          onChange={(event) => update("authorName", event.target.value)}
+        />
+      </label>
 
       <input
         ref={fileInputRef}

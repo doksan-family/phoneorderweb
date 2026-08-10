@@ -12,7 +12,6 @@ export type AdminReviewFormValue = {
   rating: number;
   isFeatured: boolean;
   isPublished: boolean;
-  displayOrder: number;
   imageFiles: File[];
 };
 
@@ -30,7 +29,7 @@ export function toReviewCreatePayload(
     rating: value.rating,
     is_featured: value.isFeatured,
     is_published: value.isPublished,
-    display_order: value.displayOrder,
+    display_order: 0,
     image_files: value.imageFiles.length ? value.imageFiles : undefined,
   };
 }
@@ -43,7 +42,6 @@ export const emptyReviewFormValue: AdminReviewFormValue = {
   rating: 5,
   isFeatured: false,
   isPublished: false,
-  displayOrder: 0,
   imageFiles: [],
 };
 
@@ -57,7 +55,6 @@ export function toReviewFormValue(review: AdminReview): AdminReviewFormValue {
     rating: review.rating,
     isFeatured: review.is_featured,
     isPublished: review.is_published,
-    displayOrder: review.display_order,
     imageFiles: [],
   };
 }
@@ -75,7 +72,6 @@ export function toReviewUpdatePayload(
     rating: value.rating,
     is_featured: value.isFeatured,
     is_published: value.isPublished,
-    display_order: value.displayOrder,
   };
 }
 

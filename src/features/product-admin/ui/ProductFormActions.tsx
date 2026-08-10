@@ -5,9 +5,9 @@ type ProductFormActionsProps = {
 };
 
 const btnPrimary =
-  "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-[10px] border border-transparent bg-[var(--brand-cta)] px-5 text-sm font-extrabold text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)] disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex min-h-12 items-center justify-center rounded-[10px] border border-transparent bg-[var(--brand-cta)] px-5 text-sm font-extrabold text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)] disabled:cursor-not-allowed disabled:opacity-60";
 const btnSecondary =
-  "inline-flex min-h-12 cursor-pointer items-center justify-center rounded-[10px] border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
+  "inline-flex min-h-12 items-center justify-center rounded-[10px] border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
 
 export function ProductFormActions({
   isEdit,
