@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { customerCenterQueryOptions } from "@/entities/content/model/queries";
-import { AdminFaqForm } from "@/features/customer-center-admin/ui/AdminFaqForm";
-import { AdminNoticeForm } from "@/features/customer-center-admin/ui/AdminNoticeForm";
 import { useDeleteContent } from "@/features/customer-center-admin/model/useDeleteContent";
-import { AdminCreateDialog } from "@/shared/ui/AdminCreateDialog";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { SkeletonRows } from "@/shared/ui/SkeletonRows";
@@ -17,7 +14,9 @@ import {
   toContentItemFromFaq,
   toContentItemFromNotice,
 } from "../model/adminContent";
-import { AdminContentRow } from "./AdminContentRow";
+import { useContentReorder } from "../model/useContentReorder";
+import { AdminContentDialogs } from "./AdminContentDialogs";
+import { AdminContentList } from "./AdminContentList";
 
 type AdminContentPanelProps = {
   type: AdminContentType;
@@ -37,14 +36,19 @@ export function AdminContentPanel({ type }: AdminContentPanelProps) {
     enabled: !isNotice,
   });
   const { data, error, isPending } = isNotice ? noticesQuery : faqsQuery;
-  const items = isNotice
-    ? (noticesQuery.data?.items ?? []).map(toContentItemFromNotice)
-    : (faqsQuery.data?.items ?? []).map(toContentItemFromFaq);
+  // 드래그 순서와 화면 순서를 맞추려면 목록이 항상 display_order 순이어야 한다.
+  const items = (
+    isNotice
+      ? (noticesQuery.data?.items ?? []).map(toContentItemFromNotice)
+      : (faqsQuery.data?.items ?? []).map(toContentItemFromFaq)
+  ).sort((first, second) => first.displayOrder - second.displayOrder);
 
   const [editingId, setEditingId] = useState("");
   const editingNotice = noticesQuery.data?.items.find((item) => item.id === editingId);
   const editingFaq = faqsQuery.data?.items.find((item) => item.id === editingId);
-  const deleteMutation = useDeleteContent(isNotice ? "notices" : "faqs");
+  const resource = isNotice ? "notices" : "faqs";
+  const deleteMutation = useDeleteContent(resource);
+  const reorder = useContentReorder(resource);
 
   return (
     <section className={adminFullPanelWithFabClass}>
@@ -68,58 +72,32 @@ export function AdminContentPanel({ type }: AdminContentPanelProps) {
         />
       ) : null}
 
-      <div className="grid gap-2.5">
-        {items.map((item) => (
-          <AdminContentRow
-            isDeleting={deleteMutation.isPending}
-            item={item}
-            key={item.id}
-            label={label}
-            onDelete={() => deleteMutation.mutate(item.id)}
-            onSelect={() => setEditingId(item.id)}
-          />
-        ))}
-      </div>
+      <AdminContentList
+        isDeleting={deleteMutation.isPending}
+        items={items}
+        label={label}
+        onDelete={(id) => deleteMutation.mutate(id)}
+        onReorder={(next) =>
+          reorder.mutate(
+            next.map((item) => ({ id: item.id, order: item.displayOrder }))
+          )
+        }
+        onSelect={setEditingId}
+      />
 
       <FloatingActionButton
         label={`${label} 등록`}
         onClick={() => setIsCreateOpen(true)}
       />
-      {isCreateOpen ? (
-        <AdminCreateDialog
-          title={`${label} 등록`}
-          widthClassName="w-[min(620px,100%)]"
-          onClose={() => setIsCreateOpen(false)}
-        >
-          {isNotice ? (
-            <AdminNoticeForm onSaved={() => setIsCreateOpen(false)} />
-          ) : (
-            <AdminFaqForm onSaved={() => setIsCreateOpen(false)} />
-          )}
-        </AdminCreateDialog>
-      ) : null}
-      {editingNotice || editingFaq ? (
-        <AdminCreateDialog
-          title={`${label} 수정`}
-          widthClassName="w-[min(620px,100%)]"
-          onClose={() => setEditingId("")}
-        >
-          {editingNotice ? (
-            <AdminNoticeForm
-              key={editingNotice.id}
-              notice={editingNotice}
-              onSaved={() => setEditingId("")}
-            />
-          ) : null}
-          {editingFaq ? (
-            <AdminFaqForm
-              faq={editingFaq}
-              key={editingFaq.id}
-              onSaved={() => setEditingId("")}
-            />
-          ) : null}
-        </AdminCreateDialog>
-      ) : null}
+      <AdminContentDialogs
+        editingFaq={editingFaq}
+        editingNotice={editingNotice}
+        isCreateOpen={isCreateOpen}
+        isNotice={isNotice}
+        label={label}
+        onCloseCreate={() => setIsCreateOpen(false)}
+        onCloseEdit={() => setEditingId("")}
+      />
     </section>
   );
 }

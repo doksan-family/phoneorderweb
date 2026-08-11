@@ -14,20 +14,29 @@ import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { SkeletonRows } from "@/shared/ui/SkeletonRows";
 import { adminFullPanelWithFabClass } from "@/shared/ui/adminPanelStyles";
-import { AdminReviewRow } from "./AdminReviewRow";
+import { useReviewReorder } from "../model/useReviewReorder";
+import { AdminReviewList } from "./AdminReviewList";
 
 export function AdminReviewPanel() {
   const { data, error, isPending } = useQuery(reviewQueryOptions.adminList());
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<AdminReview | null>(null);
   const queryClient = useQueryClient();
-  const reviews = data?.items ?? [];
+  // 드래그 순서와 화면 순서를 맞추려면 목록이 항상 display_order 순이어야 한다.
+  const reviews = [...(data?.items ?? [])].sort(
+    (first, second) => first.display_order - second.display_order
+  );
+
+  function refetchReviews() {
+    return queryClient.invalidateQueries({ queryKey: adminReviewsQueryKey });
+  }
 
   const deleteMutation = useMutation({
     mutationFn: deleteAdminReview,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: adminReviewsQueryKey }),
+    onSuccess: refetchReviews,
   });
+
+  const reorder = useReviewReorder(refetchReviews);
 
   return (
     <section className={adminFullPanelWithFabClass}>
@@ -47,17 +56,17 @@ export function AdminReviewPanel() {
         <AdminEmptyState message="후기를 삭제하지 못했습니다. 잠시 후 다시 시도해 주세요." />
       ) : null}
 
-      <div className="grid gap-2.5">
-        {reviews.map((review) => (
-          <AdminReviewRow
-            isDeleting={deleteMutation.isPending}
-            key={review.id}
-            review={review}
-            onDelete={() => deleteMutation.mutate(review.id)}
-            onSelect={() => setEditingReview(review)}
-          />
-        ))}
-      </div>
+      <AdminReviewList
+        isDeleting={deleteMutation.isPending}
+        items={reviews}
+        onDelete={(id) => deleteMutation.mutate(id)}
+        onReorder={(next) =>
+          reorder.mutate(
+            next.map((item) => ({ id: item.id, order: item.display_order }))
+          )
+        }
+        onSelect={setEditingReview}
+      />
 
       <FloatingActionButton
         label="구매후기 등록"

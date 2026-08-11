@@ -11,6 +11,7 @@ export type AdminContentItem = {
   title: string;
   body: string;
   isPublished: boolean;
+  displayOrder: number;
   /** FAQ 분류명. 공지에는 없다. */
   category?: string;
 };
@@ -27,6 +28,7 @@ export function toContentItemFromNotice(notice: PublicNotice): AdminContentItem 
     title: notice.title,
     body: notice.content,
     isPublished: notice.is_published,
+    displayOrder: notice.display_order,
   };
 }
 
@@ -36,6 +38,7 @@ export function toContentItemFromFaq(faq: PublicFaq): AdminContentItem {
     title: faq.question,
     body: faq.answer,
     isPublished: faq.is_published,
+    displayOrder: faq.display_order,
     category: faq.category,
   };
 }

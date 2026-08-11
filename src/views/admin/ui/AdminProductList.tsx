@@ -1,8 +1,10 @@
-import Image from "next/image";
+"use client";
+
 import type { AdminProductSummary } from "@/entities/product/api/admin";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
 import { SkeletonRows } from "@/shared/ui/SkeletonRows";
-import { VisibilityToggle } from "@/shared/ui/VisibilityToggle";
+import { useDragReorder } from "@/shared/lib/useDragReorder";
+import { AdminProductRow } from "./AdminProductRow";
 
 type AdminProductListProps = {
   items: AdminProductSummary[];
@@ -14,6 +16,8 @@ type AdminProductListProps = {
   /** 감춰진 상품을 다시 노출한다(PATCH) */
   onToggleActive: (id: string, isActive: boolean) => void;
   onSelect: (id: string) => void;
+  /** 드래그로 바뀐 전체 순서. 첫 항목이 노출 순서 1이다. */
+  onReorder: (items: AdminProductSummary[]) => void;
 };
 
 export function AdminProductList({
@@ -24,7 +28,10 @@ export function AdminProductList({
   onDeactivate,
   onToggleActive,
   onSelect,
+  onReorder,
 }: AdminProductListProps) {
+  const { getRowProps } = useDragReorder(items, onReorder);
+
   if (error) {
     return <AdminEmptyState message={`상품을 불러오지 못했습니다. ${error.message}`} />;
   }
@@ -39,52 +46,17 @@ export function AdminProductList({
 
   return (
     <div className="grid gap-2.5">
-      {items.map((item) => (
-        <article
-          className="grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-3 rounded-[10px] border border-slate-200 bg-white p-[14px] max-[900px]:grid-cols-[56px_minmax(0,1fr)]"
+      {items.map((item, index) => (
+        <AdminProductRow
+          drag={getRowProps(index)}
+          isMutating={isMutating}
+          item={item}
           key={item.id}
-        >
-          <div className="relative h-14 w-14 overflow-hidden rounded-lg bg-slate-100">
-            {item.thumbnailUrl ? (
-              <Image
-                alt=""
-                className="object-cover"
-                fill
-                sizes="56px"
-                src={item.thumbnailUrl}
-              />
-            ) : null}
-          </div>
-          <button
-            className="grid min-w-0 gap-1 border-0 bg-transparent p-0 text-left"
-            onClick={() => onSelect(item.id)}
-            type="button"
-          >
-            <strong className="overflow-hidden text-ellipsis whitespace-nowrap underline-offset-4 hover:underline">
-              {item.name || item.id}
-            </strong>
-            <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.88rem] text-slate-500">
-              {[item.categoryName || item.categoryCode, formatPrice(item.salePrice)]
-                .filter(Boolean)
-                .join(" · ") || "—"}
-            </span>
-          </button>
-          <VisibilityToggle
-            active={item.isActive}
-            disabled={isMutating}
-            label={`${item.name || item.id} 노출`}
-            onChange={() =>
-              item.isActive
-                ? onDeactivate(item.id)
-                : onToggleActive(item.id, item.isActive)
-            }
-          />
-        </article>
+          onDeactivate={onDeactivate}
+          onSelect={onSelect}
+          onToggleActive={onToggleActive}
+        />
       ))}
     </div>
   );
-}
-
-function formatPrice(price: number | null) {
-  return price === null ? "" : `${price.toLocaleString("ko-KR")}원`;
 }

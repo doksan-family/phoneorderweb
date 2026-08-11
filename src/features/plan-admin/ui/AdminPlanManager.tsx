@@ -11,6 +11,7 @@ import {
 import { planQueryOptions } from "@/entities/plan/model/queries";
 import { adminFullPanelClass } from "@/shared/ui/adminPanelStyles";
 import { carrierOptions } from "../model/planDraft";
+import { usePlanReorder } from "../model/usePlanReorder";
 import { AdminPlanList } from "./AdminPlanList";
 import { PlanFormModal } from "./PlanFormModal";
 import { AdminPlanListSkeleton } from "./AdminPlanListSkeleton";
@@ -39,6 +40,8 @@ export function AdminPlanManager() {
       queryClient.invalidateQueries({ queryKey: ["admin-plans"] }),
   });
 
+  const reorder = usePlanReorder();
+
   return (
     <section className={`grid content-start gap-5 ${adminFullPanelClass}`}>
       {isPending ? (
@@ -62,6 +65,11 @@ export function AdminPlanManager() {
           }
           onCreate={setEditor}
           onEdit={setEditor}
+          onReorder={(next) =>
+            reorder.mutate(
+              next.map((plan) => ({ id: plan.id, order: plan.display_order ?? 0 }))
+            )
+          }
           onToggleActive={toggleActive.mutate}
         />
       ) : null}

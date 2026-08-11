@@ -1,5 +1,7 @@
 "use client";
 
+import type { DragRowProps } from "@/shared/lib/useDragReorder";
+import { DragHandle } from "@/shared/ui/DragHandle";
 import { IconDeleteButton } from "@/shared/ui/IconDeleteButton";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import type { AdminContentItem } from "../model/adminContent";
@@ -8,6 +10,7 @@ type AdminContentRowProps = {
   item: AdminContentItem;
   label: string;
   isDeleting: boolean;
+  drag: DragRowProps;
   onDelete: () => void;
   onSelect: () => void;
 };
@@ -16,15 +19,23 @@ export function AdminContentRow({
   item,
   label,
   isDeleting,
+  drag,
   onDelete,
   onSelect,
 }: AdminContentRowProps) {
   return (
     <article
-      className="flex items-center gap-3.5 rounded-[10px] border border-slate-200 bg-white p-[14px] text-left transition hover:border-slate-300 hover:bg-slate-50"
+      className={`flex items-center gap-3.5 rounded-[10px] border bg-white p-[14px] text-left transition hover:bg-slate-50 ${
+        drag.isDropTarget ? "border-(--brand-primary) shadow-[0_0_0_3px_var(--brand-primary-shadow)]" : "border-slate-200 hover:border-slate-300"
+      } ${drag.isDragging ? "opacity-40" : ""}`}
+      draggable={drag.draggable}
       role="button"
       tabIndex={0}
       onClick={onSelect}
+      onDragEnd={drag.onDragEnd}
+      onDragOver={drag.onDragOver}
+      onDragStart={drag.onDragStart}
+      onDrop={drag.onDrop}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
@@ -32,6 +43,7 @@ export function AdminContentRow({
         }
       }}
     >
+      <DragHandle label={item.title} onGrab={drag.onHandleGrab} />
       <div className="grid min-w-0 flex-1 gap-1">
         <div className="flex items-center gap-2">
           <strong className="truncate text-sm">{item.title}</strong>

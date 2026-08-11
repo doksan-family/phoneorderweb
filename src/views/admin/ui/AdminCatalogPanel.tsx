@@ -14,14 +14,17 @@ import { AdminProductDetailModal } from "@/features/product-admin/ui/AdminProduc
 import { ProductFormModal } from "@/features/product-admin/ui/ProductFormModal";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { adminFullPanelWithFabClass } from "@/shared/ui/adminPanelStyles";
+import { useProductReorder } from "../model/useProductReorder";
 import { AdminProductList } from "./AdminProductList";
 
 export function AdminCatalogPanel() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
-  const { data: products = [], error, isPending } = useQuery(
-    productQueryOptions.adminList()
+  const { data, error, isPending } = useQuery(productQueryOptions.adminList());
+  // 드래그 순서와 화면 순서를 맞추려면 목록이 항상 display_order 순이어야 한다.
+  const products = [...(data ?? [])].sort(
+    (first, second) => first.displayOrder - second.displayOrder
   );
 
   function refetchProducts() {
@@ -39,7 +42,9 @@ export function AdminCatalogPanel() {
     onSuccess: refetchProducts,
   });
 
-  const mutationError = toggleActive.error ?? deactivate.error;
+  const reorder = useProductReorder(refetchProducts);
+
+  const mutationError = toggleActive.error ?? deactivate.error ?? reorder.error;
 
   return (
     <section className={`grid content-start gap-5 ${adminFullPanelWithFabClass}`}>
@@ -55,6 +60,11 @@ export function AdminCatalogPanel() {
         isMutating={toggleActive.isPending || deactivate.isPending}
         items={products}
         onDeactivate={(id) => deactivate.mutate(id)}
+        onReorder={(next) =>
+          reorder.mutate(
+            next.map((item) => ({ id: item.id, order: item.displayOrder }))
+          )
+        }
         onSelect={setSelectedProductId}
         onToggleActive={(id, isActive) => toggleActive.mutate({ id, isActive })}
       />
