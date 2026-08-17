@@ -50,6 +50,55 @@ export async function updateAdminConsultation(
   return mapConsultations(response)[0] ?? null;
 }
 
+export type ExportAdminConsultationsParams = {
+  status?: FetchAdminConsultationsParams["status"];
+  phone?: string;
+  fromDate?: string;
+  toDate?: string;
+};
+
+const BASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+/**
+ * CSV는 JSON이 아니라 apiFetch를 못 쓴다. Blob과 파일명을 함께 돌려주고
+ * 호출부에서 다운로드를 트리거하게 한다.
+ */
+export async function exportAdminConsultationsCsv(
+  params: ExportAdminConsultationsParams = {}
+) {
+  const accessToken = await getAccessToken();
+  const search = new URLSearchParams();
+  if (params.status) search.set("status", params.status);
+  if (params.phone) search.set("phone", params.phone);
+  if (params.fromDate) search.set("from_date", params.fromDate);
+  if (params.toDate) search.set("to_date", params.toDate);
+
+  const query = search.toString();
+  const res = await fetch(
+    `${BASE_URL}/functions/v1/admin-consultations/export.csv${query ? `?${query}` : ""}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken ?? ANON_KEY}`,
+        apikey: ANON_KEY,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(
+      typeof body.message === "string" ? body.message : `HTTP ${res.status}`
+    );
+  }
+
+  const disposition = res.headers.get("Content-Disposition") ?? "";
+  const filenameMatch = disposition.match(/filename="?([^";]+)"?/);
+  const filename = filenameMatch?.[1] ?? "consultations.csv";
+
+  return { blob: await res.blob(), filename };
+}
+
 function toConsultationsSearch(params: FetchAdminConsultationsParams) {
   const search = new URLSearchParams();
   if (params.status) search.set("status", params.status);

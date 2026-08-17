@@ -9,6 +9,7 @@ import { adminFullPanelClass } from "@/shared/ui/adminPanelStyles";
 import { AdminApplicationDetailModal } from "./AdminApplicationDetailModal";
 import { AdminApplicationFilters } from "./AdminApplicationFilters";
 import { AdminApplicationRow } from "./AdminApplicationRow";
+import { AdminConsultationExportButton } from "./AdminConsultationExportButton";
 import type { StatusFilter } from "./adminApplicationStatus";
 
 type AdminApplicationsPanelProps = {
@@ -51,6 +52,7 @@ export function AdminApplicationsPanel({
         onKeywordChange={setKeyword}
         onStatusChange={setStatus}
       />
+      <AdminConsultationExportButton status={status} />
 
       <div className="grid gap-2.5">
         {isPending ? <SkeletonRows count={4} withThumbnail={false} /> : null}
