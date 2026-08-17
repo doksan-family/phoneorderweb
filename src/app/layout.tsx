@@ -1,7 +1,12 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
+import { siteSettingsQueryOptions } from "@/entities/site-settings/model/queries";
+import { makeQueryClient } from "@/shared/lib/react-query";
 import { QueryProvider } from "@/shared/lib/react-query/QueryProvider";
 import { LegacyStorageCleanup } from "@/shared/ui/LegacyStorageCleanup";
+import { MaintenanceGate } from "@/shared/ui/MaintenanceGate";
 import { SiteFooterGate } from "@/shared/ui/SiteFooterGate";
 import { SiteHeaderGate } from "@/shared/ui/SiteHeaderGate";
 import "./globals.css";
@@ -33,7 +38,15 @@ type RootLayoutProps = {
   children: ReactNode;
 };
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  // 헤더 메뉴·푸터는 모든 페이지에 뜨므로 여기서 미리 채워야 첫 렌더에서
+  // 깜박이지 않는다. 상품·배너처럼 페이지별로만 쓰는 데이터는 넣지 않는다.
+  const queryClient = makeQueryClient();
+  await Promise.all([
+    queryClient.prefetchQuery(productCategoryQueryOptions.publicList("main_menu")),
+    queryClient.prefetchQuery(siteSettingsQueryOptions.public()),
+  ]);
+
   return (
     <html lang="ko">
       <head>
@@ -45,10 +58,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <QueryProvider>
-          <LegacyStorageCleanup />
-          <SiteHeaderGate />
-          {children}
-          <SiteFooterGate />
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            <LegacyStorageCleanup />
+            <MaintenanceGate>
+              <SiteHeaderGate />
+              {children}
+              <SiteFooterGate />
+            </MaintenanceGate>
+          </HydrationBoundary>
         </QueryProvider>
       </body>
     </html>
