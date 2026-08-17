@@ -16,11 +16,14 @@ import { AdminPlanManager } from "@/features/plan-admin/ui/AdminPlanManager";
 import { AdminApplicationsPanel } from "./AdminApplicationsPanel";
 import { AdminAuditLogPanel } from "./AdminAuditLogPanel";
 import { AdminCatalogPanel } from "./AdminCatalogPanel";
+import { AdminCategoryPanel } from "./AdminCategoryPanel";
 import { AdminContentPanel } from "./AdminContentPanel";
 import { AdminHeroBannerPanel } from "./AdminHeroBannerPanel";
+import { AdminLegalDocumentPanel } from "./AdminLegalDocumentPanel";
 import { AdminOverviewPanel } from "./AdminOverviewPanel";
 import { AdminReviewPanel } from "./AdminReviewPanel";
 import { AdminSidebar } from "./AdminSidebar";
+import { AdminSiteSettingsPanel } from "./AdminSiteSettingsPanel";
 import { AdminTopbar } from "./AdminTopbar";
 import { contentTypeByTab, type AdminTab } from "./adminDashboardConfig";
 
@@ -73,10 +76,13 @@ export function AdminDashboard() {
           ) : null}
           {activeTab === "overview" ? <AdminOverviewPanel /> : null}
           {activeTab === "banner" ? <AdminHeroBannerPanel /> : null}
+          {activeTab === "categories" ? <AdminCategoryPanel /> : null}
           {activeTab === "catalog" ? <AdminCatalogPanel /> : null}
           {activeTab === "plans" ? <AdminPlanManager /> : null}
           {activeTab === "reviews" ? <AdminReviewPanel /> : null}
           {activeTab === "audit" ? <AdminAuditLogPanel /> : null}
+          {activeTab === "settings" ? <AdminSiteSettingsPanel /> : null}
+          {activeTab === "legal" ? <AdminLegalDocumentPanel /> : null}
           {contentType ? <AdminContentPanel key={activeTab} type={contentType} /> : null}
         </div>
       </section>

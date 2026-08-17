@@ -3,13 +3,16 @@ import type { AdminContentType } from "../model/adminContent";
 export type AdminTab =
   | "overview"
   | "applications"
+  | "categories"
   | "catalog"
   | "reviews"
   | "notices"
   | "faqs"
   | "banner"
   | "plans"
-  | "audit";
+  | "audit"
+  | "settings"
+  | "legal";
 
 /** 콘텐츠 탭은 목록/등록 화면을 공유하고 유형만 달라진다. */
 export const contentTypeByTab: Partial<Record<AdminTab, AdminContentType>> = {
@@ -21,10 +24,13 @@ export const adminNavItems: Array<{ id: AdminTab; label: string }> = [
   { id: "overview", label: "대시보드" },
   { id: "applications", label: "상담 신청" },
   { id: "banner", label: "홈 배너" },
+  { id: "categories", label: "카테고리 관리" },
   { id: "catalog", label: "상품 관리" },
   { id: "plans", label: "요금제 관리" },
   { id: "reviews", label: "구매후기 관리" },
   { id: "notices", label: "공지사항 관리" },
   { id: "faqs", label: "FAQ 관리" },
   { id: "audit", label: "관리자 작업 기록" },
+  { id: "settings", label: "사이트 설정" },
+  { id: "legal", label: "약관 관리" },
 ];
