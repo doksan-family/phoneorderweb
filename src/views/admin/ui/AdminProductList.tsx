@@ -18,6 +18,8 @@ type AdminProductListProps = {
   onSelect: (id: string) => void;
   /** 드래그로 바뀐 전체 순서. 첫 항목이 노출 순서 1이다. */
   onReorder: (items: AdminProductSummary[]) => void;
+  /** 카테고리로 걸러진 목록은 순서가 전체 노출 순서와 어긋나므로 드래그를 막는다. */
+  canReorder?: boolean;
 };
 
 export function AdminProductList({
@@ -29,6 +31,7 @@ export function AdminProductList({
   onToggleActive,
   onSelect,
   onReorder,
+  canReorder = true,
 }: AdminProductListProps) {
   const { getRowProps } = useDragReorder(items, onReorder);
 
@@ -46,17 +49,20 @@ export function AdminProductList({
 
   return (
     <div className="grid gap-2.5">
-      {items.map((item, index) => (
-        <AdminProductRow
-          drag={getRowProps(index)}
-          isMutating={isMutating}
-          item={item}
-          key={item.id}
-          onDeactivate={onDeactivate}
-          onSelect={onSelect}
-          onToggleActive={onToggleActive}
-        />
-      ))}
+      {items.map((item, index) => {
+        const drag = getRowProps(index);
+        return (
+          <AdminProductRow
+            drag={canReorder ? drag : { ...drag, draggable: false, onHandleGrab: () => {} }}
+            isMutating={isMutating}
+            item={item}
+            key={item.id}
+            onDeactivate={onDeactivate}
+            onSelect={onSelect}
+            onToggleActive={onToggleActive}
+          />
+        );
+      })}
     </div>
   );
 }

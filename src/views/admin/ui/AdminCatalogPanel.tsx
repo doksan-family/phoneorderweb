@@ -10,22 +10,29 @@ import {
   adminProductsQueryKey,
   productQueryOptions,
 } from "@/entities/product/model/queries";
+import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
 import { AdminProductDetailModal } from "@/features/product-admin/ui/AdminProductDetailModal";
 import { ProductFormModal } from "@/features/product-admin/ui/ProductFormModal";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
 import { adminFullPanelWithFabClass } from "@/shared/ui/adminPanelStyles";
 import { useProductReorder } from "../model/useProductReorder";
+import { AdminProductCategoryFilter } from "./AdminProductCategoryFilter";
 import { AdminProductList } from "./AdminProductList";
 
 export function AdminCatalogPanel() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const { data, error, isPending } = useQuery(productQueryOptions.adminList());
+  const { data: categories } = useQuery(productCategoryQueryOptions.adminList());
   // 드래그 순서와 화면 순서를 맞추려면 목록이 항상 display_order 순이어야 한다.
   const products = [...(data ?? [])].sort(
     (first, second) => first.displayOrder - second.displayOrder
   );
+  const visibleProducts = selectedCategory
+    ? products.filter((item) => item.categoryCode === selectedCategory)
+    : products;
 
   function refetchProducts() {
     return queryClient.invalidateQueries({ queryKey: adminProductsQueryKey });
@@ -54,11 +61,19 @@ export function AdminCatalogPanel() {
         </p>
       ) : null}
 
+      <AdminProductCategoryFilter
+        categories={categories ?? []}
+        selected={selectedCategory}
+        totalCount={products.length}
+        onSelect={setSelectedCategory}
+      />
+
       <AdminProductList
+        canReorder={selectedCategory === ""}
         error={error}
         isPending={isPending}
         isMutating={toggleActive.isPending || deactivate.isPending}
-        items={products}
+        items={visibleProducts}
         onDeactivate={(id) => deactivate.mutate(id)}
         onReorder={(next) =>
           reorder.mutate(
