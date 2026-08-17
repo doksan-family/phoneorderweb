@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import type { PublicReviewImage } from "@/entities/review/model/types";
+import { ReviewImagePlaceholder } from "@/shared/ui/ReviewImagePlaceholder";
 
 type ReviewImageGalleryProps = {
   images: PublicReviewImage[];
@@ -36,7 +37,9 @@ export function ReviewImageGallery({ images }: ReviewImageGalleryProps) {
             sizes="560px"
             src={selectedImage.image_url}
           />
-        ) : null}
+        ) : (
+          <ReviewImagePlaceholder className="absolute inset-0" tone="dark" />
+        )}
 
         {hasMultipleImages ? (
           <>

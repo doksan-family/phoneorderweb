@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { reviewQueryOptions } from "@/entities/review/model/queries";
 import { ReviewDetailModal } from "@/features/review-detail/ui/ReviewDetailModal";
 import { PageHeader } from "@/shared/ui/PageHeader";
+import { ReviewImagePlaceholder } from "@/shared/ui/ReviewImagePlaceholder";
 import { ReviewRating } from "@/shared/ui/ReviewRating";
 
 export function ReviewsView() {
@@ -41,7 +42,9 @@ export function ReviewsView() {
                     src={cover.image_url}
                   />
                 </div>
-              ) : null}
+              ) : (
+                <ReviewImagePlaceholder className="h-[170px] w-full" />
+              )}
               <div className="p-[18px]">
                 <span className="text-[0.72rem] font-bold text-[var(--brand-primary-strong)]">
                   {review.published_at ?? ""}
