@@ -1,7 +1,8 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { pickerFilters } from "../model/pickerFilters";
+import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
 import { AdminCreateDialog } from "@/shared/ui/AdminCreateDialog";
 import { ProductPickerDetail } from "./ProductPickerDetail";
 import { ProductPickerList } from "./ProductPickerList";
@@ -15,7 +16,12 @@ type ProductPickerModalProps = {
  * 목록 → 상세(조건 선택) 두 단계를 한 모달 안에서 처리한다.
  */
 export function ProductPickerModal({ onClose }: ProductPickerModalProps) {
-  const [categoryId, setCategoryId] = useState(pickerFilters[0].id);
+  const { data: categories = [] } = useQuery(
+    productCategoryQueryOptions.publicList()
+  );
+  // 선택 전이거나 목록이 아직 없으면 첫 번째 카테고리를 기본값으로 쓴다.
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const categoryId = selectedCategoryId || categories[0]?.code || "";
   const [productId, setProductId] = useState("");
 
   return (
@@ -33,8 +39,9 @@ export function ProductPickerModal({ onClose }: ProductPickerModalProps) {
         />
       ) : (
         <ProductPickerList
+          categories={categories}
           categoryId={categoryId}
-          onCategoryChange={setCategoryId}
+          onCategoryChange={setSelectedCategoryId}
           onSelect={setProductId}
         />
       )}

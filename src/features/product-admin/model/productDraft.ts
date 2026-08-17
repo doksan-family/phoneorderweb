@@ -1,7 +1,4 @@
-import {
-  productBrands,
-  productCategories,
-} from "@/entities/product/model/mock-products";
+import { productBrands } from "@/entities/product/model/mock-products";
 import type { ProductDraft } from "./types";
 
 export { badgeOptionGroups, badgeOptions } from "./badgeOptions";
@@ -18,10 +15,9 @@ export const installmentMonthOptions = [
 ];
 
 export function createEmptyProductDraft(): ProductDraft {
-  const category = productCategories[0];
-
   return {
-    category_code: category?.id ?? "samsung",
+    // ProductBasicFields가 카테고리 목록을 받으면 첫 값으로 채운다.
+    category_code: "",
     brand: productBrands[0].name,
     name: "",
     summary: "",

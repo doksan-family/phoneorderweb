@@ -1,8 +1,9 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import type { AdminProductSummary } from "@/entities/product/api/adminProductTypes";
-import { productCategories } from "@/entities/product/model/mock-products";
+import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
 import {
   adminFieldClass,
   twoColumnFieldGridClass,
@@ -20,9 +21,10 @@ export function ReviewProductSelect({
   onChange,
 }: ReviewProductSelectProps) {
   const [categoryCode, setCategoryCode] = useState("");
-  const categories = productCategories
-    .filter((category) => category.visible)
-    .sort((first, second) => first.order - second.order);
+  const { data } = useQuery(productCategoryQueryOptions.adminList());
+  const categories = (data ?? [])
+    .filter((category) => category.is_active)
+    .sort((first, second) => first.display_order - second.display_order);
   const visibleProducts = categoryCode
     ? products.filter((product) => product.categoryCode === categoryCode)
     : products;
@@ -46,7 +48,7 @@ export function ReviewProductSelect({
         >
           <option value="">전체 카테고리</option>
           {categories.map((category) => (
-            <option key={category.id} value={category.id}>
+            <option key={category.code} value={category.code}>
               {category.name}
             </option>
           ))}

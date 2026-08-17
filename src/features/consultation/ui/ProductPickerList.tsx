@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import { pickerFilters } from "../model/pickerFilters";
+import type { PublicProductCategory } from "@/entities/product/api/categories";
 import { productQueryOptions } from "@/entities/product/model/queries";
 import { ProductCardSkeleton } from "@/shared/ui/ProductCardSkeleton";
 
 type ProductPickerListProps = {
+  categories: PublicProductCategory[];
   categoryId: string;
   onCategoryChange: (categoryId: string) => void;
   onSelect: (productId: string) => void;
@@ -20,6 +21,7 @@ const idleChipClass =
   "border-slate-200 bg-white text-slate-600 hover:bg-[var(--brand-primary-soft)]";
 
 export function ProductPickerList({
+  categories,
   categoryId,
   onCategoryChange,
   onSelect,
@@ -32,13 +34,13 @@ export function ProductPickerList({
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap gap-2">
-        {pickerFilters.map((category) => (
+        {categories.map((category) => (
           <button
-            aria-pressed={categoryId === category.id}
-            className={`${chipClass} ${categoryId === category.id ? activeChipClass : idleChipClass}`}
-            key={category.id}
+            aria-pressed={categoryId === category.code}
+            className={`${chipClass} ${categoryId === category.code ? activeChipClass : idleChipClass}`}
+            key={category.code}
             type="button"
-            onClick={() => onCategoryChange(category.id)}
+            onClick={() => onCategoryChange(category.code)}
           >
             {category.name}
           </button>

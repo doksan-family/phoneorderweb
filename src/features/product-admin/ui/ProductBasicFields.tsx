@@ -1,7 +1,9 @@
-import {
-  productBrands,
-  productCategories,
-} from "@/entities/product/model/mock-products";
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { productBrands } from "@/entities/product/model/mock-products";
+import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
 import type { ProductDraft } from "../model/types";
 
 type ProductDraftChange = <K extends keyof ProductDraft>(
@@ -21,6 +23,16 @@ export function ProductBasicFields({
   draft,
   onChange,
 }: ProductBasicFieldsProps) {
+  const { data } = useQuery(productCategoryQueryOptions.adminList());
+  const categories = (data ?? []).filter((category) => category.is_active);
+
+  // 새 상품 등록 시 카테고리 목록이 늦게 도착하므로, 도착하면 첫 번째 값을 기본 선택한다.
+  useEffect(() => {
+    if (!draft.category_code && categories.length) {
+      onChange("category_code", categories[0].code);
+    }
+  }, [categories, draft.category_code, onChange]);
+
   return (
     <>
       <div className={grid2}>
@@ -30,8 +42,8 @@ export function ProductBasicFields({
             value={draft.category_code}
             onChange={(event) => onChange("category_code", event.target.value)}
           >
-            {productCategories.map((category) => (
-              <option key={category.id} value={category.id}>
+            {categories.map((category) => (
+              <option key={category.code} value={category.code}>
                 {category.name}
               </option>
             ))}

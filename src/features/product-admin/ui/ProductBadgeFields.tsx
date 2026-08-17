@@ -1,3 +1,7 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
 import { badgeOptionGroups } from "../model/badgeOptions";
 import type { ProductBadge } from "../model/types";
 
@@ -10,6 +14,18 @@ export function ProductBadgeFields({
   values,
   onChange,
 }: ProductBadgeFieldsProps) {
+  const { data: categories } = useQuery(productCategoryQueryOptions.adminList());
+  const categoryGroup = {
+    label: "카테고리",
+    badges: (categories ?? [])
+      .filter((category) => category.is_active)
+      .sort((first, second) => first.display_order - second.display_order)
+      .map((category) => category.name),
+  };
+  const groups = categoryGroup.badges.length
+    ? [categoryGroup, ...badgeOptionGroups]
+    : badgeOptionGroups;
+
   return (
     <section className="grid gap-3">
       <span className="text-sm font-bold text-slate-700">
@@ -18,7 +34,7 @@ export function ProductBadgeFields({
           <span className="ml-2 font-medium text-slate-500">{values.length}개 선택됨</span>
         ) : null}
       </span>
-      {badgeOptionGroups.map((group) => (
+      {groups.map((group) => (
         <div className="grid gap-1.5" key={group.label}>
           <span className="text-xs font-bold text-slate-500">{group.label}</span>
           <div className="flex flex-wrap gap-2">
