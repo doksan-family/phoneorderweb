@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
 import { siteSettingsQueryOptions } from "@/entities/site-settings/model/queries";
+import { SITE_URL } from "@/shared/config/site";
 import { makeQueryClient } from "@/shared/lib/react-query";
 import { QueryProvider } from "@/shared/lib/react-query/QueryProvider";
 import { LegacyStorageCleanup } from "@/shared/ui/LegacyStorageCleanup";
@@ -16,6 +17,7 @@ const siteDescription =
   "삼성·애플 최신폰부터 키즈폰, 인터넷+TV 결합까지 실시간 최저가를 상담으로 확인하세요.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: siteTitle,
   description: siteDescription,
   openGraph: {
