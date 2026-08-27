@@ -1,6 +1,7 @@
 import { fetchPublicLegalDocuments } from "@/entities/legal-document/api/public";
 import type { LegalDocumentType } from "@/entities/legal-document/api/types";
 import { MarketingConsentNotice } from "@/shared/ui/MarketingConsentNotice";
+import { MarkdownContent } from "@/shared/ui/MarkdownContent";
 import { PageHeader } from "@/shared/ui/PageHeader";
 
 type PolicyViewProps = {
@@ -30,9 +31,7 @@ export async function PolicyView({ type }: PolicyViewProps) {
       />
       <section className="brand-card mb-6 p-6">
         {document ? (
-          <div className="whitespace-pre-wrap text-[0.88rem] leading-[1.7] text-slate-600">
-            {document.content_markdown}
-          </div>
+          <MarkdownContent content={document.content_markdown} />
         ) : (
           <>
             <h2 className="brand-title">
