@@ -4,6 +4,7 @@ import type {
   AdminBanner,
   AdminBannerCreateResponse,
   AdminBannerDeleteResponse,
+  AdminBannerImageUploadResponse,
   AdminBannerListResponse,
   BannerType,
 } from "../model/types";
@@ -71,8 +72,22 @@ export async function createAdminBanner(
   return result.data;
 }
 
+export async function uploadAdminBannerImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const accessToken = await getAccessToken();
+  const result = await apiFetchMultipart<AdminBannerImageUploadResponse>(
+    "/functions/v1/admin-banners/image",
+    formData,
+    accessToken
+  );
+  return result.data.image_path;
+}
+
 export type UpdateAdminBannerParams = {
   title?: string;
+  image_path?: string;
   link_url?: string | null;
   cta_label?: string | null;
   display_order?: number;
