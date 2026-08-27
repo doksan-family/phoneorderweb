@@ -1,9 +1,10 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
-import { updateAdminBanner } from "@/entities/banner/api/admin";
+import { updateAdminBanner, uploadAdminBannerImage } from "@/entities/banner/api/admin";
 import { toApiEndAt, toApiStartAt, toDateOnly } from "@/features/admin/model/dateUtils";
 import type { AdminBanner } from "@/entities/banner/model/types";
+import { BannerImageUpload } from "./BannerImageUpload";
 import { LoadingOverlay } from "@/shared/ui/LoadingOverlay";
 
 type AdminBannerEditFormProps = {
@@ -17,6 +18,7 @@ export function AdminBannerEditForm({
   onUpdated,
   onCancel,
 }: AdminBannerEditFormProps) {
+  const [newImageFile, setNewImageFile] = useState<File | null>(null);
   const [title, setTitle] = useState(banner.title);
   const [linkUrl, setLinkUrl] = useState(banner.link_url ?? "");
   const [ctaLabel, setCtaLabel] = useState(banner.cta_label ?? "");
@@ -34,8 +36,12 @@ export function AdminBannerEditForm({
     setError("");
 
     try {
+      const image_path = newImageFile
+        ? await uploadAdminBannerImage(newImageFile)
+        : undefined;
       const updated = await updateAdminBanner(banner.id, {
         title,
+        ...(image_path ? { image_path } : {}),
         link_url: linkUrl || null,
         cta_label: ctaLabel || null,
         display_order: displayOrder,
@@ -56,6 +62,10 @@ export function AdminBannerEditForm({
       className="grid gap-3 p-4 px-5 bg-white border-l-[3px] border-[var(--brand-primary-strong)] rounded-[0_8px_8px_0] mb-1"
       onSubmit={submit}
     >
+      <div className="grid gap-1.5">
+        <span className="text-[0.85rem] font-bold">이미지 교체 (선택, 비우면 기존 이미지 유지)</span>
+        <BannerImageUpload file={newImageFile} onChange={setNewImageFile} />
+      </div>
       <div className="grid grid-cols-[1fr_1fr] gap-2.5">
         <label className="grid gap-1.5 text-[0.85rem] font-bold">
           제목 *

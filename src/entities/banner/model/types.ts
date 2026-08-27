@@ -45,3 +45,8 @@ export type AdminBannerDeleteResponse = {
   ok: boolean;
   data: { id: string; image_path: string };
 };
+
+export type AdminBannerImageUploadResponse = {
+  ok: boolean;
+  data: { image_path: string };
+};
