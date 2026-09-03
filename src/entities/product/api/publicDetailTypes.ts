@@ -4,6 +4,7 @@ import type {
   PublicProductCard,
   PublicSubscriptionType,
 } from "./publicBaseTypes";
+import type { DiscountType } from "./types";
 
 export type PublicProductDetail = PublicProductCard & {
   colors?: PublicProductColor[];
@@ -43,15 +44,15 @@ export type PublicCarrierOption = {
 };
 
 export type PublicProductPricingOption = {
+  /** 기존 호환 필드. pricing_id와 같은 값. */
   id?: string;
   pricing_id: string;
   product_id?: string;
+  /** 기존 호환 필드. variant_id와 같은 값. */
   product_variant_id?: string;
   variant_id: string;
   storage_value?: string;
-  original_price?: number;
-  sale_price?: number;
-  discount_rate?: number;
+  release_price?: number;
   carrier_id: string;
   carrier_code?: string;
   carrier_name: string;
@@ -60,35 +61,50 @@ export type PublicProductPricingOption = {
   plan_monthly_fee: number;
   subscription_type: PublicSubscriptionType;
   subscription_type_label: string;
-  device_price?: number;
   installment_months?: number;
   installment_options?: PublicInstallmentOption[];
-  support_amount?: number;
-  extra_support_amount?: number;
-  monthly_plan_discount?: number;
-  calculation_method?: string;
-  quote: PublicProductQuote;
+  public_support_amount?: number;
+  rebate_amount?: number;
+  /** 공시지원금·선택약정 각각의 할부개월별 계산 결과 */
+  discount_options?: PublicDiscountOption[];
+  quote: PublicProductQuoteCalculation;
   consultation_payload?: PublicConsultationPayload;
 };
 
 export type PublicInstallmentOption = {
   installment_months: number;
-  quote: PublicProductQuote;
+  quote: PublicProductQuoteCalculation;
   consultation_payload?: PublicConsultationPayload;
 };
 
-export type PublicProductQuote = {
-  original_price?: number;
-  sale_price?: number;
+export type PublicDiscountOption = {
+  discount_type: DiscountType;
+  discount_type_label: string;
+  quote: PublicProductQuoteCalculation;
+  installment_options?: PublicInstallmentOption[];
+};
+
+/** ProductQuoteCalculation. 응답에 없는 금액은 매퍼에서 0으로 좁힌다. */
+export type PublicProductQuoteCalculation = {
+  discount_type?: DiscountType;
+  discount_type_label?: string;
+  release_price?: number;
+  public_support_amount?: number;
+  applied_public_support_amount?: number;
+  rebate_amount?: number;
+  applied_rebate_amount?: number;
+  device_installment_principal?: number;
   plan_monthly_fee?: number;
+  contract_discount_rate?: number;
   monthly_plan_discount?: number;
-  discounted_plan_monthly_fee: number;
-  device_price: number;
-  installment_months: number;
-  monthly_device_payment: number;
-  estimated_monthly_payment: number;
-  support_amount: number;
-  extra_support_amount: number;
+  discounted_plan_monthly_fee?: number;
+  installment_months?: number;
+  installment_annual_rate?: number;
+  installment_calculation_method?: string;
+  monthly_device_payment?: number;
+  total_installment_payment?: number;
+  total_installment_interest?: number;
+  estimated_monthly_payment?: number;
   total_benefit_amount?: number;
 };
 

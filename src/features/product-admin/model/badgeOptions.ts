@@ -21,7 +21,7 @@ export const badgeOptionGroups: BadgeOptionGroup[] = [
   },
   {
     label: "가입 유형",
-    badges: ["번호이동", "기기변경", "신규가입"]
+    badges: ["번호이동", "기기변경"]
   },
   {
     label: "가격 혜택",

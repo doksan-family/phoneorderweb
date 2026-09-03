@@ -44,10 +44,11 @@ export function mapAdminProduct(value: unknown): AdminProductSummary | null {
     descriptionImages: mapImages(item.description_images),
     thumbnailUrl:
       productImages[0]?.url ?? (getString(item.representative_image_url) || null),
-    originalPrice:
-      getNumber(item.original_price) ?? (variant ? getNumber(variant.original_price) : null),
-    salePrice:
-      getNumber(item.sale_price) ?? (variant ? getNumber(variant.sale_price) : null),
+    releasePrice:
+      getNumber(item.release_price) ??
+      (variant
+        ? getNumber(variant.release_price) ?? getNumber(variant.original_price)
+        : null),
     isActive: getBoolean(item.is_active) ?? true,
     isFeatured: getBoolean(item.is_featured) ?? false,
     displayOrder: getNumber(item.display_order) ?? 0,

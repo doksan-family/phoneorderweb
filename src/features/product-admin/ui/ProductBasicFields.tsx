@@ -28,10 +28,10 @@ export function ProductBasicFields({
 
   // 새 상품 등록 시 카테고리 목록이 늦게 도착하므로, 도착하면 첫 번째 값을 기본 선택한다.
   useEffect(() => {
-    if (!draft.category_code && categories.length) {
-      onChange("category_code", categories[0].code);
+    if (!draft.categoryCode && categories.length) {
+      onChange("categoryCode", categories[0].code);
     }
-  }, [categories, draft.category_code, onChange]);
+  }, [categories, draft.categoryCode, onChange]);
 
   return (
     <>
@@ -39,8 +39,8 @@ export function ProductBasicFields({
         <label className={fieldClass}>
           카테고리
           <select
-            value={draft.category_code}
-            onChange={(event) => onChange("category_code", event.target.value)}
+            value={draft.categoryCode}
+            onChange={(event) => onChange("categoryCode", event.target.value)}
           >
             {categories.map((category) => (
               <option key={category.code} value={category.code}>

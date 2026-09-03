@@ -23,11 +23,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     .filter((badge) => badge !== product.cardTag)
     .slice(0, product.cardTag ? 2 : 3);
   const saleTypeLabel = product.saleTypes.join(" · ") || product.categoryName;
-  // API가 대표 요금제/월 예상 납부금액을 안 준 상품은 이 줄을 아예 그리지 않는다.
+  // API가 대표 요금제를 안 준 상품은 이 줄을 아예 그리지 않는다.
   const planLine = [
     product.planName,
     product.monthlyEstimate > 0
-      ? `월 ${product.monthlyEstimate.toLocaleString("ko-KR")}원`
+      ? `월 ${product.monthlyEstimate.toLocaleString("ko-KR")}원~`
       : ""
   ]
     .filter(Boolean)
@@ -90,18 +90,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             {planLine ? (
               <ScrollLine className="text-[0.68rem] text-slate-500">{planLine}</ScrollLine>
             ) : null}
-            <ScrollLine className="text-[0.72rem] text-slate-400 line-through">
-              {product.originalPrice.toLocaleString("ko-KR")}원
-            </ScrollLine>
+            <ScrollLine className="text-[0.68rem] text-slate-400">출고가</ScrollLine>
             <div className="flex min-w-0 flex-wrap items-baseline gap-1">
               <span className="text-[1rem] font-extrabold text-slate-950">
-                {product.salePrice.toLocaleString("ko-KR")}원
+                {product.releasePrice.toLocaleString("ko-KR")}원
               </span>
-              {product.discountRate > 0 ? (
-                <span className="text-[0.72rem] font-bold text-[var(--brand-hot)]">
-                  {product.discountRate}%↓
-                </span>
-              ) : null}
             </div>
           </div>
 

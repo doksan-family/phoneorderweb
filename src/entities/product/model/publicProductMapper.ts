@@ -1,4 +1,9 @@
-import type { PublicProductCard, PublicProductImage, PublicProductVariant } from "@/entities/product/api/public";
+import type {
+  PublicProductCard,
+  PublicProductImage,
+  PublicProductVariant,
+} from "@/entities/product/api/public";
+import type { PublicJsonObject } from "@/entities/product/api/publicBaseTypes";
 import { findProductCategory, sortProducts } from "./storage";
 import type { Product, ProductImage } from "./types";
 
@@ -11,8 +16,8 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
   const category = findProductCategory(categoryCode);
   const productImages = mapPublicImages(item.product_images, `${item.name} 상품 이미지`);
   const variant = getRepresentativeVariant(item);
-  const salePrice = variant?.sale_price ?? 0;
-  const originalPrice = variant?.original_price ?? salePrice;
+  const pricing = toRecord(item.default_pricing);
+  const releasePrice = variant?.release_price ?? readNumber(pricing, "release_price");
   const representativeImageUrl =
     item.representative_image_url ??
     productImages?.[0]?.url ??
@@ -32,11 +37,10 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
     detail: summary,
     productImages,
     descriptionImages: mapPublicImages(item.description_images, `${item.name} 상세 이미지`),
-    originalPrice,
-    salePrice,
-    planName: item.plan_name?.trim() ?? "",
-    planMonthlyPrice: item.plan_monthly_fee ?? 0,
-    monthlyEstimate: item.estimated_monthly_payment ?? 0,
+    releasePrice,
+    planName: readString(pricing, "plan_name"),
+    planMonthlyPrice: readNumber(pricing, "plan_monthly_fee"),
+    monthlyEstimate: readNumber(pricing, "estimated_monthly_payment"),
     priceGuide: "상담 후 안내",
     planGuide: "요금제는 상담 후 확정됩니다.",
     discountGuide: "프로모션과 결합 할인은 상담 시점 기준으로 안내합니다.",
@@ -44,7 +48,6 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
     saleTypes: [],
     badges,
     cardTag: badges[0] ?? "",
-    discountRate: variant?.discount_rate ?? getDiscountRate(originalPrice, salePrice),
     visible: true,
     order: 0,
   };
@@ -92,7 +95,16 @@ function getFallbackImage(categoryCode: string) {
   return "/images/phone-fold.svg";
 }
 
-function getDiscountRate(originalPrice: number, salePrice: number) {
-  if (originalPrice <= 0 || salePrice <= 0) return 0;
-  return Math.max(0, Math.round(((originalPrice - salePrice) / originalPrice) * 100));
+function toRecord(value: PublicJsonObject | null | undefined): PublicJsonObject | null {
+  return value && typeof value === "object" ? value : null;
+}
+
+function readNumber(record: PublicJsonObject | null, key: string): number {
+  const value = record?.[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function readString(record: PublicJsonObject | null, key: string): string {
+  const value = record?.[key];
+  return typeof value === "string" ? value.trim() : "";
 }

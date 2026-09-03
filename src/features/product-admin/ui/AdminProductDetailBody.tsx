@@ -42,8 +42,7 @@ export function AdminProductDetailBody({ product }: AdminProductDetailBodyProps)
         <Row label="노출 상태" value={product.isActive ? "노출 중" : "숨김"} />
         <Row label="추천 상품" value={product.isFeatured ? "예" : "아니오"} />
         <Row label="노출 순서" value={String(product.displayOrder)} />
-        <Row label="출고가" value={formatPrice(product.originalPrice)} />
-        <Row label="판매가" value={formatPrice(product.salePrice)} />
+        <Row label="출고가" value={formatPrice(product.releasePrice)} />
       </dl>
 
       <ImageStrip images={product.descriptionImages} label="설명 이미지" />

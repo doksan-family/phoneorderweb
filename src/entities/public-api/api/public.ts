@@ -1,5 +1,6 @@
 import { apiFetch } from "@/shared/api/client";
-import type { PublicApiBootstrapResponse } from "./types";
+import type { PublicBanner } from "@/entities/banner/model/types";
+import type { PublicApiBootstrapData, PublicApiBootstrapResponse } from "./types";
 
 export type { PublicApiBootstrapData } from "./types";
 
@@ -16,7 +17,7 @@ export type PublicApiBootstrapParams = {
  */
 export async function fetchPublicApiBootstrap(
   params: PublicApiBootstrapParams = {}
-) {
+): Promise<PublicApiBootstrapData> {
   const search = new URLSearchParams();
   if (params.category) search.set("category", params.category);
   if (params.limit !== undefined) search.set("limit", String(params.limit));
@@ -27,5 +28,26 @@ export async function fetchPublicApiBootstrap(
     `/functions/v1/public-api/bootstrap${query ? `?${query}` : ""}`,
     { next: { revalidate: 60 } }
   );
-  return response.data;
+  const data = response.data;
+
+  return {
+    banners: {
+      main: normalizeBannerList(data.banners?.main),
+      event: normalizeBannerList(data.banners?.event),
+    },
+    products: data.products ?? [],
+    categories: { items: data.categories?.items ?? [] },
+    site_settings: data.site_settings,
+  };
+}
+
+/** 명세상 불투명한 banners 항목을 PublicBanner 배열로 좁힌다. */
+function normalizeBannerList(value: unknown): PublicBanner[] {
+  if (Array.isArray(value)) return value as PublicBanner[];
+  if (value && typeof value === "object") {
+    const nested = (value as { data?: unknown; items?: unknown }).data ??
+      (value as { items?: unknown }).items;
+    if (Array.isArray(nested)) return nested as PublicBanner[];
+  }
+  return [];
 }

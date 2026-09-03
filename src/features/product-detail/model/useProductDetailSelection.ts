@@ -1,7 +1,9 @@
 import { useState } from "react";
 import type {
+  DiscountType,
   ProductDetailProfile,
   ProductEstimate,
+  ProductInstallmentOption,
 } from "@/entities/product/model/types";
 import {
   getAvailableCarriers,
@@ -19,6 +21,7 @@ export function useProductDetailSelection(profile: ProductDetailProfile) {
   const [carrierId, setCarrierId] = useState(profile.joiningCarriers[0]?.id ?? "");
   const [saleTypeId, setSaleTypeId] = useState(getSubscriptionOptions(profile)[0]?.id ?? "");
   const [planId, setPlanId] = useState(profile.plans[0]?.id ?? "");
+  const [discountTypeId, setDiscountTypeId] = useState("");
   const [installmentId, setInstallmentId] = useState("");
   const pricingOptions = profile.pricingOptions ?? [];
   const selectedColorId = getSelectedId(profile.colors, colorId);
@@ -52,19 +55,39 @@ export function useProductDetailSelection(profile: ProductDetailProfile) {
     matchedPricing[0];
   const selectedPlan =
     planOptions.find((plan) => plan.id === selectedPlanId) ?? planOptions[0];
-  const installmentOptions = selectedPricing
-    ? mapInstallmentOptions(selectedPricing.installmentOptions)
-    : [];
+
+  // 공시지원금 / 선택약정. pricing_option에 discount_options가 오면 그 목록을 쓴다.
+  const discountOptions =
+    selectedPricing?.discountOptions ?? profile.discountOptions ?? [];
+  const discountTypeOptions = discountOptions.map((option) => ({
+    id: option.discountType,
+    label: option.discountTypeLabel,
+  }));
+  const selectedDiscountTypeId = getSelectedId(discountTypeOptions, discountTypeId);
+  const selectedDiscount = discountOptions.find(
+    (option) => option.discountType === selectedDiscountTypeId
+  );
+
+  const installmentSource: ProductInstallmentOption[] =
+    selectedDiscount?.installmentOptions?.length
+      ? selectedDiscount.installmentOptions
+      : selectedPricing?.installmentOptions ?? [];
+  const installmentOptions = mapInstallmentOptions(installmentSource);
   const selectedInstallmentId = getSelectedId(installmentOptions, installmentId);
   const selectedInstallment =
-    selectedPricing?.installmentOptions.find((option) => {
-      return String(option.months) === selectedInstallmentId;
-    }) ?? selectedPricing?.installmentOptions[0];
+    installmentSource.find(
+      (option) => String(option.months) === selectedInstallmentId
+    ) ?? installmentSource[0];
+
   const baseConsultationPayload =
-    selectedInstallment?.consultationPayload ?? selectedPricing?.consultationPayload;
+    selectedInstallment?.consultationPayload ??
+    selectedPricing?.consultationPayload;
   const consultationPayload = baseConsultationPayload
     ? {
         ...baseConsultationPayload,
+        discountType:
+          (selectedDiscountTypeId as DiscountType) ||
+          baseConsultationPayload.discountType,
         installmentMonths:
           selectedInstallment?.months ?? baseConsultationPayload.installmentMonths,
       }
@@ -73,7 +96,9 @@ export function useProductDetailSelection(profile: ProductDetailProfile) {
   return {
     carrierOptions,
     consultationPayload,
+    discountTypeOptions,
     estimate: (selectedInstallment?.estimate ??
+      selectedDiscount?.estimate ??
       selectedPricing?.estimate ??
       profile.estimate) as ProductEstimate | null,
     installmentOptions,
@@ -81,6 +106,7 @@ export function useProductDetailSelection(profile: ProductDetailProfile) {
     selectedCapacityId,
     selectedCarrierId,
     selectedColorId,
+    selectedDiscountTypeId,
     selectedInstallmentId,
     selectedPlan,
     selectedPlanId,
@@ -88,6 +114,7 @@ export function useProductDetailSelection(profile: ProductDetailProfile) {
     setCapacityId,
     setCarrierId,
     setColorId,
+    setDiscountTypeId,
     setInstallmentId,
     setPlanId,
     setSaleTypeId,

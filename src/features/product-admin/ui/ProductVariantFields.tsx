@@ -31,10 +31,10 @@ export function ProductVariantFields({
   return (
     <section className="grid gap-2">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-bold text-slate-700">상품 옵션</span>
+        <span className="text-sm font-bold text-slate-700">저장용량 · 출고가</span>
         <button className={iconButtonClass} type="button" onClick={addVariant}>
           <Plus size={18} aria-hidden="true" />
-          <span className="sr-only">상품 옵션 추가</span>
+          <span className="sr-only">저장용량 추가</span>
         </button>
       </div>
       <div className="grid gap-2.5">

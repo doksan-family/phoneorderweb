@@ -36,8 +36,8 @@ export type AdminProductSummary = {
   productImages: AdminProductImage[];
   descriptionImages: AdminProductImage[];
   thumbnailUrl: string | null;
-  originalPrice: number | null;
-  salePrice: number | null;
+  /** 대표 저장용량 출고가. 목록 응답에 없으면 null. */
+  releasePrice: number | null;
   isActive: boolean;
   isFeatured: boolean;
   displayOrder: number;

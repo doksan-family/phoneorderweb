@@ -85,6 +85,9 @@ function getConsultationHref(
   if (payload?.subscriptionType) {
     search.set("subscriptionType", payload.subscriptionType);
   }
+  if (payload?.discountType) {
+    search.set("discountType", payload.discountType);
+  }
   if (payload?.installmentMonths !== undefined) {
     search.set("installmentMonths", String(payload.installmentMonths));
   }

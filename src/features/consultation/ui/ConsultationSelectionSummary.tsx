@@ -65,7 +65,7 @@ export function ConsultationSelectionSummary({
             월 예상 납부 금액
           </span>
           <strong className="text-[1.15rem] font-extrabold text-[var(--brand-primary-strong)]">
-            {estimate.monthlyTotal.toLocaleString("ko-KR")}원
+            {estimate.estimatedMonthlyPayment.toLocaleString("ko-KR")}원
           </strong>
         </div>
       ) : (

@@ -1,3 +1,4 @@
+import type { DiscountType } from "@/entities/product/api/public";
 import type { ConsultationStatus } from "../model/types";
 
 /** POST /functions/v1/public-consultations 본문 */
@@ -12,6 +13,8 @@ export type ConsultationCreatePayload = {
   variant_id?: string;
   plan_id?: string;
   subscription_type?: string;
+  /** 공시지원금 또는 선택약정. 생략하면 서버가 공시지원금으로 계산한다. */
+  discount_type?: DiscountType;
   color_value?: string;
   installment_months?: number;
   request_message?: string;
@@ -53,6 +56,8 @@ export type ConsultationQuoteSnapshot = {
   subscription_type?: string | null;
   installment_months?: number | null;
   subscription_type_label?: string | null;
+  discount_type?: string | null;
+  discount_type_label?: string | null;
   device_price?: number | null;
   monthly_device_payment?: number | null;
   discounted_plan_monthly_fee?: number | null;

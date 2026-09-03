@@ -2,6 +2,7 @@ import type { PublicProductDetail } from "@/entities/product/api/public";
 import type { ProductDetailProfile } from "./types";
 import {
   getDefaultPricingOption,
+  mapDiscountOptions,
   mapEstimate,
   mapPricingOptions,
 } from "./publicProductProfileEstimate";
@@ -22,6 +23,7 @@ export const emptyProductDetailProfile: ProductDetailProfile = {
   discounts: [],
   subscriptionTypes: [],
   pricingOptions: [],
+  discountOptions: [],
   estimate: null,
   detailTabs: { modelInfo: [], cautions: [] },
 };
@@ -42,6 +44,7 @@ export function mapPublicProductDetailToProfile(
     detailTabs: { modelInfo: [], cautions: [] },
     subscriptionTypes: mapSubscriptionTypes(detail),
     pricingOptions: mapPricingOptions(detail),
+    discountOptions: pricing ? mapDiscountOptions(pricing.discount_options) : [],
     estimate: pricing ? mapEstimate(pricing) : null,
   };
 }

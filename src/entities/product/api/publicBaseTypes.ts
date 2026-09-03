@@ -1,3 +1,5 @@
+import type { DiscountType } from "./types";
+
 export type PublicProductsParams = {
   category?: string;
   featured?: boolean;
@@ -28,9 +30,8 @@ export type PublicProductImage = {
 export type PublicProductVariant = {
   id: string;
   storage_value: string;
-  original_price: number;
-  sale_price: number;
-  discount_rate: number;
+  /** 저장용량별 단말기 출고가 */
+  release_price: number;
   display_order?: number;
   available_pricing_count?: number;
   is_default?: boolean;
@@ -42,6 +43,7 @@ export type PublicConsultationPayload = {
   variant_id: string;
   plan_id: string;
   subscription_type: PublicSubscriptionType;
+  discount_type?: DiscountType;
   installment_months?: number;
   color_value?: string | null;
 };
@@ -60,24 +62,10 @@ export type PublicProductCard = {
   description_images?: PublicProductImage[];
   variants?: PublicProductVariant[];
   default_variant?: PublicProductVariant | null;
+  /** 기본 요금 조건 견적. 명세상 구조가 열려 있어 낙관적으로 받는다. */
   default_pricing?: PublicJsonObject | null;
   consultation_payload?: PublicConsultationPayload | null;
   can_apply_for_consultation?: boolean;
-  /* 목록 API가 대표 요금제 기준으로 함께 내려주는 값 */
-  plan_id?: string;
-  plan_name?: string;
-  plan_monthly_fee?: number;
-  estimated_monthly_payment?: number;
-  monthly_device_payment?: number;
-  total_benefit_amount?: number;
-  installment_month_options?: number[];
-  price_summary?: PublicProductPriceSummary | null;
-};
-
-export type PublicProductPriceSummary = {
-  original_price: number;
-  sale_price: number;
-  discount_rate: number;
 };
 
 export type PublicProductListResponse = {

@@ -49,7 +49,7 @@ export function AdminProductRow({
           {item.name || item.id}
         </strong>
         <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.88rem] text-slate-500">
-          {[item.categoryName || item.categoryCode, formatPrice(item.salePrice)]
+          {[item.categoryName || item.categoryCode, formatPrice(item.releasePrice)]
             .filter(Boolean)
             .join(" · ") || "—"}
         </span>

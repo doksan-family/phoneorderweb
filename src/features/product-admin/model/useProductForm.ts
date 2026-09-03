@@ -8,10 +8,9 @@ import type {
 } from "@/entities/product/api/admin";
 import { adminProductsQueryKey } from "@/entities/product/model/queries";
 import type { Product } from "@/entities/product/model/types";
+import { submitCreate, submitUpdate } from "./productApi";
 import { createEmptyProductDraft } from "./productDraft";
 import { createProductDraftFromProduct } from "./productDraftFromProduct";
-import { submitProduct } from "./productSubmit";
-import { submitProductUpdate } from "./productUpdateSubmit";
 import type { ProductDraft } from "./types";
 
 type UseProductFormParams = {
@@ -29,6 +28,8 @@ export function useProductForm({
   onUpdate,
 }: UseProductFormParams) {
   const queryClient = useQueryClient();
+  const isEdit = Boolean(product);
+
   const [draft, setDraft] = useState<ProductDraft>(() =>
     product ? createProductDraftFromProduct(product) : createEmptyProductDraft()
   );
@@ -49,6 +50,16 @@ export function useProductForm({
     setDraft((current) => ({ ...current, [key]: value }));
   }
 
+  async function invalidate() {
+    await queryClient.invalidateQueries({ queryKey: ["public-products"] });
+    await queryClient.invalidateQueries({ queryKey: adminProductsQueryKey });
+    if (product) {
+      await queryClient.invalidateQueries({
+        queryKey: ["admin-product-detail", product.id],
+      });
+    }
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (Date.now() - lastSubmitAtRef.current < 400) return;
@@ -63,33 +74,27 @@ export function useProductForm({
     setError("");
     try {
       if (product) {
-        await submitProductUpdate({
-          descriptionImages,
-          draft,
-          keptDescriptionImages,
-          keptProductImages,
-          originalDescriptionImages: product.descriptionImages,
-          originalProductImages: product.productImages,
+        await submitUpdate({
           productId: product.id,
-          productImages,
-        });
-      } else {
-        await submitProduct({
-          descriptionImages,
           draft,
-          onCreate: onCreate ?? (() => {}),
-          order,
           productImages,
+          descriptionImages,
+          keptProductImages,
+          keptDescriptionImages,
+          originalProductImages: product.productImages,
+          originalDescriptionImages: product.descriptionImages,
         });
-      }
-      await queryClient.invalidateQueries({ queryKey: ["public-products"] });
-      await queryClient.invalidateQueries({ queryKey: adminProductsQueryKey });
-      if (product) {
-        await queryClient.invalidateQueries({
-          queryKey: ["admin-product-detail", product.id],
-        });
+        await invalidate();
         onUpdate?.();
       } else {
+        const created = await submitCreate({
+          draft,
+          productImages,
+          descriptionImages,
+          order,
+        });
+        await invalidate();
+        if (created) onCreate?.(created);
         setDraft(createEmptyProductDraft());
         setProductImages([]);
         setDescriptionImages([]);
@@ -98,7 +103,7 @@ export function useProductForm({
       setError(
         err instanceof Error
           ? err.message
-          : product
+          : isEdit
             ? "상품 수정에 실패했습니다."
             : "상품 등록에 실패했습니다."
       );
@@ -111,7 +116,7 @@ export function useProductForm({
     draft,
     error,
     descriptionImages,
-    isEdit: Boolean(product),
+    isEdit,
     keptDescriptionImages,
     keptProductImages,
     loading,

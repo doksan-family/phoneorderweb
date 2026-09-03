@@ -49,8 +49,8 @@ function mapPlanIds(item: Record<string, unknown>): string[] {
 function mapVariant(row: Record<string, unknown>, index: number): ProductCreateVariantInput {
   return {
     storage_value: getString(row.storage_value),
-    original_price: getNumber(row.original_price) ?? 0,
-    sale_price: getNumber(row.sale_price) ?? 0,
+    release_price:
+      getNumber(row.release_price) ?? getNumber(row.original_price) ?? 0,
     display_order: getNumber(row.display_order) ?? index,
     is_active: getBoolean(row.is_active) ?? true,
   };
@@ -69,19 +69,17 @@ function mapColor(row: Record<string, unknown>, index: number): ProductCreateCol
 }
 
 function mapPricingOverride(
-  row: Record<string, unknown>
+  row: Record<string, unknown>,
+  index: number
 ): ProductCreatePricingOverrideInput {
   return {
-    storage_value: getString(row.storage_value) || null,
-    plan_id: getString(row.plan_id) || null,
-    subscription_type: getString(row.subscription_type) || null,
-    device_price: getNumber(row.device_price),
-    support_amount: getNumber(row.support_amount),
-    extra_support_amount: getNumber(row.extra_support_amount),
-    monthly_plan_discount: getNumber(row.monthly_plan_discount),
-    total_benefit_amount: getNumber(row.total_benefit_amount),
-    calculation_method: getString(row.calculation_method) || "default_v1",
-    calculation_params: {},
-    priority: getNumber(row.priority) ?? 100,
+    storage_value: getString(row.storage_value) || undefined,
+    plan_id: getString(row.plan_id) || undefined,
+    subscription_type: getString(row.subscription_type) || undefined,
+    public_support_amount: getNumber(row.public_support_amount) ?? undefined,
+    rebate_amount: getNumber(row.rebate_amount) ?? undefined,
+    priority: getNumber(row.priority) ?? 0,
+    display_order: getNumber(row.display_order) ?? index,
+    is_active: getBoolean(row.is_active) ?? true,
   };
 }

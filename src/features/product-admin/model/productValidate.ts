@@ -1,51 +1,62 @@
-import type { ProductCreatePayload } from "@/entities/product/api/admin";
+import type { ProductDraft } from "./types";
 
-/** 등록과 수정이 함께 쓰는 payload 검증. 문제가 있으면 던진다. */
-export function validateProductPayload(payload: ProductCreatePayload) {
-  if (!payload.variants.length) {
-    throw new Error("상품 옵션은 1개 이상 필요합니다.");
-  }
-  if (payload.variants.some((variant) => !variant.storage_value)) {
-    throw new Error("상품 옵션의 저장용량은 필수입니다.");
-  }
-  if (
-    hasDuplicatedStorageValues(payload.variants.map((item) => item.storage_value))
-  ) {
-    throw new Error("상품 옵션의 저장용량은 중복될 수 없습니다.");
-  }
-  if (!payload.plan_ids.length) {
-    throw new Error("요금제는 1개 이상 선택해야 합니다.");
-  }
-  if (!payload.subscription_types.length) {
-    throw new Error("가입유형은 1개 이상 선택해야 합니다.");
-  }
-  if (!payload.installment_month_options.length) {
-    throw new Error("할부 개월은 1개 이상 선택해야 합니다.");
-  }
-  if (hasInvalidOverrideReference(payload)) {
-    throw new Error(
-      "가격 예외조건은 선택한 저장용량, 요금제, 가입유형 안에서만 설정할 수 있습니다."
-    );
-  }
-}
+/** 등록·수정 공통 draft 검증. 문제가 있으면 사용자용 메시지로 던진다. */
+export function validateDraft(draft: ProductDraft) {
+  if (!draft.categoryCode) throw new Error("카테고리를 선택해 주세요.");
+  if (!draft.name.trim()) throw new Error("상품명을 입력해 주세요.");
 
-function hasDuplicatedStorageValues(values: string[]) {
-  return new Set(values).size !== values.length;
-}
+  if (!draft.variants.length) {
+    throw new Error("저장용량을 1개 이상 추가해 주세요.");
+  }
+  const storages = draft.variants.map((variant) => variant.storageValue.trim());
+  if (storages.some((value) => !value)) {
+    throw new Error("저장용량 이름은 필수입니다.");
+  }
+  if (new Set(storages).size !== storages.length) {
+    throw new Error("저장용량은 중복될 수 없습니다.");
+  }
+  if (draft.variants.some((variant) => variant.releasePrice <= 0)) {
+    throw new Error("모든 저장용량의 출고가를 입력해 주세요.");
+  }
 
-function hasInvalidOverrideReference(payload: ProductCreatePayload) {
-  const storageValues = new Set(
-    payload.variants.map((item) => item.storage_value)
-  );
-  const planIds = new Set(payload.plan_ids);
-  const subscriptionTypes = new Set(payload.subscription_types);
+  if (!draft.installmentMonths.length) {
+    throw new Error("할부 개월을 1개 이상 선택해 주세요.");
+  }
 
-  return payload.pricing_overrides.some((override) => {
-    if (override.storage_value && !storageValues.has(override.storage_value)) return true;
-    if (override.plan_id && !planIds.has(override.plan_id)) return true;
-    return (
-      !!override.subscription_type &&
-      !subscriptionTypes.has(override.subscription_type)
-    );
+  if (!draft.pricingEntries.length) {
+    throw new Error("요금 조건을 1개 이상 추가해 주세요.");
+  }
+  draft.pricingEntries.forEach((entry, index) => {
+    const label = `요금 조건 ${index + 1}`;
+    if (!entry.planId) throw new Error(`${label}: 통신사와 요금제를 선택해 주세요.`);
+    if (!entry.subscriptionTypes.length) {
+      throw new Error(`${label}: 가입유형을 1개 이상 선택해 주세요.`);
+    }
+
+    entry.subscriptionTypes.forEach((sub) => {
+      const subLabel = `${label} (${sub === "number_transfer" ? "번호이동" : "기기변경"})`;
+
+      if (entry.discountType === "public_support") {
+        const byStorage = entry.publicSupportBySubType[sub] ?? {};
+        const amounts = draft.variants.map(
+          (variant) => byStorage[variant.storageValue] ?? null
+        );
+        if (amounts.every((amount) => amount === null)) {
+          throw new Error(`${subLabel}: 용량별 공시지원금을 입력해 주세요.`);
+        }
+        if (amounts.some((a) => a !== null && !isNonNegativeInteger(a))) {
+          throw new Error(`${subLabel}: 공시지원금은 0 이상의 정수여야 합니다.`);
+        }
+      }
+
+      const rebate = entry.rebateBySubType[sub] ?? null;
+      if (rebate !== null && !isNonNegativeInteger(rebate)) {
+        throw new Error(`${subLabel}: 추가 지원금은 0 이상의 정수여야 합니다.`);
+      }
+    });
   });
+}
+
+function isNonNegativeInteger(value: number) {
+  return Number.isInteger(value) && value >= 0;
 }
