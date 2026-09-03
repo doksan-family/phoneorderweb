@@ -1,4 +1,4 @@
-import { apiFetch } from "@/shared/api/client";
+import { ApiError, apiFetch } from "@/shared/api/client";
 import { createClient } from "@/shared/lib/supabase/client";
 import { mapConsultations } from "../model/mapper";
 import type {
@@ -68,6 +68,7 @@ export async function exportAdminConsultationsCsv(
   params: ExportAdminConsultationsParams = {}
 ) {
   const accessToken = await getAccessToken();
+  if (!accessToken) throw new ApiError("관리자 로그인이 필요합니다.", 401);
   const search = new URLSearchParams();
   if (params.status) search.set("status", params.status);
   if (params.phone) search.set("phone", params.phone);
@@ -79,7 +80,7 @@ export async function exportAdminConsultationsCsv(
     `${BASE_URL}/functions/v1/admin-consultations/export.csv${query ? `?${query}` : ""}`,
     {
       headers: {
-        Authorization: `Bearer ${accessToken ?? ANON_KEY}`,
+        Authorization: `Bearer ${accessToken}`,
         apikey: ANON_KEY,
       },
     }

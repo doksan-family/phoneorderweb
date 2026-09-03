@@ -33,7 +33,10 @@ export function AdminDashboard() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
-  const applicationsQuery = useQuery(consultationQueryOptions.adminList());
+  const applicationsQuery = useQuery({
+    ...consultationQueryOptions.adminList(),
+    enabled: activeTab === "applications",
+  });
   const contentType = contentTypeByTab[activeTab];
 
   const updateMutation = useMutation({
