@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
+import type { DiscountType } from "@/entities/product/model/types";
 import { productQueryOptions } from "@/entities/product/model/queries";
 
 export type ConsultationCondition = { label: string; value: string };
@@ -34,12 +35,18 @@ export function useConsultationSelection() {
     (capacity) => capacity.id === pricing?.variantId
   )?.label;
   const installmentMonths = searchParams.get("installmentMonths");
+  const discountType = searchParams.get("discountType") ?? "";
+  const discountTypeLabel =
+    pricing?.discountOptions.find(
+      (option) => option.discountType === discountType
+    )?.discountTypeLabel ?? "";
 
   const conditions: ConsultationCondition[] = [
     { label: "색상", value: colorLabel ?? "" },
     { label: "용량", value: capacityLabel ?? "" },
     { label: "가입 유형", value: pricing?.subscriptionTypeLabel ?? "" },
     { label: "요금제", value: pricing?.planName ?? "" },
+    { label: "할인 방식", value: discountTypeLabel },
     {
       label: "할부",
       value: installmentMonths ? `${installmentMonths}개월` : "",
@@ -62,6 +69,7 @@ export function useConsultationSelection() {
       plan_id: pricing?.planId || (searchParams.get("planId") ?? ""),
       subscription_type:
         pricing?.subscriptionType || (searchParams.get("subscriptionType") ?? ""),
+      discount_type: isDiscountType(discountType) ? discountType : undefined,
       color_value: colorValue || undefined,
       installment_months: installmentMonths
         ? Number(installmentMonths)
@@ -76,9 +84,14 @@ type ConsultationSelectionPayload = {
   variant_id: string;
   plan_id: string;
   subscription_type: string;
+  discount_type?: DiscountType;
   color_value?: string;
   installment_months?: number;
 };
+
+function isDiscountType(value: string): value is DiscountType {
+  return value === "public_support" || value === "contract_discount";
+}
 
 /** 필수 5개가 모두 채워졌을 때만 payload를 만든다. */
 export function buildConsultationPayload(

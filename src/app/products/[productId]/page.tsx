@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     productQueryOptions.publicDetail(productId)
   );
 
-  const price = detail.product.salePrice;
+  const price = detail.product.releasePrice;
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

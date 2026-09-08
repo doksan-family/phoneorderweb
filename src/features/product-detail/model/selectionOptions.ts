@@ -20,7 +20,10 @@ export function mapPlansFromPricing(options: ProductPricingOption[]): ProductPla
       id: option.planId,
       label: option.planName,
       monthlyPrice: option.planMonthlyPrice,
-      benefits: [option.subscriptionTypeLabel, `월 예상 ${option.estimate.monthlyTotal.toLocaleString("ko-KR")}원`],
+      benefits: [
+        option.subscriptionTypeLabel,
+        `월 예상 ${option.estimate.estimatedMonthlyPayment.toLocaleString("ko-KR")}원`,
+      ],
     });
   });
 

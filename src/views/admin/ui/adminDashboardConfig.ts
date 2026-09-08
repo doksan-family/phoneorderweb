@@ -5,6 +5,7 @@ export type AdminTab =
   | "applications"
   | "categories"
   | "catalog"
+  | "pricing"
   | "reviews"
   | "notices"
   | "faqs"
@@ -26,6 +27,7 @@ export const adminNavItems: Array<{ id: AdminTab; label: string }> = [
   { id: "banner", label: "홈 배너" },
   { id: "categories", label: "카테고리 관리" },
   { id: "catalog", label: "상품 관리" },
+  { id: "pricing", label: "가격 정책" },
   { id: "plans", label: "요금제 관리" },
   { id: "reviews", label: "구매후기 관리" },
   { id: "notices", label: "공지사항 관리" },

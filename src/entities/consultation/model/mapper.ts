@@ -112,6 +112,7 @@ function toConditionRows(snapshot?: ConsultationQuoteSnapshot) {
     { label: "통신사", value: snapshot.carrier_name },
     { label: "가입 유형", value: snapshot.subscription_type_label },
     { label: "요금제", value: snapshot.plan_name },
+    { label: "할인 방식", value: snapshot.discount_type_label },
     {
       label: "할부",
       value: snapshot.installment_months

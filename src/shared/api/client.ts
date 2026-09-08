@@ -7,6 +7,7 @@ export async function apiFetch<T>(
   accessToken?: string,
   timeoutMs = 10_000
 ): Promise<T> {
+  assertAdminAccessToken(path, accessToken);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -49,6 +50,7 @@ export async function apiFetchMultipart<T>(
   accessToken?: string,
   method: "POST" | "PATCH" = "POST"
 ): Promise<T> {
+  assertAdminAccessToken(path, accessToken);
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
     body,
@@ -66,4 +68,10 @@ export async function apiFetchMultipart<T>(
   }
 
   return res.json() as Promise<T>;
+}
+
+function assertAdminAccessToken(path: string, accessToken?: string) {
+  if (path.startsWith("/functions/v1/admin-") && !accessToken) {
+    throw new ApiError("관리자 로그인이 필요합니다.", 401);
+  }
 }

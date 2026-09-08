@@ -73,7 +73,7 @@ export function ProductPickerList({
                     {product.name}
                   </span>
                   <span className="text-[0.8rem] font-extrabold text-slate-950">
-                    {product.salePrice.toLocaleString("ko-KR")}원
+                    {product.releasePrice.toLocaleString("ko-KR")}원
                   </span>
                 </span>
               </button>

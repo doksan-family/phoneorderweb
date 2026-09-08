@@ -3,6 +3,7 @@ import type {
   PublicProductColor,
   PublicProductDetail,
 } from "@/entities/product/api/public";
+import { isSelectableSubscriptionType } from "@/shared/config/subscription";
 import type { ProductOption } from "./types";
 
 export function mapColors(colors: PublicProductColor[] | undefined) {
@@ -25,7 +26,7 @@ export function mapCapacities(detail: PublicProductDetail): ProductOption[] {
     .map((variant) => ({
       id: variant.id,
       label: variant.storage_value,
-      description: `${variant.sale_price.toLocaleString("ko-KR")}원`,
+      description: `${variant.release_price.toLocaleString("ko-KR")}원`,
     }));
 }
 
@@ -54,10 +55,13 @@ function mapCarrierRowsFromPricing(detail: PublicProductDetail) {
 export function mapSubscriptionTypes(detail: PublicProductDetail): ProductOption[] {
   if (!detail.subscription_types?.length) return [];
 
-  return detail.subscription_types.map((type) => ({
-    id: type.value,
-    label: type.label,
-  }));
+  // 신규가입은 앱 전체에서 숨긴다.
+  return detail.subscription_types
+    .filter((type) => isSelectableSubscriptionType(type.value))
+    .map((type) => ({
+      id: type.value,
+      label: type.label,
+    }));
 }
 
 function mapCarrierRows(carriers: PublicCarrierOption[]) {

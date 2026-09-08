@@ -21,6 +21,7 @@ import { AdminContentPanel } from "./AdminContentPanel";
 import { AdminHeroBannerPanel } from "./AdminHeroBannerPanel";
 import { AdminLegalDocumentPanel } from "./AdminLegalDocumentPanel";
 import { AdminOverviewPanel } from "./AdminOverviewPanel";
+import { AdminPricingPolicyPanel } from "./AdminPricingPolicyPanel";
 import { AdminReviewPanel } from "./AdminReviewPanel";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminSiteSettingsPanel } from "./AdminSiteSettingsPanel";
@@ -32,7 +33,10 @@ export function AdminDashboard() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
-  const applicationsQuery = useQuery(consultationQueryOptions.adminList());
+  const applicationsQuery = useQuery({
+    ...consultationQueryOptions.adminList(),
+    enabled: activeTab === "applications",
+  });
   const contentType = contentTypeByTab[activeTab];
 
   const updateMutation = useMutation({
@@ -78,6 +82,7 @@ export function AdminDashboard() {
           {activeTab === "banner" ? <AdminHeroBannerPanel /> : null}
           {activeTab === "categories" ? <AdminCategoryPanel /> : null}
           {activeTab === "catalog" ? <AdminCatalogPanel /> : null}
+          {activeTab === "pricing" ? <AdminPricingPolicyPanel /> : null}
           {activeTab === "plans" ? <AdminPlanManager /> : null}
           {activeTab === "reviews" ? <AdminReviewPanel /> : null}
           {activeTab === "audit" ? <AdminAuditLogPanel /> : null}

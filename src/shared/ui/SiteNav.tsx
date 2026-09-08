@@ -45,9 +45,9 @@ export const navigationLabels = [...brandItems, ...staticItems].map(
 const itemBaseClass =
   "inline-flex shrink-0 items-center whitespace-nowrap rounded-[10px] px-[13px] py-[9px] text-[0.84rem] font-bold transition";
 
-const activeClass = "bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]";
+const activeClass = "bg-white/15 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]";
 
-const inactiveClass = "text-slate-700 hover:bg-slate-100 hover:text-slate-950";
+const inactiveClass = "text-white/85 hover:bg-white/10 hover:text-white";
 
 export function SiteNav() {
   const pathname = usePathname();

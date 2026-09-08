@@ -1,4 +1,8 @@
-import type { ProductEstimate, ProductPricingOption } from "./pricingTypes";
+import type {
+  ProductEstimate,
+  ProductPricingOption,
+  ProductQuoteDiscountOption,
+} from "./pricingTypes";
 
 export type ProductCategory = {
   id: string;
@@ -29,10 +33,11 @@ export type Product = {
   detail: string;
   productImages?: ProductImage[];
   descriptionImages?: ProductImage[];
-  originalPrice: number;
-  salePrice: number;
+  /** 대표 저장용량 출고가. 판매가·할인율은 스펙에서 제거됨. */
+  releasePrice: number;
   planName: string;
   planMonthlyPrice: number;
+  /** 대표 요금 조건의 월 예상 납부금. 없으면 0. */
   monthlyEstimate: number;
   priceGuide: string;
   planGuide: string;
@@ -40,7 +45,6 @@ export type Product = {
   saleTypes: ProductSaleType[];
   badges?: string[];
   cardTag: string;
-  discountRate: number;
   visible: boolean;
   order: number;
 };
@@ -73,6 +77,8 @@ export type ProductDetailProfile = {
   discounts: ProductDiscountOption[];
   subscriptionTypes?: ProductOption[];
   pricingOptions?: ProductPricingOption[];
+  /** 대표 요금 조건의 공시지원금/선택약정 선택지 */
+  discountOptions?: ProductQuoteDiscountOption[];
   /** API가 견적을 못 주면 null. 화면은 "견적 준비 중"으로 처리한다. */
   estimate: ProductEstimate | null;
   detailTabs: {
@@ -82,8 +88,10 @@ export type ProductDetailProfile = {
 };
 
 export type {
+  DiscountType,
   ProductConsultationPayload,
   ProductEstimate,
   ProductInstallmentOption,
   ProductPricingOption,
+  ProductQuoteDiscountOption,
 } from "./pricingTypes";

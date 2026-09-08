@@ -63,6 +63,14 @@ export function ProductDetailConfigurator({
             onChange={selection.setPlanId}
           />
         ) : null}
+        {selection.discountTypeOptions.length ? (
+          <OptionChoiceList
+            label="할인 방식"
+            options={selection.discountTypeOptions}
+            value={selection.selectedDiscountTypeId}
+            onChange={selection.setDiscountTypeId}
+          />
+        ) : null}
         {selection.installmentOptions.length ? (
           <OptionChoiceList
             label="할부 개월"

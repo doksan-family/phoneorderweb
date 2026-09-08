@@ -6,15 +6,17 @@ import type {
 } from "./publicTypes";
 
 export type {
+  DiscountType,
   PublicCarrierOption,
   PublicConsultationPayload,
+  PublicDiscountOption,
   PublicInstallmentOption,
   PublicProductCard,
   PublicProductColor,
   PublicProductDetail,
   PublicProductImage,
   PublicProductPricingOption,
-  PublicProductQuote,
+  PublicProductQuoteCalculation,
   PublicProductVariant,
   PublicProductsParams,
   PublicSubscriptionOption,

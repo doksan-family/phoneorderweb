@@ -7,7 +7,7 @@ import { SiteNav, SiteNavFallback } from "./SiteNav";
 export function SiteHeader() {
   return (
     <>
-      <header className="sticky top-0 z-[100] border-b border-white/50 bg-white/90 shadow-[0_1px_0_rgba(233,236,226,0.9),0_10px_32px_rgba(21,24,15,0.06)] backdrop-blur-xl backdrop-saturate-[1.8] supports-[backdrop-filter]:bg-white/60">
+      <header className="sticky top-0 z-[100] border-b border-white/15 bg-slate-950/90 shadow-[0_1px_0_rgba(255,255,255,0.08),0_10px_32px_rgba(2,6,23,0.22)] backdrop-blur-xl backdrop-saturate-[1.8] supports-[backdrop-filter]:bg-slate-950/72">
         <div className="site-container flex min-h-[60px] items-center justify-between gap-4 py-2.5">
           <Link className="relative block h-10 w-28 shrink-0" href="/" aria-label="핵폰 홈">
             <Image
