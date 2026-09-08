@@ -18,10 +18,14 @@ export function HomeView() {
       <section className={`${sectionClass} max-[560px]:pt-8`}>
         <HomeSectionHeading
           eyebrow="Monthly Pick"
-          title="Bestsellers"
+          title="추천 상품"
           moreHref="/products"
         />
-        <VisibleProductGrid firstRowCardCount={FIRST_ROW_CARD_COUNT} />
+        <VisibleProductGrid
+          featured
+          firstRowCardCount={FIRST_ROW_CARD_COUNT}
+          limit={FIRST_ROW_CARD_COUNT}
+        />
       </section>
 
       <HomeEventBannerSection />
