@@ -10,19 +10,27 @@ export function ProductPricingPreview({
   variants,
   months,
   preview,
+  subscriptionType,
 }: {
   entry: ProductPricingEntryDraft;
   discountType: DiscountType;
   variants: ProductVariantDraft[];
   months: number[];
   preview: ReturnType<typeof usePricingPreview>;
+  /** 지정하면 내부 가입유형 select를 숨기고 이 값을 쓴다(카드 상단 토글에서 제어). */
+  subscriptionType?: string;
 }) {
   const subTypes = entry.subscriptionTypes;
   const [subType, setSubType] = useState(subTypes[0] ?? "");
   const [storageId, setStorageId] = useState(variants[0]?.id ?? "");
 
   // 선택값이 현재 목록에 없으면(가입유형·용량이 바뀐 경우) 첫 값을 쓴다.
-  const activeSub = subTypes.includes(subType) ? subType : subTypes[0] ?? "";
+  const activeSub =
+    subscriptionType !== undefined
+      ? subscriptionType
+      : subTypes.includes(subType)
+        ? subType
+        : subTypes[0] ?? "";
   const variant =
     variants.find((item) => item.id === storageId) ?? variants[0];
 
@@ -47,7 +55,7 @@ export function ProductPricingPreview({
       <div className="flex items-center justify-between gap-2">
         <span className="font-bold text-slate-700">월 예상 납부금</span>
         <div className="flex gap-1.5">
-          {subTypes.length > 1 ? (
+          {subscriptionType === undefined && subTypes.length > 1 ? (
             <select
               className="h-8 min-w-24 rounded border border-slate-200 bg-white px-2 py-0 text-[0.74rem] leading-normal text-slate-700"
               value={activeSub}
