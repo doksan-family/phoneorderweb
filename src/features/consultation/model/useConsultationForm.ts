@@ -30,11 +30,18 @@ export function useConsultationForm() {
     marketingAgreed: false,
   });
   const [error, setError] = useState("");
-  const [completedProductName, setCompletedProductName] = useState("");
+  const [completed, setCompleted] = useState<{
+    productName: string;
+    applicationNumber?: string;
+  } | null>(null);
 
   const createMutation = useMutation({
     mutationFn: createConsultation,
-    onSuccess: () => setCompletedProductName(selection.product?.name ?? ""),
+    onSuccess: (request) =>
+      setCompleted({
+        productName: selection.product?.name ?? "",
+        applicationNumber: request?.applicationNumber,
+      }),
     onError: (cause: Error) => setError(cause.message),
   });
 
@@ -85,7 +92,7 @@ export function useConsultationForm() {
   }
 
   return {
-    completedProductName,
+    completed,
     error,
     form,
     isSubmitting: createMutation.isPending,

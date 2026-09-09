@@ -13,7 +13,7 @@ const submitClass =
 
 export function ConsultationForm() {
   const {
-    completedProductName,
+    completed,
     error,
     form,
     isSubmitting,
@@ -23,8 +23,13 @@ export function ConsultationForm() {
     updateTextField,
   } = useConsultationForm();
 
-  if (completedProductName) {
-    return <ConsultationComplete productName={completedProductName} />;
+  if (completed) {
+    return (
+      <ConsultationComplete
+        productName={completed.productName}
+        applicationNumber={completed.applicationNumber}
+      />
+    );
   }
 
   return (
