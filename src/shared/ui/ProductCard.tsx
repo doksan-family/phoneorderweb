@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProductCardPrice } from "./ProductCardPrice";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Product } from "@/entities/product/model/types";
@@ -23,15 +24,6 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     .filter((badge) => badge !== product.cardTag)
     .slice(0, product.cardTag ? 2 : 3);
   const saleTypeLabel = product.saleTypes.join(" · ") || product.categoryName;
-  // API가 대표 요금제를 안 준 상품은 이 줄을 아예 그리지 않는다.
-  const planLine = [
-    product.planName,
-    product.monthlyEstimate > 0
-      ? `월 ${product.monthlyEstimate.toLocaleString("ko-KR")}원~`
-      : ""
-  ]
-    .filter(Boolean)
-    .join(" · ");
 
   return (
     <article className="h-full min-w-0">
@@ -86,17 +78,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             {product.summary}
           </ScrollLine>
 
-          <div className="mt-auto min-w-0 border-t border-slate-100 pt-2">
-            {planLine ? (
-              <ScrollLine className="text-[0.68rem] text-slate-500">{planLine}</ScrollLine>
-            ) : null}
-            <ScrollLine className="text-[0.68rem] text-slate-400">출고가</ScrollLine>
-            <div className="flex min-w-0 flex-wrap items-baseline gap-1">
-              <span className="text-[1rem] font-extrabold text-slate-950">
-                {product.releasePrice.toLocaleString("ko-KR")}원
-              </span>
-            </div>
-          </div>
+          <ProductCardPrice product={product} />
 
           <span className="mt-2.5 block rounded-[10px] bg-[var(--brand-primary-soft)] py-2.5 text-center text-[0.78rem] font-bold text-[var(--brand-primary-strong)]">
             상담 신청

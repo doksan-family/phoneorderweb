@@ -13,6 +13,19 @@ const product = {
   consultation_payload: { product_id: "product-a", pricing_id: "pricing-a", variant_id: "variant-a", plan_id: "plan-a", subscription_type: "number_transfer" as const, discount_type: "contract_discount" as const, installment_months: 36 },
 };
 
+test("카드 단말 가격은 서버 원금을 사용하고 0원과 견적 누락을 구분한다", () => {
+  for (const amount of [0, 750000]) {
+    const mapped = mapPublicProductToProduct({ ...product, can_apply_for_consultation: true,
+      default_pricing: { quote: { device_installment_principal: amount } } });
+    assert.equal(mapped.discountedDevicePrice, amount);
+  }
+  assert.equal(mapPublicProductToProduct({ ...product, can_apply_for_consultation: true }).discountedDevicePrice, null);
+  assert.equal(mapPublicProductToProduct({ ...product,
+    default_pricing: { device_installment_principal: 750000 } }).discountedDevicePrice, null);
+  assert.equal(mapPublicProductToProduct({ ...product, can_apply_for_consultation: true,
+    default_pricing: { device_installment_principal: 750000 } }).discountedDevicePrice, 750000);
+});
+
 test("상품 목록과 bootstrap은 같은 상품 DTO의 상담 가능 여부·기본 견적·선택값을 보존한다", async (t) => {
   t.mock.method(globalThis, "fetch", async (url: string) => new Response(JSON.stringify({ ok: true,
     data: url.includes("bootstrap") ? { products: [product], banners: { main: [], event: [] }, categories: { items: [] }, site_settings: {} } : [product],

@@ -14,7 +14,12 @@ export function ProductCardSkeleton() {
         <Skeleton className="h-3.5 w-3/5" />
         <div className="mt-auto grid gap-1.5 border-t border-slate-100 pt-2">
           <Skeleton className="h-2.5 w-3/4" />
-          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-2.5 w-1/2" />
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-2.5 w-4/5" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-2.5 w-3/5" />
+          <Skeleton className="h-2.5 w-2/3" />
         </div>
         <Skeleton className="mt-2.5 h-9 w-full rounded-[10px]" />
       </div>

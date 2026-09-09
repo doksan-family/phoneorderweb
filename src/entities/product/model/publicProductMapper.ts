@@ -42,6 +42,9 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
     productImages,
     descriptionImages: mapPublicImages(item.description_images, `${item.name} 상세 이미지`),
     releasePrice,
+    discountedDevicePrice: item.can_apply_for_consultation === false
+      ? null
+      : readOptionalPrice(quote, "device_installment_principal"),
     planName: readString(pricing, "plan_name"),
     planMonthlyPrice: readNumber(pricing, "plan_monthly_fee"),
     monthlyEstimate: readNumber(quote, "estimated_monthly_payment"),
@@ -106,6 +109,11 @@ function toRecord(value: PublicJsonObject | null | undefined): PublicJsonObject 
 function readNumber(record: PublicJsonObject | null, key: string): number {
   const value = record?.[key];
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function readOptionalPrice(record: PublicJsonObject | null, key: string): number | null {
+  const value = record?.[key];
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null;
 }
 
 function readString(record: PublicJsonObject | null, key: string): string {

@@ -38,6 +38,8 @@ export type Product = {
   descriptionImages?: ProductImage[];
   /** 대표 저장용량 출고가. 판매가·할인율은 스펙에서 제거됨. */
   releasePrice: number;
+  /** 기본 견적의 할인 적용 후 단말 할부 원금. 견적이 없으면 null. */
+  discountedDevicePrice?: number | null;
   planName: string;
   planMonthlyPrice: number;
   /** 대표 요금 조건의 월 예상 납부금. 없으면 0. */
