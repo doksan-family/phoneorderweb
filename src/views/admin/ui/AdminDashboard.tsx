@@ -70,13 +70,13 @@ export function AdminDashboard() {
   }
 
   return (
-    <main className="admin-dashboard-shell site-container grid min-h-screen grid-cols-[248px_minmax(0,1fr)] bg-zinc-100 max-[900px]:grid-cols-1 min-[901px]:h-screen min-[901px]:overflow-hidden">
+    <main className="admin-dashboard-shell grid min-h-screen w-full grid-cols-[248px_minmax(0,1fr)] bg-zinc-100 max-[900px]:grid-cols-1 min-[901px]:h-screen min-[901px]:overflow-hidden">
       <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
       <section className="min-w-0 min-[901px]:flex min-[901px]:h-screen min-[901px]:flex-col min-[901px]:overflow-hidden">
         <AdminTopbar onLogout={logout} />
 
-        <div className="mx-auto box-border flex min-h-[calc(100vh_-_78px)] w-[calc(100%_-_64px)] max-w-[1280px] flex-col pt-[34px] pb-0 max-[900px]:w-[calc(100%_-_32px)] max-[900px]:pt-6 max-[560px]:w-[calc(100%_-_24px)] max-[560px]:pt-5 min-[901px]:min-h-0 min-[901px]:flex-1 min-[901px]:overflow-y-auto min-[901px]:pb-8">
+        <div className="mx-auto box-border flex min-h-[calc(100vh_-_78px)] w-[calc(100%_-_64px)] max-w-[1280px] flex-col pt-[34px] pb-0 max-[900px]:w-[calc(100%_-_32px)] max-[900px]:pt-6 max-[560px]:w-[calc(100%_-_24px)] max-[560px]:pt-5 min-[901px]:block min-[901px]:min-h-0 min-[901px]:flex-1 min-[901px]:overflow-y-auto min-[901px]:pb-8">
           {activeTab === "applications" ? (
             <AdminApplicationsPanel
               error={applicationsQuery.error}
