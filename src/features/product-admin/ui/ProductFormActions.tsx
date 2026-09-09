@@ -1,4 +1,6 @@
 type ProductFormActionsProps = {
+  step: number;
+  onBack: () => void;
   isEdit?: boolean;
   loading: boolean;
   onCancel?: () => void;
@@ -10,16 +12,21 @@ const btnSecondary =
   "inline-flex min-h-12 items-center justify-center rounded-[10px] border border-slate-200 bg-white px-5 text-sm font-extrabold text-slate-700 transition hover:bg-[var(--brand-primary-soft)]";
 
 export function ProductFormActions({
+  step,
+  onBack,
   isEdit,
   loading,
   onCancel,
 }: ProductFormActionsProps) {
   return (
-    <div className="flex justify-end gap-2 max-[560px]:grid">
+    <div className="flex justify-end gap-2 flex-wrap">
       {onCancel ? (
         <button className={btnSecondary} type="button" onClick={onCancel}>
           취소
         </button>
+      ) : null}
+      {step > 0 ? (
+        <button className={btnSecondary} disabled={loading} type="button" onClick={onBack}>이전</button>
       ) : null}
       {/*
         한글 입력 도중 버튼을 누르면 macOS IME가 조합을 확정하며 mousedown을 삼켜
@@ -30,9 +37,9 @@ export function ProductFormActions({
         className={btnPrimary}
         disabled={loading}
         type="submit"
-        onMouseUp={(event) => event.currentTarget.form?.requestSubmit()}
+        onMouseUp={(event) => { if (step === 2) event.currentTarget.form?.requestSubmit(); }}
       >
-        {loading ? "저장 중..." : isEdit ? "상품 수정" : "상품 등록"}
+        {loading ? "저장 중..." : step < 2 ? (step === 0 ? "다음: 판매 옵션" : "다음: 요금 조건") : isEdit ? "상품 수정" : "상품 등록"}
       </button>
     </div>
   );

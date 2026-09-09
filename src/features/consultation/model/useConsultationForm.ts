@@ -52,6 +52,7 @@ export function useConsultationForm() {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    if (createMutation.isPending || selection.isPending) return;
 
     if (!selection.product) {
       setError("문의할 상품을 먼저 선택해 주세요.");

@@ -20,12 +20,13 @@ export type ProductCreateColorInput = {
 /**
  * 기본 가격과 다른 조건만 덮어쓰는 규칙. storage_value/plan_id/subscription_type을
  * 생략하면 해당 차원 전체에 적용된다.
- * 서버는 값 없는 키에 null을 허용하지 않으므로, 해당 필드는 아예 넣지 않는다.
+ * available_discount_types는 고객이 선택할 수 있는 방식이며 동시 적용을 뜻하지 않는다.
  */
 export type ProductCreatePricingOverrideInput = {
-  storage_value?: string;
-  plan_id?: string;
-  subscription_type?: string;
+  storage_value?: string | null;
+  plan_id?: string | null;
+  subscription_type?: string | null;
+  available_discount_types?: DiscountType[];
   /** 공시지원금 선택 시 출고가에서 차감할 금액. 0 이상의 정수. */
   public_support_amount?: number;
   /** 해당 가입조건의 리베이트 금액. 0 이상의 정수. */

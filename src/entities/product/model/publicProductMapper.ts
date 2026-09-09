@@ -4,7 +4,8 @@ import type {
   PublicProductVariant,
 } from "@/entities/product/api/public";
 import type { PublicJsonObject } from "@/entities/product/api/publicBaseTypes";
-import { findProductCategory, sortProducts } from "./storage";
+import { mapConsultationPayload } from "./publicProductQuoteMapper.ts";
+import { findProductCategory, sortProducts } from "./storage.ts";
 import type { Product, ProductImage } from "./types";
 
 export function mapPublicProductsToProducts(items: PublicProductCard[]) {
@@ -17,6 +18,7 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
   const productImages = mapPublicImages(item.product_images, `${item.name} 상품 이미지`);
   const variant = getRepresentativeVariant(item);
   const pricing = toRecord(item.default_pricing);
+  const quote = nestedQuote(pricing) ?? pricing;
   const releasePrice = variant?.release_price ?? readNumber(pricing, "release_price");
   const representativeImageUrl =
     item.representative_image_url ??
@@ -27,6 +29,8 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
 
   return {
     id: item.id,
+    canApplyForConsultation: item.can_apply_for_consultation,
+    consultationPayload: mapConsultationPayload(item.consultation_payload ?? undefined),
     name: item.name,
     categoryId: categoryCode,
     categoryName: item.category_name || category?.name || item.brand,
@@ -40,7 +44,7 @@ export function mapPublicProductToProduct(item: PublicProductCard): Product {
     releasePrice,
     planName: readString(pricing, "plan_name"),
     planMonthlyPrice: readNumber(pricing, "plan_monthly_fee"),
-    monthlyEstimate: readNumber(pricing, "estimated_monthly_payment"),
+    monthlyEstimate: readNumber(quote, "estimated_monthly_payment"),
     priceGuide: "상담 후 안내",
     planGuide: "요금제는 상담 후 확정됩니다.",
     discountGuide: "프로모션과 결합 할인은 상담 시점 기준으로 안내합니다.",
@@ -107,4 +111,9 @@ function readNumber(record: PublicJsonObject | null, key: string): number {
 function readString(record: PublicJsonObject | null, key: string): string {
   const value = record?.[key];
   return typeof value === "string" ? value.trim() : "";
+}
+
+function nestedQuote(pricing: PublicJsonObject | null): PublicJsonObject | null {
+  const value = pricing?.quote;
+  return value && typeof value === "object" && !Array.isArray(value) ? value : null;
 }

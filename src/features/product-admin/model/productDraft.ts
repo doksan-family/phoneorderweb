@@ -58,7 +58,7 @@ export function createEmptyPricingEntry(): ProductPricingEntryDraft {
     id: nextId("entry"),
     carrierCode: "",
     planId: "",
-    discountType: "public_support",
+    availableDiscountTypes: ["public_support", "contract_discount"],
     // 기본은 번호이동·기기변경 모두. 카드에서 해제할 수 있다.
     subscriptionTypes: [...SELECTABLE_SUBSCRIPTION_TYPES],
     publicSupportBySubType: {},
@@ -77,6 +77,6 @@ export function subscriptionTypesFromEntries(
   return [
     ...new Set(entries.flatMap((entry) => entry.subscriptionTypes)),
   ].filter((value) =>
-    (SELECTABLE_SUBSCRIPTION_TYPES as readonly string[]).includes(value)
+    value === "new_signup" || (SELECTABLE_SUBSCRIPTION_TYPES as readonly string[]).includes(value)
   );
 }

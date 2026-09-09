@@ -47,7 +47,6 @@ export function getMatchedPricing(
 }
 
 function filterOptions(options: ProductOption[], availableIds: Set<string>) {
-  if (!availableIds.size) return options;
   return options.filter((option) => availableIds.has(option.id));
 }
 

@@ -75,6 +75,9 @@ export function usePricingPolicyForm() {
     try {
       await updatePricingPolicy(payload);
       await queryClient.invalidateQueries({ queryKey: pricingPolicyQueryKey });
+      await queryClient.invalidateQueries({ queryKey: ["public-products"] });
+      await queryClient.invalidateQueries({ queryKey: ["public-product-detail"] });
+      await queryClient.invalidateQueries({ queryKey: ["public-product-quote"] });
       setEditedDraft(null);
       setSaved(true);
     } catch (err) {

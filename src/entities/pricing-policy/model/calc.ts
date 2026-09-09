@@ -1,7 +1,7 @@
 import type { DiscountType } from "@/entities/product/api/public";
 import type { ProductEstimate } from "@/entities/product/model/types";
 import type { PricingPolicy } from "@/entities/pricing-policy/api/admin";
-import { equalPaymentMonthly } from "@/shared/lib/installment";
+import { equalPaymentMonthly } from "../../../shared/lib/installment.ts";
 
 export { equalPaymentMonthly };
 

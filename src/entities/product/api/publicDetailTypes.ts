@@ -61,6 +61,7 @@ export type PublicProductPricingOption = {
   plan_monthly_fee: number;
   subscription_type: PublicSubscriptionType;
   subscription_type_label: string;
+  available_discount_types?: DiscountType[];
   installment_months?: number;
   installment_options?: PublicInstallmentOption[];
   public_support_amount?: number;

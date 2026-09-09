@@ -1,4 +1,4 @@
-import { productCategories, products } from "./mock-products";
+import { productCategories, products } from "./mock-products.ts";
 import type { Product } from "./types";
 
 const STORAGE_KEY = "phone-order-products";
