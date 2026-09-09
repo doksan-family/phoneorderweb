@@ -22,11 +22,11 @@ export function PlanTabs({ tabs, value, onChange }: PlanTabsProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+    <div className="grid gap-2">
       {[...groups.entries()].map(([carrier, items]) => (
         <div className="flex flex-wrap items-center gap-1.5" key={carrier || "_"}>
           {carrier ? (
-            <span className="text-[0.72rem] font-extrabold tracking-wide text-slate-400">
+            <span className="min-w-[3rem] text-[0.72rem] font-extrabold tracking-wide text-slate-400">
               {carrier}
             </span>
           ) : null}
