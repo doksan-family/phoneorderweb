@@ -36,10 +36,14 @@ export function AdminConsultationExportButton({
     }
   }
 
+  const dateInputClass =
+    "h-9 w-[9.5rem] min-w-0 shrink-0 rounded-md border border-slate-300 px-2 text-[0.8rem] leading-none [&::-webkit-datetime-edit]:whitespace-nowrap";
+
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-nowrap items-center gap-2">
       <input
         aria-label="시작일"
+        className={dateInputClass}
         type="date"
         value={fromDate}
         onChange={(event) => setFromDate(event.target.value)}
@@ -47,19 +51,20 @@ export function AdminConsultationExportButton({
       <span className="text-sm text-slate-400">~</span>
       <input
         aria-label="종료일"
+        className={dateInputClass}
         type="date"
         value={toDate}
         onChange={(event) => setToDate(event.target.value)}
       />
+      {error ? <span className="text-sm font-bold text-red-600">{error}</span> : null}
       <button
-        className={secondaryButtonClass}
+        className={`${secondaryButtonClass} ml-auto`}
         disabled={loading}
         type="button"
         onClick={handleExport}
       >
         {loading ? "다운로드 중..." : "CSV 다운로드"}
       </button>
-      {error ? <span className="text-sm font-bold text-red-600">{error}</span> : null}
     </div>
   );
 }
