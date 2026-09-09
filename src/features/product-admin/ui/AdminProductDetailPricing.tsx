@@ -2,14 +2,12 @@
 
 import type { AdminProductSummary } from "@/entities/product/api/admin";
 import { carrierOptions } from "@/entities/plan/model/carriers";
-import {
-  ALL_DISCOUNT_TYPES,
-  DISCOUNT_LABELS,
-} from "@/entities/product/model/discountTypes";
+import { ALL_DISCOUNT_TYPES } from "@/entities/product/model/discountTypes";
 import type { DiscountType } from "@/entities/product/model/types";
 import { buildPricingEntries } from "../model/productPricingPrefill";
 import type { ProductPricingEntryDraft } from "../model/types";
 import { usePricingPreview } from "../model/usePricingPreview";
+import { DiscountPricingCard } from "./DiscountPricingCard";
 import { ProductPricingPreview } from "./ProductPricingPreview";
 
 type AdminProductDetailPricingProps = { product: AdminProductSummary };
@@ -101,10 +99,7 @@ export function AdminProductDetailPricing({
               ) : (
                 <div className="grid gap-3 min-[560px]:grid-cols-2">
                   {discounts.map((type) => (
-                    <div className="grid gap-1.5" key={type}>
-                      <span className="text-[0.78rem] font-bold text-slate-700">
-                        {DISCOUNT_LABELS[type]}
-                      </span>
+                    <DiscountPricingCard discountType={type} key={type}>
                       <ProductPricingPreview
                         key={`${entry.planId}-${type}`}
                         entry={entry}
@@ -113,7 +108,7 @@ export function AdminProductDetailPricing({
                         months={months}
                         preview={preview}
                       />
-                    </div>
+                    </DiscountPricingCard>
                   ))}
                 </div>
               )}

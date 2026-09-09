@@ -1,6 +1,7 @@
 import type { AdminPricingOption } from "@/entities/product/api/adminProductPricingTypes";
 import type { PricingPolicy } from "@/entities/pricing-policy/api/types";
 import { resolveAdminPricingDiscounts } from "../model/adminPricingFallback";
+import { DiscountPricingCard } from "./DiscountPricingCard";
 
 type AdminProductPricingOptionCardProps = {
   option: AdminPricingOption;
@@ -41,13 +42,15 @@ export function AdminProductPricingOptionCard({
 
       <div className="grid gap-3 min-[560px]:grid-cols-2">
         {discounts.map((discount) => (
-          <div key={discount.discountType} className="grid gap-1.5">
-            <span className="text-[0.78rem] font-bold text-slate-700">
-              {discount.discountTypeLabel}
-              {discount.installments.some((item) => !item.fromServer) ? (
-                <span className="ml-1 font-normal text-amber-600">추정</span>
-              ) : null}
-            </span>
+          <DiscountPricingCard
+            discountType={discount.discountType}
+            key={discount.discountType}
+            note={
+              discount.installments.some((item) => !item.fromServer)
+                ? "추정"
+                : undefined
+            }
+          >
             {discount.installments.length ? (
               <table className="w-full border-collapse text-[0.74rem] tabular-nums">
                 <thead>
@@ -72,7 +75,7 @@ export function AdminProductPricingOptionCard({
             ) : (
               <p className="m-0 text-[0.74rem] text-slate-400">가격 정책이 없어 계산할 수 없습니다.</p>
             )}
-          </div>
+          </DiscountPricingCard>
         ))}
       </div>
     </div>
