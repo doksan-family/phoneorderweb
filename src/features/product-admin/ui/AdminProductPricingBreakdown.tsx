@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { AdminProductSummary } from "@/entities/product/api/admin";
+import { carrierOptions } from "@/entities/plan/model/carriers";
 import type { AdminPricingOption } from "@/entities/product/api/adminProductPricingTypes";
 import type { PricingPolicy } from "@/entities/pricing-policy/api/types";
 import { AdminProductPricingOptionCard } from "./AdminProductPricingOptionCard";
@@ -115,10 +116,17 @@ function groupKey(group: PlanGroup) {
   return group.planId || group.planName;
 }
 
+function carrierOrder(name: string) {
+  const index = carrierOptions.findIndex((item) => item.label === name);
+  return index === -1 ? carrierOptions.length : index;
+}
+
 export function AdminProductPricingBreakdown({
   product,
 }: AdminProductPricingBreakdownProps) {
-  const groups = groupByPlan(product.pricingOptions);
+  const groups = groupByPlan(product.pricingOptions).sort(
+    (first, second) => carrierOrder(first.carrierName) - carrierOrder(second.carrierName)
+  );
   const months = [...product.installmentMonthOptions].sort(
     (first, second) => first - second
   );
@@ -140,7 +148,8 @@ export function AdminProductPricingBreakdown({
       <PlanTabs
         tabs={groups.map((group) => ({
           key: groupKey(group),
-          label: `${group.carrierName ? `${group.carrierName} · ` : ""}${group.planName || "요금제"}`,
+          label: group.planName || "요금제",
+          carrier: group.carrierName || undefined,
         }))}
         value={activeGroup ? groupKey(activeGroup) : ""}
         onChange={setPlanKey}

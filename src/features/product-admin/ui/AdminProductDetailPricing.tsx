@@ -31,13 +31,21 @@ function entryDiscounts(entry: ProductPricingEntryDraft): DiscountType[] {
   );
 }
 
-function planLabel(entry: ProductPricingEntryDraft, preview: Preview): string {
+function planTab(entry: ProductPricingEntryDraft, preview: Preview) {
   const plan = preview.plans.find((item) => item.id === entry.planId);
   const carrier =
     carrierOptions.find((item) => item.value === plan?.carrier_code)?.label ??
     plan?.carrier_code ??
     "";
-  return `${carrier ? `${carrier} · ` : ""}${plan?.name ?? "요금제"}`;
+  return { key: entry.id, label: plan?.name ?? "요금제", carrier: carrier || undefined };
+}
+
+function carrierRank(entry: ProductPricingEntryDraft, preview: Preview) {
+  const plan = preview.plans.find((item) => item.id === entry.planId);
+  const index = carrierOptions.findIndex(
+    (item) => item.value === plan?.carrier_code
+  );
+  return index === -1 ? carrierOptions.length : index;
 }
 
 function PlanPricingRow({
@@ -115,7 +123,10 @@ export function AdminProductDetailPricing({
   product,
 }: AdminProductDetailPricingProps) {
   const preview = usePricingPreview(true);
-  const entries = buildPricingEntries(product);
+  const entries = buildPricingEntries(product).sort(
+    (first, second) =>
+      carrierRank(first, preview) - carrierRank(second, preview)
+  );
   const months = [...product.installmentMonthOptions].sort((a, b) => a - b);
   const variants: VariantRow[] = product.variants.map((variant) => ({
     id: variant.storage_value,
@@ -150,10 +161,7 @@ export function AdminProductDetailPricing({
       ) : (
         <>
           <PlanTabs
-            tabs={entries.map((entry) => ({
-              key: entry.id,
-              label: planLabel(entry, preview),
-            }))}
+            tabs={entries.map((entry) => planTab(entry, preview))}
             value={activeEntry.id}
             onChange={setEntryId}
           />
