@@ -1,18 +1,28 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { reviewQueryOptions } from "@/entities/review/model/queries";
 import { ReviewDetailModal } from "@/features/review-detail/ui/ReviewDetailModal";
+import {
+  filterReviewsByTab,
+  hasReviewPhoto,
+  type ReviewListTab,
+} from "@/features/review-list/model/reviewListTab";
+import { ReviewListTabs } from "@/features/review-list/ui/ReviewListTabs";
+import { ReviewPhotoCard } from "@/features/review-list/ui/ReviewPhotoCard";
+import { ReviewTextCard } from "@/features/review-list/ui/ReviewTextCard";
 import { PageHeader } from "@/shared/ui/PageHeader";
-import { ReviewImagePlaceholder } from "@/shared/ui/ReviewImagePlaceholder";
-import { ReviewRating } from "@/shared/ui/ReviewRating";
 
 export function ReviewsView() {
   const { data, isPending } = useQuery(reviewQueryOptions.publicList());
   const [openedReviewId, setOpenedReviewId] = useState("");
-  const reviews = data?.items ?? [];
+  const [tab, setTab] = useState<ReviewListTab>("photo");
+  const reviews = useMemo(() => data?.items ?? [], [data]);
+  const visibleReviews = useMemo(
+    () => filterReviewsByTab(reviews, tab),
+    [reviews, tab]
+  );
 
   return (
     <main className="site-container pt-14 pb-20">
@@ -20,53 +30,33 @@ export function ReviewsView() {
       {!isPending && !reviews.length ? (
         <p className="m-0 text-[0.9rem] text-slate-500">등록된 후기가 없습니다.</p>
       ) : null}
-      <section className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-1">
-        {reviews.map((review, index) => {
-          const cover = review.images[0];
-          return (
-            <button
-              className="brand-card grid overflow-hidden text-left"
+      {reviews.length ? (
+        <ReviewListTabs reviews={reviews} value={tab} onChange={setTab} />
+      ) : null}
+      {reviews.length && !visibleReviews.length ? (
+        <p className="m-0 text-[0.9rem] text-slate-500">
+          {tab === "photo"
+            ? "사진이 등록된 후기가 아직 없습니다."
+            : "사진 없이 등록된 후기가 아직 없습니다."}
+        </p>
+      ) : null}
+      <section className="grid grid-cols-3 items-start gap-4 max-[900px]:grid-cols-1">
+        {visibleReviews.map((review, index) =>
+          hasReviewPhoto(review) ? (
+            <ReviewPhotoCard
               key={review.id}
-              type="button"
-              onClick={() => setOpenedReviewId(review.id)}
-            >
-              {cover ? (
-                <div className="relative h-[170px] w-full bg-slate-100">
-                  <Image
-                    alt={cover.alt ?? ""}
-                    className="object-cover"
-                    fill
-                    // 첫 줄 카드는 화면에 바로 보이므로 지연 없이 받는다
-                    priority={index < 3}
-                    sizes="(max-width: 900px) 92vw, 30vw"
-                    src={cover.image_url}
-                  />
-                </div>
-              ) : (
-                <ReviewImagePlaceholder className="h-[170px] w-full" />
-              )}
-              <div className="p-[18px]">
-                <span className="text-[0.72rem] font-bold text-[var(--brand-primary-strong)]">
-                  {review.published_at ?? ""}
-                </span>
-                <h2 className="m-0 mt-1 text-[1rem] font-extrabold tracking-[-0.02em] text-slate-950">
-                  {review.title}
-                </h2>
-                <ReviewRating
-                  className="mt-1 text-[var(--brand-primary-strong)]"
-                  rating={review.rating}
-                />
-                <p className="m-0 mt-1.5 text-[0.86rem] leading-[1.6] text-slate-500">
-                  {review.content}
-                </p>
-                <p className="m-0 mt-3 text-[0.78rem] text-slate-400">
-                  {review.author_name}
-                  {review.product_name ? ` · ${review.product_name}` : ""}
-                </p>
-              </div>
-            </button>
-          );
-        })}
+              review={review}
+              priority={index < 3}
+              onOpen={setOpenedReviewId}
+            />
+          ) : (
+            <ReviewTextCard
+              key={review.id}
+              review={review}
+              onOpen={setOpenedReviewId}
+            />
+          )
+        )}
       </section>
 
       {openedReviewId ? (
