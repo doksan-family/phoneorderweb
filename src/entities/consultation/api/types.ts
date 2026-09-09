@@ -34,6 +34,9 @@ export type FetchAdminConsultationsParams = {
   phone?: string;
   limit?: number;
   offset?: number;
+  /** page/page_size는 서버에서 limit/offset보다 우선한다. */
+  page?: number;
+  page_size?: number;
 };
 
 /** PATCH /functions/v1/admin-consultations?id= 본문 (부분 수정) */

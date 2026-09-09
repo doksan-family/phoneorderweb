@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { ConsultationUpdatePayload } from "@/entities/consultation/api/admin";
 import type { ConsultationRequest } from "@/entities/consultation/model/types";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
+import { InfiniteScrollSentinel } from "@/shared/ui/InfiniteScrollSentinel";
 import { SkeletonRows } from "@/shared/ui/SkeletonRows";
 import { adminFullPanelClass } from "@/shared/ui/adminPanelStyles";
 import { AdminApplicationDetailModal } from "./AdminApplicationDetailModal";
@@ -17,6 +18,10 @@ type AdminApplicationsPanelProps = {
   isPending?: boolean;
   error?: Error | null;
   isSaving?: boolean;
+  /** 무한 스크롤: 다음 페이지 존재 여부·로딩 상태·트리거. */
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  onLoadMore?: () => void;
   onUpdate: (id: string, payload: ConsultationUpdatePayload) => void;
 };
 
@@ -25,6 +30,9 @@ export function AdminApplicationsPanel({
   isPending,
   error,
   isSaving,
+  hasMore,
+  isLoadingMore,
+  onLoadMore,
   onUpdate,
 }: AdminApplicationsPanelProps) {
   const [keyword, setKeyword] = useState("");
@@ -74,6 +82,18 @@ export function AdminApplicationsPanel({
             onSelect={setSelectedId}
           />
         ))}
+        {onLoadMore && items.length ? (
+          <InfiniteScrollSentinel
+            onReach={onLoadMore}
+            disabled={!hasMore || isLoadingMore}
+          >
+            {isLoadingMore ? (
+              <p className="m-0 py-3 text-center text-sm text-slate-400">
+                더 불러오는 중…
+              </p>
+            ) : null}
+          </InfiniteScrollSentinel>
+        ) : null}
       </div>
 
       {selectedItem ? (

@@ -20,7 +20,10 @@ export function InfiniteScrollSentinel({
 }: InfiniteScrollSentinelProps) {
   const ref = useRef<HTMLDivElement>(null);
   const onReachRef = useRef(onReach);
-  onReachRef.current = onReach;
+
+  useEffect(() => {
+    onReachRef.current = onReach;
+  });
 
   useEffect(() => {
     if (disabled) return;

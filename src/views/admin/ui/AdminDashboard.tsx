@@ -1,6 +1,10 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
@@ -33,10 +37,12 @@ export function AdminDashboard() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
-  const applicationsQuery = useQuery({
-    ...consultationQueryOptions.adminList(),
+  const applicationsQuery = useInfiniteQuery({
+    ...consultationQueryOptions.adminInfiniteList(),
     enabled: activeTab === "applications",
   });
+  const applicationItems =
+    applicationsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const contentType = contentTypeByTab[activeTab];
 
   const updateMutation = useMutation({
@@ -74,7 +80,10 @@ export function AdminDashboard() {
               error={applicationsQuery.error}
               isPending={applicationsQuery.isPending}
               isSaving={updateMutation.isPending}
-              items={applicationsQuery.data ?? []}
+              items={applicationItems}
+              hasMore={applicationsQuery.hasNextPage}
+              isLoadingMore={applicationsQuery.isFetchingNextPage}
+              onLoadMore={() => applicationsQuery.fetchNextPage()}
               onUpdate={updateApplication}
             />
           ) : null}

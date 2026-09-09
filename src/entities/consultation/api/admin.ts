@@ -1,4 +1,5 @@
 import { ApiError, apiFetch } from "@/shared/api/client";
+import { readPaginationMeta } from "@/shared/api/pagination";
 import { createClient } from "@/shared/lib/supabase/client";
 import { mapConsultations } from "../model/mapper";
 import type {
@@ -12,8 +13,17 @@ export type {
   FetchAdminConsultationsParams,
 } from "./types";
 
+export const ADMIN_CONSULTATION_PAGE_SIZE = 30;
+
 /** GET /functions/v1/admin-consultations (id 없이 = 목록) */
 export async function fetchAdminConsultations(
+  params: FetchAdminConsultationsParams = {}
+) {
+  return (await fetchAdminConsultationsPage(params)).items;
+}
+
+/** 목록 한 페이지와 전체 건수·다음 페이지 유무를 함께 돌려준다(무한 스크롤용). */
+export async function fetchAdminConsultationsPage(
   params: FetchAdminConsultationsParams = {}
 ) {
   const accessToken = await getAccessToken();
@@ -22,7 +32,26 @@ export async function fetchAdminConsultations(
     undefined,
     accessToken
   );
-  return mapConsultations(response);
+  const items = mapConsultations(response);
+  const meta = readPaginationMeta(response);
+  const total = meta?.total ?? readResponseTotal(response) ?? items.length;
+
+  return { items, total, hasNext: meta?.hasNext };
+}
+
+/** 래핑 위치가 엔드포인트마다 달라 top-level과 data.total을 모두 살핀다. */
+function readResponseTotal(response: ConsultationApiResponse): number | null {
+  if (Array.isArray(response) || typeof response !== "object" || !response) {
+    return null;
+  }
+  const record = response as Record<string, unknown>;
+  if (typeof record.total === "number") return record.total;
+  const data = record.data;
+  if (data && typeof data === "object" && !Array.isArray(data)) {
+    const nested = (data as Record<string, unknown>).total;
+    if (typeof nested === "number") return nested;
+  }
+  return null;
 }
 
 /** GET /functions/v1/admin-consultations?id= (단건 상세) */
@@ -104,8 +133,13 @@ function toConsultationsSearch(params: FetchAdminConsultationsParams) {
   const search = new URLSearchParams();
   if (params.status) search.set("status", params.status);
   if (params.phone) search.set("phone", params.phone);
-  search.set("limit", String(params.limit ?? 100));
-  if (params.offset !== undefined) search.set("offset", String(params.offset));
+  if (params.page !== undefined) {
+    search.set("page", String(params.page));
+    search.set("page_size", String(params.page_size ?? 30));
+  } else {
+    search.set("limit", String(params.limit ?? 100));
+    if (params.offset !== undefined) search.set("offset", String(params.offset));
+  }
 
   return `?${search.toString()}`;
 }
