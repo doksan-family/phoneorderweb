@@ -115,9 +115,15 @@ export function PricingPolicyForm() {
         <p className="m-0 text-sm font-bold text-emerald-600">저장되었습니다.</p>
       ) : null}
 
-      <button className={primaryButtonClass} disabled={form.loading} type="submit">
-        저장
-      </button>
+      <div className="flex justify-end">
+        <button
+          className={primaryButtonClass}
+          disabled={form.loading}
+          type="submit"
+        >
+          저장
+        </button>
+      </div>
       {form.loading ? <LoadingOverlay /> : null}
     </form>
   );
