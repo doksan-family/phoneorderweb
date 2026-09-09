@@ -5,6 +5,7 @@ import type { AdminProductSummary } from "@/entities/product/api/admin";
 import type { AdminPricingOption } from "@/entities/product/api/adminProductPricingTypes";
 import type { PricingPolicy } from "@/entities/pricing-policy/api/types";
 import { AdminProductPricingOptionCard } from "./AdminProductPricingOptionCard";
+import { PlanTabs } from "./PlanTabs";
 import { SubscriptionToggle } from "./SubscriptionToggle";
 
 type AdminProductPricingBreakdownProps = {
@@ -110,6 +111,10 @@ function PlanPricingGroup({
   );
 }
 
+function groupKey(group: PlanGroup) {
+  return group.planId || group.planName;
+}
+
 export function AdminProductPricingBreakdown({
   product,
 }: AdminProductPricingBreakdownProps) {
@@ -117,6 +122,9 @@ export function AdminProductPricingBreakdown({
   const months = [...product.installmentMonthOptions].sort(
     (first, second) => first - second
   );
+  const [planKey, setPlanKey] = useState(groups[0] ? groupKey(groups[0]) : "");
+  const activeGroup =
+    groups.find((group) => groupKey(group) === planKey) ?? groups[0];
 
   return (
     <section className="grid gap-4 rounded-xl border border-slate-200 p-4">
@@ -129,14 +137,23 @@ export function AdminProductPricingBreakdown({
         </p>
       </div>
 
-      {groups.map((group) => (
+      <PlanTabs
+        tabs={groups.map((group) => ({
+          key: groupKey(group),
+          label: `${group.carrierName ? `${group.carrierName} · ` : ""}${group.planName || "요금제"}`,
+        }))}
+        value={activeGroup ? groupKey(activeGroup) : ""}
+        onChange={setPlanKey}
+      />
+
+      {activeGroup ? (
         <PlanPricingGroup
-          group={group}
-          key={group.planId || group.planName}
+          group={activeGroup}
+          key={groupKey(activeGroup)}
           months={months}
           policy={product.pricingPolicy}
         />
-      ))}
+      ) : null}
     </section>
   );
 }

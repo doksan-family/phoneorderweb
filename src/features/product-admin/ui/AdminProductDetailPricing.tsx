@@ -10,6 +10,7 @@ import { buildPricingEntries } from "../model/productPricingPrefill";
 import type { ProductPricingEntryDraft } from "../model/types";
 import { usePricingPreview } from "../model/usePricingPreview";
 import { DiscountPricingCard } from "./DiscountPricingCard";
+import { PlanTabs } from "./PlanTabs";
 import { ProductPricingPreview } from "./ProductPricingPreview";
 import { SubscriptionToggle } from "./SubscriptionToggle";
 
@@ -28,6 +29,15 @@ function entryDiscounts(entry: ProductPricingEntryDraft): DiscountType[] {
         )
       )
   );
+}
+
+function planLabel(entry: ProductPricingEntryDraft, preview: Preview): string {
+  const plan = preview.plans.find((item) => item.id === entry.planId);
+  const carrier =
+    carrierOptions.find((item) => item.value === plan?.carrier_code)?.label ??
+    plan?.carrier_code ??
+    "";
+  return `${carrier ? `${carrier} · ` : ""}${plan?.name ?? "요금제"}`;
 }
 
 function PlanPricingRow({
@@ -54,7 +64,7 @@ function PlanPricingRow({
   const lackData = !plan || !variants.length || !months.length || !subTypes.length;
 
   return (
-    <div className="grid gap-2.5 border-b border-slate-200 pb-3 last:border-b-0 last:pb-0">
+    <div className="grid gap-2.5">
       <div className="flex flex-wrap items-baseline gap-x-2 text-sm">
         <strong className="font-extrabold text-slate-950">
           {carrier ? `${carrier} · ` : ""}
@@ -112,6 +122,8 @@ export function AdminProductDetailPricing({
     storageValue: variant.storage_value,
     releasePrice: variant.release_price,
   }));
+  const [entryId, setEntryId] = useState("");
+  const activeEntry = entries.find((entry) => entry.id === entryId) ?? entries[0];
 
   return (
     <section className="grid gap-4 rounded-xl border border-slate-200 p-4">
@@ -133,18 +145,26 @@ export function AdminProductDetailPricing({
         <p role="alert" className="m-0 text-sm text-red-600">
           요금제 또는 가격 정책을 불러오지 못해 금액을 표시할 수 없습니다.
         </p>
-      ) : !entries.length ? (
+      ) : !entries.length || !activeEntry ? (
         <p className="m-0 text-sm text-slate-500">등록된 요금 조건이 없습니다.</p>
       ) : (
-        entries.map((entry) => (
+        <>
+          <PlanTabs
+            tabs={entries.map((entry) => ({
+              key: entry.id,
+              label: planLabel(entry, preview),
+            }))}
+            value={activeEntry.id}
+            onChange={setEntryId}
+          />
           <PlanPricingRow
-            entry={entry}
-            key={entry.id}
+            entry={activeEntry}
+            key={activeEntry.id}
             months={months}
             preview={preview}
             variants={variants}
           />
-        ))
+        </>
       )}
     </section>
   );
