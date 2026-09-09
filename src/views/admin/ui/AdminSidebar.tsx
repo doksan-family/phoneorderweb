@@ -36,7 +36,7 @@ export function AdminSidebar({ activeTab, onTabChange }: AdminSidebarProps) {
           src="/images/logo/hack_phone_logo_2.png"
         />
       </button>
-      <nav className="grid gap-3.5 max-[900px]:grid-cols-[repeat(6,minmax(120px,1fr))] max-[900px]:overflow-x-auto max-[900px]:[-webkit-overflow-scrolling:touch] max-[560px]:grid-cols-2">
+      <nav className="grid gap-3.5 min-[901px]:min-h-0 min-[901px]:flex-1 min-[901px]:content-start min-[901px]:overflow-y-auto max-[900px]:grid-cols-[repeat(6,minmax(120px,1fr))] max-[900px]:overflow-x-auto max-[900px]:[-webkit-overflow-scrolling:touch] max-[560px]:grid-cols-2">
         {adminNavItems.map((item) => (
           <button
             className={navButtonClass(activeTab === item.id)}

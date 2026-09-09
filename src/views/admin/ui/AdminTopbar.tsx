@@ -9,7 +9,7 @@ const secondaryActionClass =
 
 export function AdminTopbar({ onLogout }: AdminTopbarProps) {
   return (
-    <header className="flex min-h-[78px] items-center justify-between gap-6 border-b border-slate-200 bg-white px-8 max-[900px]:min-h-0 max-[900px]:px-5 max-[900px]:py-4 max-[560px]:flex-col max-[560px]:items-start max-[560px]:gap-3.5">
+    <header className="flex min-h-[78px] items-center justify-between gap-6 border-b border-slate-200 bg-white px-8 max-[900px]:min-h-0 max-[900px]:px-5 max-[900px]:py-4 max-[560px]:flex-col max-[560px]:items-start max-[560px]:gap-3.5 min-[901px]:shrink-0">
       <div />
       <div className="flex items-center gap-3 max-[560px]:w-full max-[560px]:flex-wrap max-[560px]:justify-between">
         <Link className={secondaryActionClass} href="/">

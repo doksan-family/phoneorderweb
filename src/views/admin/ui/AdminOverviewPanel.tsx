@@ -25,7 +25,7 @@ export function AdminOverviewPanel() {
 
   // 다른 탭과 달리 카드 격자라 흰 패널로 감싸지 않는다.
   return (
-    <section className="min-h-[calc(100vh_-_112px)] pb-6">
+    <section className="min-h-[calc(100vh_-_112px)] pb-6 min-[901px]:min-h-0">
       <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="m-0 text-lg font-extrabold tracking-[-0.02em] text-slate-950">
