@@ -8,6 +8,7 @@ import { AdminCreateDialog } from "@/shared/ui/AdminCreateDialog";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { AdminProductDetailBody } from "./AdminProductDetailBody";
 import { AdminProductDetailPricing } from "./AdminProductDetailPricing";
+import { AdminProductPricingBreakdown } from "./AdminProductPricingBreakdown";
 import { ProductForm } from "./ProductForm";
 
 type AdminProductDetailModalProps = {
@@ -55,7 +56,13 @@ export function AdminProductDetailModal({
       ) : (
         <div className="grid gap-4">
           <AdminProductDetailBody product={data} />
-          {isPlaceholderData ? <Skeleton className="h-40 rounded-xl" /> : <AdminProductDetailPricing product={data} />}
+          {isPlaceholderData ? (
+            <Skeleton className="h-40 rounded-xl" />
+          ) : data.pricingOptions.length ? (
+            <AdminProductPricingBreakdown product={data} />
+          ) : (
+            <AdminProductDetailPricing product={data} />
+          )}
           <div className="flex justify-end">
             <button
               disabled={isPlaceholderData}

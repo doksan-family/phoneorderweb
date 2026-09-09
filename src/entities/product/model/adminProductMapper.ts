@@ -4,6 +4,10 @@ import type {
 } from "@/entities/product/api/adminProductTypes";
 import { mapAdminProductOptions } from "./adminProductOptionMapper";
 import {
+  mapAdminPricingOptions,
+  mapAdminPricingPolicy,
+} from "./adminProductPricingMapper";
+import {
   getBoolean,
   getNumber,
   getRecord,
@@ -53,6 +57,8 @@ export function mapAdminProduct(value: unknown): AdminProductSummary | null {
     isFeatured: getBoolean(item.is_featured) ?? false,
     displayOrder: getNumber(item.display_order) ?? 0,
     ...mapAdminProductOptions(item),
+    pricingOptions: mapAdminPricingOptions(item),
+    pricingPolicy: mapAdminPricingPolicy(item),
   };
 }
 

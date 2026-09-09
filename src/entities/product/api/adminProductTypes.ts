@@ -3,6 +3,8 @@ import type {
   ProductCreatePricingOverrideInput,
   ProductCreateVariantInput,
 } from "./types";
+import type { AdminPricingOption } from "./adminProductPricingTypes";
+import type { PricingPolicy } from "@/entities/pricing-policy/api/types";
 
 /** GET /functions/v1/admin-products 쿼리 파라미터 */
 export type AdminProductsParams = {
@@ -48,6 +50,10 @@ export type AdminProductSummary = {
   subscriptionTypes: string[];
   installmentMonthOptions: number[];
   pricingOverrides: ProductCreatePricingOverrideInput[];
+  /** 서버가 계산해 준 조합별 요금·할인 견적. 응답에 없으면 빈 배열. */
+  pricingOptions: AdminPricingOption[];
+  /** 서버가 응답에 실어 준 현재 전역 가격 정책. 없으면 undefined. */
+  pricingPolicy?: PricingPolicy;
 };
 
 /**
