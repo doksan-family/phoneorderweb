@@ -4,6 +4,7 @@ import { type FormEvent, useState } from "react";
 import { updateAdminBanner, uploadAdminBannerImage } from "@/entities/banner/api/admin";
 import { toApiEndAt, toApiStartAt, toDateOnly } from "@/features/admin/model/dateUtils";
 import type { AdminBanner } from "@/entities/banner/model/types";
+import { storagePublicUrl } from "@/shared/lib/supabase/storageUrl";
 import { BannerImageUpload } from "./BannerImageUpload";
 import { LoadingOverlay } from "@/shared/ui/LoadingOverlay";
 
@@ -63,8 +64,12 @@ export function AdminBannerEditForm({
       onSubmit={submit}
     >
       <div className="grid gap-1.5">
-        <span className="text-[0.85rem] font-bold">이미지 교체 (선택, 비우면 기존 이미지 유지)</span>
-        <BannerImageUpload file={newImageFile} onChange={setNewImageFile} />
+        <span className="text-[0.85rem] font-bold">배너 이미지 (이미지를 눌러 교체)</span>
+        <BannerImageUpload
+          file={newImageFile}
+          onChange={setNewImageFile}
+          currentImageUrl={storagePublicUrl("banners", banner.image_path)}
+        />
       </div>
       <div className="grid grid-cols-[1fr_1fr] gap-2.5">
         <label className="grid gap-1.5 text-[0.85rem] font-bold">

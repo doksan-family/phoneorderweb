@@ -6,12 +6,18 @@ import { useRef, useState } from "react";
 type BannerImageUploadProps = {
   file: File | null;
   onChange: (file: File | null) => void;
+  /** 수정 화면에서 아직 새 파일을 안 골랐을 때 보여줄 기존 이미지 URL. */
+  currentImageUrl?: string | null;
 };
 
 const ACCEPT = ["image/webp", "image/jpeg", "image/png"];
 const MAX_MB = 2;
 
-export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
+export function BannerImageUpload({
+  file,
+  onChange,
+  currentImageUrl,
+}: BannerImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [sizeError, setSizeError] = useState("");
@@ -81,6 +87,27 @@ export function BannerImageUpload({ file, onChange }: BannerImageUploadProps) {
             <span>{(file.size / 1024).toFixed(0)} KB</span>
           </div>
         </div>
+      ) : currentImageUrl ? (
+        <button
+          className={`group relative w-full aspect-[12/5] overflow-hidden rounded-xl bg-slate-100 transition ${dragging ? "ring-2 ring-slate-950" : ""}`}
+          type="button"
+          aria-label="배너 이미지 변경"
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={onDrop}
+        >
+          <Image
+            src={currentImageUrl}
+            alt="현재 배너 이미지"
+            fill
+            sizes="(max-width: 760px) 90vw, 640px"
+            style={{ objectFit: "cover" }}
+          />
+          <div className="absolute inset-0 grid place-items-center bg-black/0 text-transparent transition group-hover:bg-black/45 group-hover:text-white">
+            <span className="text-sm font-bold">클릭하여 이미지 변경</span>
+          </div>
+        </button>
       ) : (
         <button
           className={`flex flex-col items-center justify-center gap-2 w-full py-9 px-6 border-2 border-dashed rounded-xl transition text-center ${dragging ? "border-slate-950 bg-[var(--brand-primary-soft)] text-slate-950" : "border-slate-200 bg-white text-slate-500 hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"}`}

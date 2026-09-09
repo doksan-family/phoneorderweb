@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { deleteAdminBanner, fetchAdminBanners } from "@/entities/banner/api/admin";
+import {
+  deleteAdminBanner,
+  fetchAdminBanners,
+  updateAdminBanner,
+} from "@/entities/banner/api/admin";
 import type { AdminBanner } from "@/entities/banner/model/types";
 import { AdminBannerCreateModal } from "@/features/admin/ui/AdminBannerCreateModal";
 import { FloatingActionButton } from "@/shared/ui/FloatingActionButton";
@@ -34,6 +38,26 @@ export function AdminHeroBannerPanel() {
     setEditingId((prev) => (prev === id ? null : id));
   }
 
+  async function handleReorder(next: AdminBanner[]) {
+    const previous = banners;
+    const ordered = next.map((b, index) => ({ ...b, display_order: index + 1 }));
+    setBanners(ordered);
+
+    const changed = ordered.filter(
+      (b) =>
+        previous.find((o) => o.id === b.id)?.display_order !== b.display_order
+    );
+    try {
+      await Promise.all(
+        changed.map((b) =>
+          updateAdminBanner(b.id, { display_order: b.display_order })
+        )
+      );
+    } catch {
+      fetchAdminBanners().then(setBanners);
+    }
+  }
+
   async function handleDelete(id: string) {
     if (!window.confirm("배너를 삭제하시겠습니까?")) return;
     setDeletingId(id);
@@ -58,6 +82,7 @@ export function AdminHeroBannerPanel() {
             loading={loading}
             onCancelEdit={() => setEditingId(null)}
             onDelete={handleDelete}
+            onReorder={handleReorder}
             onToggleEdit={toggleEdit}
             onUpdated={handleUpdated}
           />
