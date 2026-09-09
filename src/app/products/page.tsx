@@ -22,9 +22,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   // 목록을 서버에서 미리 받아둬야 첫 HTML에 <img>가 담기고 이미지 로딩이 바로 시작된다.
   const queryClient = makeQueryClient();
-  await queryClient.prefetchQuery(
-    productQueryOptions.publicList({ category: categoryId, featured, limit })
-  );
+  await (limit
+    ? queryClient.prefetchQuery(
+        productQueryOptions.publicList({ category: categoryId, featured, limit })
+      )
+    : queryClient.prefetchInfiniteQuery(
+        productQueryOptions.publicInfiniteList({ category: categoryId, featured })
+      ));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

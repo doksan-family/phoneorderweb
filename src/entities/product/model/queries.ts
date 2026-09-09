@@ -1,4 +1,8 @@
-import { keepPreviousData, queryOptions } from "@tanstack/react-query";
+import {
+  infiniteQueryOptions,
+  keepPreviousData,
+  queryOptions,
+} from "@tanstack/react-query";
 import {
   fetchAdminProduct,
   fetchAdminProducts,
@@ -7,8 +11,12 @@ import {
 import {
   fetchPublicProductDetail,
   fetchPublicProducts,
+  fetchPublicProductsPage,
   type PublicProductsParams,
 } from "@/entities/product/api/public";
+
+/** 상품 목록 무한 스크롤 페이지 크기. */
+export const PUBLIC_PRODUCT_PAGE_SIZE = 24;
 import {
   mapPublicProductToProduct,
   mapPublicProductsToProducts,
@@ -25,6 +33,30 @@ export const productQueryOptions = {
       },
       // 카테고리를 바꿀 때 빈 스켈레톤 대신 직전 목록을 두고 교체한다.
       placeholderData: keepPreviousData,
+      retry: false,
+      staleTime: 30_000,
+    }),
+  /**
+   * 목록 페이지 무한 스크롤. 브랜드(삼성/애플)는 서버 필터가 없어 화면에서 거르므로
+   * 브랜드가 걸리면 소비 측에서 다음 페이지를 끝까지 당겨 온다.
+   */
+  publicInfiniteList: (params: PublicProductsParams = {}) =>
+    infiniteQueryOptions({
+      queryKey: ["public-products-infinite", params] as const,
+      queryFn: async ({ pageParam }) => {
+        const page = await fetchPublicProductsPage({
+          ...params,
+          page: pageParam,
+          page_size: PUBLIC_PRODUCT_PAGE_SIZE,
+        });
+        return {
+          products: mapPublicProductsToProducts(page.items),
+          pagination: page.pagination,
+        };
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.pagination?.hasNext ? allPages.length + 1 : undefined,
       retry: false,
       staleTime: 30_000,
     }),

@@ -1,5 +1,10 @@
 import { apiFetch } from "../../../shared/api/client.ts";
+import {
+  readPaginationMeta,
+  type PaginationMeta,
+} from "../../../shared/api/pagination.ts";
 import type {
+  PublicProductCard,
   PublicProductDetailResponse,
   PublicProductListResponse,
   PublicProductsParams,
@@ -31,11 +36,18 @@ export type {
 const publicCacheInit: RequestInit = { next: { revalidate: 60 } };
 
 export async function fetchPublicProducts(params: PublicProductsParams = {}) {
+  return (await fetchPublicProductsPage(params)).items;
+}
+
+/** 목록과 함께 서버 페이지 정보를 돌려준다. 무한 스크롤에서 다음 페이지 유무 판단에 쓴다. */
+export async function fetchPublicProductsPage(
+  params: PublicProductsParams = {}
+): Promise<{ items: PublicProductCard[]; pagination: PaginationMeta | null }> {
   const response = await apiFetch<PublicProductListResponse>(
     `/functions/v1/public-products${toPublicProductsSearch(params)}`,
     publicCacheInit
   );
-  return response.data;
+  return { items: response.data, pagination: readPaginationMeta(response) };
 }
 
 export async function fetchPublicProductDetail(id: string) {
@@ -52,6 +64,10 @@ function toPublicProductsSearch(params: PublicProductsParams) {
   if (params.category) search.set("category", params.category);
   if (params.featured !== undefined) search.set("featured", String(params.featured));
   if (params.limit !== undefined) search.set("limit", String(params.limit));
+  if (params.page !== undefined) search.set("page", String(params.page));
+  if (params.page_size !== undefined) {
+    search.set("page_size", String(params.page_size));
+  }
 
   const query = search.toString();
   return query ? `?${query}` : "";

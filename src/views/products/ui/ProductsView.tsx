@@ -1,3 +1,4 @@
+import { InfiniteProductGrid } from "@/features/product-list/ui/InfiniteProductGrid";
 import { VisibleProductGrid } from "@/features/product-list/ui/VisibleProductGrid";
 
 type ProductsViewProps = {
@@ -17,14 +18,22 @@ export function ProductsView({
 }: ProductsViewProps) {
   return (
     <main className="site-container pt-14 pb-20">
-      <VisibleProductGrid
-        brandId={brandId}
-        categoryId={categoryId}
-        featured={featured}
-        firstRowCardCount={FIRST_ROW_CARD_COUNT}
-        limit={limit}
-        showTotal
-      />
+      {limit ? (
+        <VisibleProductGrid
+          brandId={brandId}
+          categoryId={categoryId}
+          featured={featured}
+          firstRowCardCount={FIRST_ROW_CARD_COUNT}
+          limit={limit}
+          showTotal
+        />
+      ) : (
+        <InfiniteProductGrid
+          brandId={brandId}
+          categoryId={categoryId}
+          featured={featured}
+        />
+      )}
     </main>
   );
 }

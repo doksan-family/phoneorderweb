@@ -4,6 +4,9 @@ export type PublicProductsParams = {
   category?: string;
   featured?: boolean;
   limit?: number;
+  /** page/page_size는 서버에서 limit보다 우선한다. */
+  page?: number;
+  page_size?: number;
 };
 
 export type PublicJsonValue =
@@ -70,4 +73,6 @@ export type PublicProductCard = {
 
 export type PublicProductListResponse = {
   data: PublicProductCard[];
+  /** 서버 페이지 정보. 구버전 응답에는 없다. readPaginationMeta로 좁혀 읽는다. */
+  pagination?: unknown;
 };
