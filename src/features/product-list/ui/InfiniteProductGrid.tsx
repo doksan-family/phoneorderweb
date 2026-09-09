@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { findProductBrand } from "@/entities/product/model/mock-products";
 import { productQueryOptions } from "@/entities/product/model/queries";
+import { dedupeById } from "@/shared/api/pagination";
 import { ProductCard } from "@/shared/ui/ProductCard";
 import { ProductCardSkeleton } from "@/shared/ui/ProductCardSkeleton";
 import { InfiniteScrollSentinel } from "@/shared/ui/InfiniteScrollSentinel";
@@ -36,7 +37,7 @@ export function InfiniteProductGrid({
   );
 
   const products = useMemo(() => {
-    const all = data?.pages.flatMap((page) => page.products) ?? [];
+    const all = dedupeById(data?.pages.flatMap((page) => page.products) ?? []);
     return all.filter((product) => {
       if (!product.visible) return false;
       if (categoryId && product.categoryId !== categoryId) return false;

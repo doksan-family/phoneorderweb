@@ -53,6 +53,18 @@ export function hasMoreByOffset(
   return offset + loadedCount < total;
 }
 
+/** 페이지 경계에서 같은 항목이 겹쳐 오는 경우를 대비해 id 기준으로 중복을 제거한다. */
+export function dedupeById<T extends { id: string }>(items: T[]): T[] {
+  const seen = new Set<string>();
+  const result: T[] = [];
+  for (const item of items) {
+    if (seen.has(item.id)) continue;
+    seen.add(item.id);
+    result.push(item);
+  }
+  return result;
+}
+
 export const DEFAULT_PAGE_SIZE = 20;
 /** 관리자 목록을 페이지 루프로 한 번에 받을 때 쓰는 페이지 크기. */
 export const BULK_PAGE_SIZE = 100;

@@ -15,6 +15,7 @@ import {
   adminConsultationsQueryKey,
   consultationQueryOptions,
 } from "@/entities/consultation/model/queries";
+import { dedupeById } from "@/shared/api/pagination";
 import { logoutAdmin } from "@/features/admin/model/auth";
 import { AdminPlanManager } from "@/features/plan-admin/ui/AdminPlanManager";
 import { AdminApplicationsPanel } from "./AdminApplicationsPanel";
@@ -41,8 +42,9 @@ export function AdminDashboard() {
     ...consultationQueryOptions.adminInfiniteList(),
     enabled: activeTab === "applications",
   });
-  const applicationItems =
-    applicationsQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  const applicationItems = dedupeById(
+    applicationsQuery.data?.pages.flatMap((page) => page.items) ?? []
+  );
   const contentType = contentTypeByTab[activeTab];
 
   const updateMutation = useMutation({

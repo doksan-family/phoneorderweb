@@ -12,6 +12,7 @@ import {
 import { ReviewListTabs } from "@/features/review-list/ui/ReviewListTabs";
 import { ReviewPhotoCard } from "@/features/review-list/ui/ReviewPhotoCard";
 import { ReviewTextCard } from "@/features/review-list/ui/ReviewTextCard";
+import { dedupeById } from "@/shared/api/pagination";
 import { InfiniteScrollSentinel } from "@/shared/ui/InfiniteScrollSentinel";
 import { PageHeader } from "@/shared/ui/PageHeader";
 
@@ -26,7 +27,7 @@ export function ReviewsView() {
   const [openedReviewId, setOpenedReviewId] = useState("");
   const [tab, setTab] = useState<ReviewListTab>("photo");
   const reviews = useMemo(
-    () => data?.pages.flatMap((page) => page.items) ?? [],
+    () => dedupeById(data?.pages.flatMap((page) => page.items) ?? []),
     [data]
   );
   const visibleReviews = useMemo(

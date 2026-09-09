@@ -14,6 +14,7 @@ import {
   fetchPublicProductsPage,
   type PublicProductsParams,
 } from "@/entities/product/api/public";
+import { MAX_PAGE_LOOP } from "@/shared/api/pagination";
 
 /** 상품 목록 무한 스크롤 페이지 크기. */
 export const PUBLIC_PRODUCT_PAGE_SIZE = 24;
@@ -55,8 +56,13 @@ export const productQueryOptions = {
         };
       },
       initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) =>
-        lastPage.pagination?.hasNext ? allPages.length + 1 : undefined,
+      getNextPageParam: (lastPage, allPages) => {
+        // 서버가 page를 무시하고 같은 페이지를 계속 주는 경우를 방어한다.
+        if (!lastPage.products.length) return undefined;
+        if (lastPage.products.length < PUBLIC_PRODUCT_PAGE_SIZE) return undefined;
+        if (allPages.length >= MAX_PAGE_LOOP) return undefined;
+        return lastPage.pagination?.hasNext ? allPages.length + 1 : undefined;
+      },
       retry: false,
       staleTime: 30_000,
     }),

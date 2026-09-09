@@ -1,4 +1,5 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import { MAX_PAGE_LOOP } from "@/shared/api/pagination";
 import {
   fetchAdminReview,
   fetchAdminReviews,
@@ -36,6 +37,9 @@ export const reviewQueryOptions = {
         }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
+        // 짧은 페이지·빈 페이지·과다 루프는 끝으로 본다(서버가 page를 무시하는 경우 방어).
+        if (lastPage.items.length < PUBLIC_REVIEW_PAGE_SIZE) return undefined;
+        if (allPages.length >= MAX_PAGE_LOOP) return undefined;
         const loaded = allPages.reduce((sum, page) => sum + page.items.length, 0);
         return loaded < lastPage.total ? allPages.length + 1 : undefined;
       },

@@ -1,4 +1,5 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import { MAX_PAGE_LOOP } from "@/shared/api/pagination";
 import {
   ADMIN_CONSULTATION_PAGE_SIZE,
   fetchAdminConsultations,
@@ -29,6 +30,9 @@ export const consultationQueryOptions = {
         }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
+        if (!lastPage.items.length) return undefined;
+        if (lastPage.items.length < ADMIN_CONSULTATION_PAGE_SIZE) return undefined;
+        if (allPages.length >= MAX_PAGE_LOOP) return undefined;
         if (lastPage.hasNext !== undefined) {
           return lastPage.hasNext ? allPages.length + 1 : undefined;
         }
