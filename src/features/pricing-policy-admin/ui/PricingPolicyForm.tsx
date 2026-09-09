@@ -34,7 +34,7 @@ export function PricingPolicyForm() {
   const draft = form.draft;
 
   return (
-    <form className="grid gap-4" onSubmit={form.submit}>
+    <form className="grid content-start gap-4" onSubmit={form.submit}>
       <section className={sectionClass}>
         <h3 className={sectionTitleClass}>가격 계산 정책</h3>
         <p className="m-0 text-[0.82rem] leading-[1.6] text-slate-500">
@@ -115,7 +115,7 @@ export function PricingPolicyForm() {
         <p className="m-0 text-sm font-bold text-emerald-600">저장되었습니다.</p>
       ) : null}
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end">
         <button
           className={primaryButtonClass}
           disabled={form.loading}
