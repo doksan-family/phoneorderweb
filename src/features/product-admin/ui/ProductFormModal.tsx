@@ -24,6 +24,7 @@ export function ProductFormModal({
   return (
     <AdminCreateDialog
       title={product ? "상품 수정" : "상품 등록"}
+      widthClassName="w-[min(1240px,100%)]"
       onClose={onClose}
     >
       <ProductForm

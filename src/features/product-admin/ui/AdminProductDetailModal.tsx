@@ -7,6 +7,7 @@ import { productQueryOptions } from "@/entities/product/model/queries";
 import { AdminCreateDialog } from "@/shared/ui/AdminCreateDialog";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { AdminProductDetailBody } from "./AdminProductDetailBody";
+import { AdminProductDetailPricing } from "./AdminProductDetailPricing";
 import { ProductForm } from "./ProductForm";
 
 type AdminProductDetailModalProps = {
@@ -25,7 +26,7 @@ export function AdminProductDetailModal({
   onClose,
 }: AdminProductDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const { data, error, isPending } = useQuery({
+  const { data, error, isPending, isPlaceholderData } = useQuery({
     ...productQueryOptions.adminDetail(productId),
     placeholderData: fallback,
   });
@@ -54,9 +55,11 @@ export function AdminProductDetailModal({
       ) : (
         <div className="grid gap-4">
           <AdminProductDetailBody product={data} />
+          {isPlaceholderData ? <Skeleton className="h-40 rounded-xl" /> : <AdminProductDetailPricing product={data} />}
           <div className="flex justify-end">
             <button
-              className={editButtonClass}
+              disabled={isPlaceholderData}
+              className={`${editButtonClass} disabled:opacity-50`}
               type="button"
               onClick={() => setIsEditing(true)}
             >

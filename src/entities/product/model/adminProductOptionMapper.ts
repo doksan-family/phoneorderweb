@@ -1,9 +1,10 @@
+import { availableDiscountTypes } from "./discountTypes.ts";
 import type {
   ProductCreateColorInput,
   ProductCreatePricingOverrideInput,
   ProductCreateVariantInput,
 } from "@/entities/product/api/types";
-import { getBoolean, getNumber, getString, getStringArray, toRecord } from "./adminProductValue";
+import { getBoolean, getNumber, getString, getStringArray, toRecord } from "./adminProductValue.ts";
 
 /**
  * 수정 폼 prefill에 쓰는 옵션/요금 정보.
@@ -76,6 +77,7 @@ function mapPricingOverride(
     storage_value: getString(row.storage_value) || undefined,
     plan_id: getString(row.plan_id) || undefined,
     subscription_type: getString(row.subscription_type) || undefined,
+    available_discount_types: availableDiscountTypes(Array.isArray(row.available_discount_types) ? getStringArray(row.available_discount_types) : undefined),
     public_support_amount: getNumber(row.public_support_amount) ?? undefined,
     rebate_amount: getNumber(row.rebate_amount) ?? undefined,
     priority: getNumber(row.priority) ?? 0,

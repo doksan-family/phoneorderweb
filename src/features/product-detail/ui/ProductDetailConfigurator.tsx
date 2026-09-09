@@ -83,6 +83,9 @@ export function ProductDetailConfigurator({
       </section>
 
       <EstimatePanel
+        quotePending={selection.quotePending}
+        quoteError={selection.quoteError}
+        onRetry={selection.retryQuote}
         hideBackLink={hideBackLink}
         onConsultationSelect={onConsultationSelect}
         colorValue={selection.selectedColorId}

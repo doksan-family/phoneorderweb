@@ -1,9 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
+import { productQuoteQueryOptions } from "@/entities/product/model/quoteQueries";
+import { resolvePricingSelection } from "@/entities/product/model/pricingSelection";
 import { useState } from "react";
 import type {
-  DiscountType,
   ProductDetailProfile,
-  ProductEstimate,
-  ProductInstallmentOption,
 } from "@/entities/product/model/types";
 import {
   getAvailableCarriers,
@@ -11,18 +11,17 @@ import {
   getMatchedPricing,
   getSelectedId,
   getSubscriptionOptions,
-  mapInstallmentOptions,
   mapPlansFromPricing,
 } from "./selectionOptions";
 
 export function useProductDetailSelection(profile: ProductDetailProfile) {
-  const [colorId, setColorId] = useState(profile.colors[0]?.id ?? "");
-  const [capacityId, setCapacityId] = useState(profile.capacities[0]?.id ?? "");
-  const [carrierId, setCarrierId] = useState(profile.joiningCarriers[0]?.id ?? "");
-  const [saleTypeId, setSaleTypeId] = useState(getSubscriptionOptions(profile)[0]?.id ?? "");
-  const [planId, setPlanId] = useState(profile.plans[0]?.id ?? "");
-  const [discountTypeId, setDiscountTypeId] = useState("");
-  const [installmentId, setInstallmentId] = useState("");
+  const [colorId, setColorId] = useState(profile.defaultSelection?.colorValue ?? profile.colors[0]?.id ?? "");
+  const [capacityId, setCapacityId] = useState(profile.defaultSelection?.variantId ?? profile.capacities[0]?.id ?? "");
+  const [carrierId, setCarrierId] = useState(profile.pricingOptions?.find((option) => option.id === profile.defaultSelection?.pricingId)?.carrierId ?? profile.joiningCarriers[0]?.id ?? "");
+  const [saleTypeId, setSaleTypeId] = useState(profile.defaultSelection?.subscriptionType ?? getSubscriptionOptions(profile)[0]?.id ?? "");
+  const [planId, setPlanId] = useState(profile.defaultSelection?.planId ?? profile.plans[0]?.id ?? "");
+  const [discountTypeId, setDiscountTypeId] = useState(profile.defaultSelection?.discountType ?? "");
+  const [installmentId, setInstallmentId] = useState(String(profile.defaultSelection?.installmentMonths ?? ""));
   const pricingOptions = profile.pricingOptions ?? [];
   const selectedColorId = getSelectedId(profile.colors, colorId);
   const selectedCapacityId = getSelectedId(profile.capacities, capacityId);
@@ -56,58 +55,26 @@ export function useProductDetailSelection(profile: ProductDetailProfile) {
   const selectedPlan =
     planOptions.find((plan) => plan.id === selectedPlanId) ?? planOptions[0];
 
-  // 공시지원금 / 선택약정. pricing_option에 discount_options가 오면 그 목록을 쓴다.
-  const discountOptions =
-    selectedPricing?.discountOptions ?? profile.discountOptions ?? [];
-  const discountTypeOptions = discountOptions.map((option) => ({
-    id: option.discountType,
-    label: option.discountTypeLabel,
-  }));
-  const selectedDiscountTypeId = getSelectedId(discountTypeOptions, discountTypeId);
-  const selectedDiscount = discountOptions.find(
-    (option) => option.discountType === selectedDiscountTypeId
-  );
-
-  const installmentSource: ProductInstallmentOption[] =
-    selectedDiscount?.installmentOptions?.length
-      ? selectedDiscount.installmentOptions
-      : selectedPricing?.installmentOptions ?? [];
-  const installmentOptions = mapInstallmentOptions(installmentSource);
-  const selectedInstallmentId = getSelectedId(installmentOptions, installmentId);
-  const selectedInstallment =
-    installmentSource.find(
-      (option) => String(option.months) === selectedInstallmentId
-    ) ?? installmentSource[0];
-
-  const baseConsultationPayload =
-    selectedInstallment?.consultationPayload ??
-    selectedPricing?.consultationPayload;
-  const consultationPayload = baseConsultationPayload
-    ? {
-        ...baseConsultationPayload,
-        discountType:
-          (selectedDiscountTypeId as DiscountType) ||
-          baseConsultationPayload.discountType,
-        installmentMonths:
-          selectedInstallment?.months ?? baseConsultationPayload.installmentMonths,
-      }
-    : undefined;
+  const resolved = resolvePricingSelection(selectedPricing, discountTypeId, installmentId);
+  const request = profile.canApplyForConsultation === false ? null : resolved.request;
+  const quote = useQuery(productQuoteQueryOptions(request));
+  const consultationPayload = request && !quote.isError ? quote.data?.consultationPayload : undefined;
 
   return {
     carrierOptions,
     consultationPayload,
-    discountTypeOptions,
-    estimate: (selectedInstallment?.estimate ??
-      selectedDiscount?.estimate ??
-      selectedPricing?.estimate ??
-      profile.estimate) as ProductEstimate | null,
-    installmentOptions,
+    discountTypeOptions: resolved.discountTypeOptions,
+    estimate: request && !quote.isError ? quote.data?.estimate ?? null : null,
+    quotePending: Boolean(request) && quote.isPending,
+    quoteError: quote.error?.message,
+    retryQuote: () => quote.refetch(),
+    installmentOptions: resolved.installmentOptions,
     planOptions,
     selectedCapacityId,
     selectedCarrierId,
     selectedColorId,
-    selectedDiscountTypeId,
-    selectedInstallmentId,
+    selectedDiscountTypeId: resolved.discountType ?? "",
+    selectedInstallmentId: String(resolved.installmentMonths ?? ""),
     selectedPlan,
     selectedPlanId,
     selectedSaleTypeId,

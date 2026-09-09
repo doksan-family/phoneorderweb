@@ -1,4 +1,4 @@
-import { apiFetch } from "@/shared/api/client";
+import { apiFetch } from "../../../shared/api/client.ts";
 import type { PublicBanner } from "@/entities/banner/model/types";
 import type { PublicApiBootstrapData, PublicApiBootstrapResponse } from "./types";
 

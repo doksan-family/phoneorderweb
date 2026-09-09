@@ -35,11 +35,14 @@ export async function apiFetch<T>(
 
 /** 호출부가 상태 코드로 분기할 수 있게 status를 실어 보낸다. */
 export class ApiError extends Error {
+  readonly status: number;
+
   constructor(
     message: string,
-    readonly status: number
+    status: number
   ) {
     super(message);
+    this.status = status;
     this.name = "ApiError";
   }
 }

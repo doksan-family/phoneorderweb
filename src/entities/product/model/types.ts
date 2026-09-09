@@ -1,5 +1,6 @@
 import type {
   ProductEstimate,
+  ProductConsultationPayload,
   ProductPricingOption,
   ProductQuoteDiscountOption,
 } from "./pricingTypes";
@@ -21,6 +22,8 @@ export type ProductImage = {
 };
 
 export type Product = {
+  canApplyForConsultation?: boolean;
+  consultationPayload?: ProductConsultationPayload;
   id: string;
   name: string;
   categoryId: string;
@@ -69,6 +72,8 @@ export type ProductDiscountOption = ProductOption & {
 };
 
 export type ProductDetailProfile = {
+  canApplyForConsultation?: boolean;
+  defaultSelection?: ProductConsultationPayload;
   colors: ProductColorOption[];
   capacities: ProductOption[];
   currentCarriers: ProductOption[];

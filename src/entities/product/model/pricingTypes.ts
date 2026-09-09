@@ -59,6 +59,7 @@ export type ProductQuoteDiscountOption = {
 };
 
 export type ProductPricingOption = {
+  availableDiscountTypes: DiscountType[];
   id: string;
   variantId: string;
   carrierId: string;

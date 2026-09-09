@@ -17,7 +17,7 @@ type ProductBasicFieldsProps = {
 };
 
 const fieldClass = "grid gap-2 text-sm font-bold text-slate-700";
-const grid2 = "grid grid-cols-2 gap-2.5 max-[900px]:grid-cols-1";
+const grid2 = "grid grid-cols-2 gap-2.5 max-[560px]:grid-cols-1";
 
 export function ProductBasicFields({
   draft,
@@ -35,6 +35,14 @@ export function ProductBasicFields({
 
   return (
     <>
+      <label className={fieldClass}>
+        상품명
+        <input
+          required
+          value={draft.name}
+          onChange={(event) => onChange("name", event.target.value)}
+        />
+      </label>
       <div className={grid2}>
         <label className={fieldClass}>
           카테고리
@@ -64,14 +72,6 @@ export function ProductBasicFields({
           </select>
         </label>
       </div>
-      <label className={fieldClass}>
-        상품명
-        <input
-          required
-          value={draft.name}
-          onChange={(event) => onChange("name", event.target.value)}
-        />
-      </label>
     </>
   );
 }

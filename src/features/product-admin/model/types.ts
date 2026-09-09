@@ -20,7 +20,7 @@ export type ProductVariantDraft = {
 
 /**
  * 관리자가 하나씩 추가하는 요금 조건.
- * 카드 하나 = (통신사, 요금제, 할인방식) 고정, 그 안에서 가입유형 × 용량별로 금액을 나눠 담는다.
+ * 카드 하나 = (통신사, 요금제) 고정, 그 안에서 가입유형 × 용량별로 금액을 나눠 담는다.
  * carrierCode는 요금제 목록을 좁히기 위한 UI 전용 값이며 서버로 보내지 않는다.
  * (pricing_overrides에는 통신사 필드가 없고 plan_id가 통신사를 결정한다)
  */
@@ -28,7 +28,9 @@ export type ProductPricingEntryDraft = {
   id: string;
   carrierCode: string;
   planId: string;
-  discountType: DiscountType;
+  availableDiscountTypes: DiscountType[];
+  /** 기존 용량별 할인 제한·리베이트 차이를 보존하는 개별 설정. */
+  conditionOverrides?: Record<string, Record<string, { availableDiscountTypes?: DiscountType[]; rebateAmount?: number | null; isActive?: boolean }>>;
   /** 이 조건이 적용될 가입유형 (number_transfer / device_change) */
   subscriptionTypes: string[];
   /**

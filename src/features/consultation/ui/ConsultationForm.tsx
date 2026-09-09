@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useConsultationForm } from "../model/useConsultationForm";
 import { ConsultationAgreementFields } from "./ConsultationAgreementFields";
 import { ConsultationComplete } from "./ConsultationComplete";
@@ -50,10 +51,13 @@ export function ConsultationForm() {
           marketingAgreed={form.marketingAgreed}
           onChange={updateCheckField}
         />
+        {selection.isPending ? <p role="status" className="m-0 text-sm text-slate-500">선택한 상품의 견적을 확인하고 있습니다.</p> : null}
+        {selection.productId ? <Link className="text-sm font-bold underline" href={`/products/${encodeURIComponent(selection.productId)}`}>상품 조건 다시 선택하기</Link> : null}
+        {selection.error ? <p role="alert" className="m-0 text-sm text-red-600">{selection.error} <button type="button" className="underline" onClick={selection.retry}>다시 확인</button></p> : null}
         {error ? <p className="m-0 text-red-600 text-sm font-bold">{error}</p> : null}
         <button
           className={`${submitClass} disabled:cursor-not-allowed disabled:opacity-60`}
-          disabled={isSubmitting}
+          disabled={isSubmitting || selection.isPending || !selection.payload}
           type="submit"
         >
           {isSubmitting ? "신청 중..." : "상담 신청하기"}

@@ -18,7 +18,7 @@ const chipClass =
 const activeChipClass =
   "border-[var(--brand-primary-strong)] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]";
 const idleChipClass =
-  "border-slate-200 bg-white text-slate-600 hover:bg-[var(--brand-primary-soft)]";
+  "border-slate-200 bg-white text-slate-600 hover:bg-[var(--brand-primary-soft)] disabled:cursor-not-allowed disabled:opacity-50";
 
 export function ProductPickerList({
   categories,
@@ -54,7 +54,8 @@ export function ProductPickerList({
             ))
           : visibleProducts.map((product) => (
               <button
-                className="grid content-start gap-2 overflow-hidden rounded-xl border border-slate-200 bg-white p-0 text-left transition hover:bg-[var(--brand-primary-soft)]"
+                className="grid content-start gap-2 overflow-hidden rounded-xl border border-slate-200 bg-white p-0 text-left transition hover:bg-[var(--brand-primary-soft)] disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={product.canApplyForConsultation === false}
                 key={product.id}
                 type="button"
                 onClick={() => onSelect(product.id)}
@@ -73,7 +74,7 @@ export function ProductPickerList({
                     {product.name}
                   </span>
                   <span className="text-[0.8rem] font-extrabold text-slate-950">
-                    {product.releasePrice.toLocaleString("ko-KR")}원
+                    {product.canApplyForConsultation === false ? "상담 준비 중" : `${product.releasePrice.toLocaleString("ko-KR")}원`}
                   </span>
                 </span>
               </button>

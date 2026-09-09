@@ -52,6 +52,8 @@ export function useProductForm({
 
   async function invalidate() {
     await queryClient.invalidateQueries({ queryKey: ["public-products"] });
+    await queryClient.invalidateQueries({ queryKey: ["public-product-detail"] });
+    await queryClient.invalidateQueries({ queryKey: ["public-product-quote"] });
     await queryClient.invalidateQueries({ queryKey: adminProductsQueryKey });
     if (product) {
       await queryClient.invalidateQueries({

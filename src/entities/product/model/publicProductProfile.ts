@@ -2,7 +2,8 @@ import type { PublicProductDetail } from "@/entities/product/api/public";
 import type { ProductDetailProfile } from "./types";
 import {
   getDefaultPricingOption,
-  mapDiscountOptions,
+  getDefaultConsultationSelection,
+  mapPricingDiscountOptions,
   mapEstimate,
   mapPricingOptions,
 } from "./publicProductProfileEstimate";
@@ -35,6 +36,8 @@ export function mapPublicProductDetailToProfile(
 
   return {
     ...emptyProductDetailProfile,
+    canApplyForConsultation: detail.can_apply_for_consultation,
+    defaultSelection: getDefaultConsultationSelection(detail),
     colors: mapColors(detail.colors),
     capacities: mapCapacities(detail),
     currentCarriers: [],
@@ -44,7 +47,7 @@ export function mapPublicProductDetailToProfile(
     detailTabs: { modelInfo: [], cautions: [] },
     subscriptionTypes: mapSubscriptionTypes(detail),
     pricingOptions: mapPricingOptions(detail),
-    discountOptions: pricing ? mapDiscountOptions(pricing.discount_options) : [],
+    discountOptions: pricing ? mapPricingDiscountOptions(pricing) : [],
     estimate: pricing ? mapEstimate(pricing) : null,
   };
 }

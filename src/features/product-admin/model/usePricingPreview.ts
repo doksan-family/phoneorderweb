@@ -1,19 +1,20 @@
 "use client";
 
+import { pricingEntryCondition } from "./pricingEntryCondition";
+import type { DiscountType } from "./types";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { planQueryOptions } from "@/entities/plan/model/queries";
-import { calcEstimate } from "@/entities/pricing-policy/model/calc";
+import { pricingPreviewComparison } from "./pricingPreviewComparison";
 import { pricingPolicyQueryOptions } from "@/entities/pricing-policy/model/queries";
-import type { ProductEstimate } from "@/entities/product/model/types";
 import type { ProductPricingEntryDraft } from "./types";
 
 /**
  * 가격 계산 정책 조회 API와 요금제 목록을 읽어
  * 관리자 폼에서 칸별 월 납부금 미리보기를 계산한다.
  */
-export function usePricingPreview() {
-  const plansQuery = useQuery(planQueryOptions.adminList());
+export function usePricingPreview(includeInactive = false) {
+  const plansQuery = useQuery(planQueryOptions.adminList(includeInactive ? { includeInactive: true } : {}));
   const policyQuery = useQuery(pricingPolicyQueryOptions.admin());
 
   const planFeeById = useMemo(() => {
@@ -22,26 +23,28 @@ export function usePricingPreview() {
     return map;
   }, [plansQuery.data]);
 
-  function estimate(
+  function compare(
     entry: ProductPricingEntryDraft,
     subscriptionType: string,
     storageValue: string,
     releasePrice: number,
-    installmentMonths: number
-  ): ProductEstimate | null {
-    if (!policyQuery.data) return null;
+    installmentMonths: number,
+    discountType: DiscountType
+  ) {
+    if (!policyQuery.data || !planFeeById.has(entry.planId)) return null;
 
-    const byStorage = entry.publicSupportBySubType[subscriptionType] ?? {};
-    return calcEstimate(
+    const condition = pricingEntryCondition(entry, subscriptionType, storageValue);
+    if (!condition.isActive || !condition.availableDiscountTypes.includes(discountType)) return null;
+    return pricingPreviewComparison(
       {
         releasePrice,
         planMonthlyFee: planFeeById.get(entry.planId) ?? 0,
-        discountType: entry.discountType,
+        discountType,
         publicSupportAmount:
-          entry.discountType === "public_support"
-            ? byStorage[storageValue] ?? 0
+          discountType === "public_support"
+            ? condition.publicSupportAmount ?? 0
             : null,
-        rebateAmount: entry.rebateBySubType[subscriptionType] ?? null,
+        rebateAmount: condition.rebateAmount,
         installmentMonths,
       },
       policyQuery.data
@@ -49,11 +52,12 @@ export function usePricingPreview() {
   }
 
   return {
-    estimate,
+    compare,
     planFeeById,
     plans: plansQuery.data ?? [],
     policy: policyQuery.data ?? null,
     policyError: policyQuery.error,
+    plansError: plansQuery.error,
     isLoading: plansQuery.isPending || policyQuery.isPending,
   };
 }

@@ -4,8 +4,13 @@ import type {
   ProductEstimate,
 } from "@/entities/product/model/types";
 import { EstimateBody } from "./EstimateBody";
+import { EstimateBodySkeleton } from "./EstimateBodySkeleton";
+import { ESTIMATE_NOTE } from "@/entities/product/model/publicProductQuoteMapper";
 
 type EstimatePanelProps = {
+  quotePending?: boolean;
+  quoteError?: string;
+  onRetry?: () => void;
   colorValue: string;
   consultationPayload?: ProductConsultationPayload;
   productId: string;
@@ -18,6 +23,9 @@ type EstimatePanelProps = {
 };
 
 export function EstimatePanel({
+  quotePending,
+  quoteError,
+  onRetry,
   colorValue,
   consultationPayload,
   productId,
@@ -37,30 +45,34 @@ export function EstimatePanel({
         <h3 className="m-0 mb-3.5 text-[0.92rem] font-extrabold text-slate-950">
           예상 견적
         </h3>
-        {estimate ? (
+        <div aria-busy={quotePending || undefined} className="min-h-[32rem] sm:min-h-[30rem]">
+        {quotePending ? <EstimateBodySkeleton /> : quoteError ? (
+          <p role="alert" className="text-sm text-red-600">{quoteError} <button type="button" className="underline" onClick={onRetry}>다시 계산</button></p>
+        ) : estimate ? (
           <EstimateBody estimate={estimate} />
         ) : (
           <p className="m-0 text-[0.85rem] leading-[1.7] text-slate-500">
             견적 준비 중입니다. 조건이 확정되지 않아 금액을 계산할 수 없습니다.
             <br />
-            상담을 신청하시면 담당자가 실구매가를 안내드립니다.
+            판매 가능한 요금 조건을 선택해 주세요.
           </p>
         )}
+        </div>
       </section>
 
-      {estimate ? (
+      {estimate || quotePending ? (
         <p className="m-0 text-[0.78rem] leading-[1.6] text-slate-500">
-          {estimate.note}
+          {estimate?.note ?? ESTIMATE_NOTE}
         </p>
       ) : null}
 
-      <Link
+      {consultationPayload && estimate && !quotePending && !quoteError ? <Link
         className="inline-flex min-h-[52px] items-center justify-center rounded-[14px] px-6 text-[0.95rem] font-bold bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]"
         href={consultationHref}
         onClick={onConsultationSelect}
       >
         이 조건으로 상담 신청하기
-      </Link>
+      </Link> : <button type="button" disabled className="min-h-[52px] rounded-[14px] bg-slate-100 px-6 text-sm font-bold text-slate-400">{quotePending ? "견적 확인 중" : "상담 가능한 조건을 선택해 주세요"}</button>}
       {hideBackLink ? null : (
         <Link
           className="inline-flex min-h-[48px] items-center justify-center rounded-[14px] border border-slate-300 px-6 text-[0.88rem] font-bold text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"

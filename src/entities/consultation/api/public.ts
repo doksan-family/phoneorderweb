@@ -1,5 +1,5 @@
-import { ApiError, apiFetch } from "@/shared/api/client";
-import { mapConsultations } from "../model/mapper";
+import { ApiError, apiFetch } from "../../../shared/api/client.ts";
+import { mapConsultations } from "../model/mapper.ts";
 import type {
   ConsultationApiResponse,
   ConsultationCreatePayload,
