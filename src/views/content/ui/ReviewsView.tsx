@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { reviewQueryOptions } from "@/entities/review/model/queries";
 import { ReviewDetailModal } from "@/features/review-detail/ui/ReviewDetailModal";
 import {
@@ -12,13 +12,23 @@ import {
 import { ReviewListTabs } from "@/features/review-list/ui/ReviewListTabs";
 import { ReviewPhotoCard } from "@/features/review-list/ui/ReviewPhotoCard";
 import { ReviewTextCard } from "@/features/review-list/ui/ReviewTextCard";
+import { InfiniteScrollSentinel } from "@/shared/ui/InfiniteScrollSentinel";
 import { PageHeader } from "@/shared/ui/PageHeader";
 
 export function ReviewsView() {
-  const { data, isPending } = useQuery(reviewQueryOptions.publicList());
+  const {
+    data,
+    isPending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(reviewQueryOptions.publicInfiniteList());
   const [openedReviewId, setOpenedReviewId] = useState("");
   const [tab, setTab] = useState<ReviewListTab>("photo");
-  const reviews = useMemo(() => data?.items ?? [], [data]);
+  const reviews = useMemo(
+    () => data?.pages.flatMap((page) => page.items) ?? [],
+    [data]
+  );
   const visibleReviews = useMemo(
     () => filterReviewsByTab(reviews, tab),
     [reviews, tab]
@@ -58,6 +68,19 @@ export function ReviewsView() {
           )
         )}
       </section>
+
+      {reviews.length ? (
+        <InfiniteScrollSentinel
+          onReach={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {isFetchingNextPage ? (
+            <p className="m-0 pt-6 text-center text-[0.85rem] text-slate-400">
+              더 불러오는 중…
+            </p>
+          ) : null}
+        </InfiniteScrollSentinel>
+      ) : null}
 
       {openedReviewId ? (
         <ReviewDetailModal

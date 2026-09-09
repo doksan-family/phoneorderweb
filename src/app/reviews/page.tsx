@@ -5,7 +5,7 @@ import { ReviewsView } from "@/views/content/ui/ReviewsView";
 
 export default async function ReviewsPage() {
   const queryClient = makeQueryClient();
-  await queryClient.prefetchQuery(reviewQueryOptions.publicList());
+  await queryClient.prefetchInfiniteQuery(reviewQueryOptions.publicInfiniteList());
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -11,6 +11,9 @@ export type PublicReviewsParams = {
   featured?: boolean;
   limit?: number;
   offset?: number;
+  /** page/page_size는 서버에서 limit/offset보다 우선한다. */
+  page?: number;
+  page_size?: number;
 };
 
 /** 공개 후기도 상품과 같이 60초 지연 반영을 허용하고 Next Data Cache를 태운다. */
@@ -43,6 +46,10 @@ export function toPublicReviewsSearch(params: PublicReviewsParams) {
   if (params.featured !== undefined) search.set("featured", String(params.featured));
   if (params.limit !== undefined) search.set("limit", String(params.limit));
   if (params.offset !== undefined) search.set("offset", String(params.offset));
+  if (params.page !== undefined) search.set("page", String(params.page));
+  if (params.page_size !== undefined) {
+    search.set("page_size", String(params.page_size));
+  }
 
   const query = search.toString();
   return query ? `?${query}` : "";

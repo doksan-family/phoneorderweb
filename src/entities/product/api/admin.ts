@@ -1,4 +1,5 @@
 import { apiFetch, apiFetchMultipart } from "@/shared/api/client";
+import { BULK_PAGE_SIZE, MAX_PAGE_LOOP, readPaginationMeta } from "@/shared/api/pagination";
 import { createClient } from "@/shared/lib/supabase/client";
 import {
   mapAdminProduct,
@@ -33,13 +34,36 @@ export type {
 /**
  * 목록 조회. id를 넘기면 서버가 단건을 주므로 fetchAdminProduct를 쓴다.
  * accessToken을 넘기면 브라우저 세션을 읽지 않으므로 서버 prefetch에서 쓸 수 있다.
+ *
+ * 관리 화면은 드래그로 노출 순서를 바꾸므로 전체 목록이 필요하다.
+ * 서버가 페이지네이션을 강제하면 page를 끝까지 돌려 전부 이어 붙인다.
  */
 export async function fetchAdminProducts(
   params: AdminProductsParams = {},
   accessToken?: string
 ) {
-  const response = await requestAdminProducts(params, accessToken);
-  return mapAdminProductList(response);
+  const token = accessToken ?? (await getAccessToken());
+  const all: ReturnType<typeof mapAdminProductList> = [];
+
+  for (let page = 1; page <= MAX_PAGE_LOOP; page += 1) {
+    const response = await apiFetch<unknown>(
+      `/functions/v1/admin-products${toAdminProductsSearch({
+        ...params,
+        page,
+        page_size: BULK_PAGE_SIZE,
+      })}`,
+      undefined,
+      token
+    );
+    const batch = mapAdminProductList(response);
+    all.push(...batch);
+
+    const meta = readPaginationMeta(response);
+    const done = meta ? !meta.hasNext : batch.length < BULK_PAGE_SIZE;
+    if (done) break;
+  }
+
+  return all;
 }
 
 /** 단건 조회. 단건 응답과 1건짜리 목록 응답을 모두 받는다. */
@@ -114,12 +138,18 @@ async function requestAdminProducts(
   );
 }
 
-function toAdminProductsSearch(params: AdminProductsParams) {
+function toAdminProductsSearch(
+  params: AdminProductsParams & { page?: number; page_size?: number }
+) {
   const search = new URLSearchParams();
   if (params.id) search.set("id", params.id);
   if (params.category) search.set("category", params.category);
   if (params.include_inactive !== undefined) {
     search.set("include_inactive", String(params.include_inactive));
+  }
+  if (params.page !== undefined) search.set("page", String(params.page));
+  if (params.page_size !== undefined) {
+    search.set("page_size", String(params.page_size));
   }
 
   const query = search.toString();

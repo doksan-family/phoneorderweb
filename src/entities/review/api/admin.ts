@@ -1,4 +1,9 @@
 import { apiFetch, apiFetchMultipart } from "@/shared/api/client";
+import {
+  BULK_PAGE_SIZE,
+  MAX_PAGE_LOOP,
+  readPaginationMeta,
+} from "@/shared/api/pagination";
 import { createClient } from "@/shared/lib/supabase/client";
 import type {
   AdminReview,
@@ -10,17 +15,37 @@ import { toPublicReviewsSearch, type PublicReviewsParams } from "./public";
 
 export type AdminReviewsParams = PublicReviewsParams;
 
-/** GET /functions/v1/admin-reviews (id 없이 = 목록, 비공개 후기도 포함) */
+/**
+ * GET /functions/v1/admin-reviews (id 없이 = 목록, 비공개 후기도 포함).
+ * 관리 화면은 드래그로 노출 순서를 바꾸므로 page를 끝까지 돌려 전체를 이어 붙인다.
+ */
 export async function fetchAdminReviews(
   params: AdminReviewsParams = {}
 ): Promise<PublicReviewPage> {
   const accessToken = await getAccessToken();
-  const response = await apiFetch<PublicReviewListResponse>(
-    `/functions/v1/admin-reviews${toPublicReviewsSearch(params)}`,
-    undefined,
-    accessToken
-  );
-  return response.data;
+  const items: PublicReviewPage["items"] = [];
+  let total = 0;
+
+  for (let page = 1; page <= MAX_PAGE_LOOP; page += 1) {
+    const response = await apiFetch<PublicReviewListResponse>(
+      `/functions/v1/admin-reviews${toPublicReviewsSearch({
+        ...params,
+        page,
+        page_size: BULK_PAGE_SIZE,
+      })}`,
+      undefined,
+      accessToken
+    );
+    const batch = response.data.items ?? [];
+    items.push(...batch);
+    total = response.data.total || total || items.length;
+
+    const meta = readPaginationMeta(response);
+    const done = meta ? !meta.hasNext : batch.length < BULK_PAGE_SIZE;
+    if (done) break;
+  }
+
+  return { items, total, limit: items.length, offset: 0 };
 }
 
 /** GET /functions/v1/admin-reviews?id= (단건) */

@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import {
   fetchAdminReview,
   fetchAdminReviews,
@@ -13,11 +13,32 @@ import {
 /** 홈 미리보기는 서버 prefetch와 클라이언트 useQuery가 같은 키를 써야 한다. */
 export const HOME_REVIEW_PARAMS: PublicReviewsParams = { featured: true, limit: 4 };
 
+/** 후기 목록 무한 스크롤 페이지 크기. */
+export const PUBLIC_REVIEW_PAGE_SIZE = 12;
+
 export const reviewQueryOptions = {
   publicList: (params: PublicReviewsParams = {}) =>
     queryOptions({
       queryKey: ["public-reviews", params] as const,
       queryFn: () => fetchPublicReviews(params),
+      retry: false,
+      staleTime: 30_000,
+    }),
+  /** 후기 목록 무한 스크롤. page/page_size 기반이며 total로 다음 페이지 유무를 판단한다. */
+  publicInfiniteList: (params: PublicReviewsParams = {}) =>
+    infiniteQueryOptions({
+      queryKey: ["public-reviews-infinite", params] as const,
+      queryFn: ({ pageParam }) =>
+        fetchPublicReviews({
+          ...params,
+          page: pageParam,
+          page_size: PUBLIC_REVIEW_PAGE_SIZE,
+        }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        const loaded = allPages.reduce((sum, page) => sum + page.items.length, 0);
+        return loaded < lastPage.total ? allPages.length + 1 : undefined;
+      },
       retry: false,
       staleTime: 30_000,
     }),
