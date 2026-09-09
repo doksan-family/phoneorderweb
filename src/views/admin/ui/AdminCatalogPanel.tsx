@@ -1,7 +1,13 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { dedupeById } from "@/shared/api/pagination";
 import {
   deactivateAdminProduct,
   updateAdminProduct,
@@ -24,18 +30,33 @@ export function AdminCatalogPanel() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const { data, error, isPending } = useQuery(productQueryOptions.adminList());
+  const {
+    data,
+    error,
+    isPending,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery(productQueryOptions.adminInfiniteList());
   const { data: categories } = useQuery(productCategoryQueryOptions.adminList());
   // 드래그 순서와 화면 순서를 맞추려면 목록이 항상 display_order 순이어야 한다.
-  const products = [...(data ?? [])].sort(
-    (first, second) => first.displayOrder - second.displayOrder
-  );
+  const products = useMemo(() => {
+    const flat = dedupeById(data?.pages.flatMap((page) => page.items) ?? []);
+    return [...flat].sort(
+      (first, second) => first.displayOrder - second.displayOrder
+    );
+  }, [data]);
   const visibleProducts = selectedCategory
     ? products.filter((item) => item.categoryCode === selectedCategory)
     : products;
 
   function refetchProducts() {
-    return queryClient.invalidateQueries({ queryKey: adminProductsQueryKey });
+    return queryClient.invalidateQueries({
+      predicate: (query) => {
+        const key = query.queryKey[0];
+        return key === adminProductsQueryKey[0] || key === "admin-products-infinite";
+      },
+    });
   }
 
   const toggleActive = useMutation({
@@ -71,10 +92,13 @@ export function AdminCatalogPanel() {
       <AdminProductList
         canReorder={selectedCategory === ""}
         error={error}
+        hasMore={hasNextPage}
+        isFetchingMore={isFetchingNextPage}
         isPending={isPending}
         isMutating={toggleActive.isPending || deactivate.isPending}
         items={visibleProducts}
         onDeactivate={(id) => deactivate.mutate(id)}
+        onLoadMore={() => fetchNextPage()}
         onReorder={(next) =>
           reorder.mutate(
             next.map((item) => ({ id: item.id, order: item.displayOrder }))

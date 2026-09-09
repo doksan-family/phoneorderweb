@@ -9,7 +9,7 @@ import { useListReorder } from "@/shared/lib/useListReorder";
 
 export function useProductReorder(onSettled: () => void) {
   return useListReorder<AdminProductSummary>({
-    queryKey: productQueryOptions.adminList().queryKey,
+    queryKey: productQueryOptions.adminInfiniteList().queryKey,
     getId: (item) => item.id,
     applyOrder: (item, order) => ({ ...item, displayOrder: order }),
     save: (id, order) => updateAdminProduct(id, { display_order: order }),

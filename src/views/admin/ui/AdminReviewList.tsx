@@ -1,6 +1,7 @@
 "use client";
 
 import type { AdminReview } from "@/entities/review/model/types";
+import { InfiniteScrollSentinel } from "@/shared/ui/InfiniteScrollSentinel";
 import { useDragReorder } from "@/shared/lib/useDragReorder";
 import { AdminReviewRow } from "./AdminReviewRow";
 
@@ -11,6 +12,10 @@ type AdminReviewListProps = {
   onSelect: (review: AdminReview) => void;
   /** 드래그로 바뀐 전체 순서. 첫 항목이 노출 순서 1이다. */
   onReorder: (items: AdminReview[]) => void;
+  /** 무한 스크롤 */
+  hasMore?: boolean;
+  isFetchingMore?: boolean;
+  onLoadMore?: () => void;
 };
 
 export function AdminReviewList({
@@ -19,11 +24,22 @@ export function AdminReviewList({
   onDelete,
   onSelect,
   onReorder,
+  hasMore,
+  isFetchingMore,
+  onLoadMore,
 }: AdminReviewListProps) {
-  const { getRowProps } = useDragReorder(items, onReorder);
+  const { getRowProps, registerContainer, onContainerDragOver } = useDragReorder(
+    items,
+    onReorder,
+    { hasMore, onLoadMore }
+  );
 
   return (
-    <div className="grid gap-2.5">
+    <div
+      className="grid gap-2.5"
+      ref={registerContainer}
+      onDragOver={onContainerDragOver}
+    >
       {items.map((review, index) => (
         <AdminReviewRow
           drag={getRowProps(index)}
@@ -34,6 +50,13 @@ export function AdminReviewList({
           onSelect={() => onSelect(review)}
         />
       ))}
+      {onLoadMore ? (
+        <InfiniteScrollSentinel
+          onReach={onLoadMore}
+          disabled={!hasMore || isFetchingMore}
+          loading={isFetchingMore}
+        />
+      ) : null}
     </div>
   );
 }

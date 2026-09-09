@@ -1,8 +1,9 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
-import { MAX_PAGE_LOOP } from "@/shared/api/pagination";
+import { ADMIN_LIST_PAGE_SIZE, MAX_PAGE_LOOP } from "@/shared/api/pagination";
 import {
   fetchAdminReview,
   fetchAdminReviews,
+  fetchAdminReviewsPage,
   type AdminReviewsParams,
 } from "../api/admin";
 import {
@@ -58,6 +59,30 @@ export const reviewQueryOptions = {
     queryOptions({
       queryKey: ["admin-reviews", params] as const,
       queryFn: () => fetchAdminReviews(params),
+      retry: false,
+      staleTime: 30_000,
+    }),
+  /** 어드민 목록 무한 스크롤. 드래그 정렬은 로드된 항목 기준으로만 저장된다. */
+  adminInfiniteList: (params: AdminReviewsParams = {}) =>
+    infiniteQueryOptions({
+      queryKey: ["admin-reviews-infinite", params] as const,
+      queryFn: ({ pageParam }) =>
+        fetchAdminReviewsPage({
+          ...params,
+          page: pageParam,
+          page_size: ADMIN_LIST_PAGE_SIZE,
+        }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        if (!lastPage.items.length) return undefined;
+        if (lastPage.items.length < ADMIN_LIST_PAGE_SIZE) return undefined;
+        if (allPages.length >= MAX_PAGE_LOOP) return undefined;
+        if (lastPage.pagination) {
+          return lastPage.pagination.hasNext ? allPages.length + 1 : undefined;
+        }
+        const loaded = allPages.reduce((sum, page) => sum + page.items.length, 0);
+        return loaded < lastPage.total ? allPages.length + 1 : undefined;
+      },
       retry: false,
       staleTime: 30_000,
     }),

@@ -86,13 +86,8 @@ export function AdminApplicationsPanel({
           <InfiniteScrollSentinel
             onReach={onLoadMore}
             disabled={!hasMore || isLoadingMore}
-          >
-            {isLoadingMore ? (
-              <p className="m-0 py-3 text-center text-sm text-slate-400">
-                더 불러오는 중…
-              </p>
-            ) : null}
-          </InfiniteScrollSentinel>
+            loading={isLoadingMore}
+          />
         ) : null}
       </div>
 

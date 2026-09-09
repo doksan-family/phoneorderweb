@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteAdminReview } from "@/entities/review/api/admin";
+import { useMemo, useState } from "react";
 import {
-  adminReviewsQueryKey,
-  reviewQueryOptions,
-} from "@/entities/review/model/queries";
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { deleteAdminReview } from "@/entities/review/api/admin";
+import { reviewQueryOptions } from "@/entities/review/model/queries";
+import { dedupeById } from "@/shared/api/pagination";
 import type { AdminReview } from "@/entities/review/model/types";
 import { AdminReviewForm } from "@/features/review-admin/ui/AdminReviewForm";
 import { AdminCreateDialog } from "@/shared/ui/AdminCreateDialog";
@@ -18,17 +20,33 @@ import { useReviewReorder } from "../model/useReviewReorder";
 import { AdminReviewList } from "./AdminReviewList";
 
 export function AdminReviewPanel() {
-  const { data, error, isPending } = useQuery(reviewQueryOptions.adminList());
+  const {
+    data,
+    error,
+    isPending,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery(reviewQueryOptions.adminInfiniteList());
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<AdminReview | null>(null);
   const queryClient = useQueryClient();
   // 드래그 순서와 화면 순서를 맞추려면 목록이 항상 display_order 순이어야 한다.
-  const reviews = [...(data?.items ?? [])].sort(
-    (first, second) => first.display_order - second.display_order
-  );
+  const reviews = useMemo(() => {
+    const flat = dedupeById(data?.pages.flatMap((page) => page.items) ?? []);
+    return [...flat].sort(
+      (first, second) => first.display_order - second.display_order
+    );
+  }, [data]);
+  const total = data?.pages[0]?.total ?? reviews.length;
 
   function refetchReviews() {
-    return queryClient.invalidateQueries({ queryKey: adminReviewsQueryKey });
+    return queryClient.invalidateQueries({
+      predicate: (query) => {
+        const key = query.queryKey[0];
+        return key === "admin-reviews" || key === "admin-reviews-infinite";
+      },
+    });
   }
 
   const deleteMutation = useMutation({
@@ -41,7 +59,7 @@ export function AdminReviewPanel() {
   return (
     <section className={adminFullPanelWithFabClass}>
       {data ? (
-        <p className="mb-7 text-sm font-bold text-slate-400">총 {data.total}건</p>
+        <p className="mb-7 text-sm font-bold text-slate-400">총 {total}건</p>
       ) : null}
 
       {isPending ? <SkeletonRows count={3} /> : null}
@@ -57,9 +75,12 @@ export function AdminReviewPanel() {
       ) : null}
 
       <AdminReviewList
+        hasMore={hasNextPage}
         isDeleting={deleteMutation.isPending}
+        isFetchingMore={isFetchingNextPage}
         items={reviews}
         onDelete={(id) => deleteMutation.mutate(id)}
+        onLoadMore={() => fetchNextPage()}
         onReorder={(next) =>
           reorder.mutate(
             next.map((item) => ({ id: item.id, order: item.display_order }))

@@ -5,8 +5,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 /** 새 순서대로 정렬된 항목. order는 저장돼 있는 현재 display_order다. */
 export type ReorderInput = { id: string; order: number };
 
-/** 목록 응답이 배열인 화면과 { items } 페이지인 화면을 함께 받는다. */
-type ListCache<T> = T[] | { items: T[] };
+/**
+ * 목록 캐시 형태:
+ * - 배열
+ * - { items } 페이지
+ * - useInfiniteQuery의 { pages: [{ items } | { products }] }
+ */
+type ListCache<T> =
+  | T[]
+  | { items: T[] }
+  | { pages: Array<{ items?: T[]; products?: T[] }>; pageParams: unknown[] };
 
 type ListReorderConfig<T> = {
   /** 낙관적 갱신 대상 캐시 키 */
@@ -51,9 +59,22 @@ export function useListReorder<T>({
           return order === undefined ? item : applyOrder(item, order);
         };
 
-        return Array.isArray(previous)
-          ? previous.map(apply)
-          : { ...previous, items: previous.items.map(apply) };
+        if (Array.isArray(previous)) return previous.map(apply);
+
+        if ("pages" in previous) {
+          return {
+            ...previous,
+            pages: previous.pages.map((page) =>
+              Array.isArray(page.products)
+                ? { ...page, products: page.products.map(apply) }
+                : Array.isArray(page.items)
+                  ? { ...page, items: page.items.map(apply) }
+                  : page
+            ),
+          };
+        }
+
+        return { ...previous, items: previous.items.map(apply) };
       });
     },
     onSettled,

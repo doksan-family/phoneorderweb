@@ -7,7 +7,7 @@ import { useListReorder } from "@/shared/lib/useListReorder";
 
 export function useReviewReorder(onSettled: () => void) {
   return useListReorder<AdminReview>({
-    queryKey: reviewQueryOptions.adminList().queryKey,
+    queryKey: reviewQueryOptions.adminInfiniteList().queryKey,
     getId: (item) => item.id,
     applyOrder: (item, order) => ({ ...item, display_order: order }),
     // image_files를 안 보내면 기존 이미지는 그대로 유지된다.

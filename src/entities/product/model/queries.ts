@@ -6,6 +6,7 @@ import {
 import {
   fetchAdminProduct,
   fetchAdminProducts,
+  fetchAdminProductsPage,
   type AdminProductsParams,
 } from "@/entities/product/api/admin";
 import {
@@ -14,7 +15,7 @@ import {
   fetchPublicProductsPage,
   type PublicProductsParams,
 } from "@/entities/product/api/public";
-import { MAX_PAGE_LOOP } from "@/shared/api/pagination";
+import { ADMIN_LIST_PAGE_SIZE, MAX_PAGE_LOOP } from "@/shared/api/pagination";
 
 /** 상품 목록 무한 스크롤 페이지 크기. */
 export const PUBLIC_PRODUCT_PAGE_SIZE = 24;
@@ -89,6 +90,36 @@ export const productQueryOptions = {
       queryKey: ["admin-products", params] as const,
       queryFn: () =>
         fetchAdminProducts({ include_inactive: true, ...params }, accessToken),
+      retry: false,
+      staleTime: 30_000,
+    }),
+  /**
+   * 어드민 목록 무한 스크롤. 드래그 정렬을 위해 소비 측에서 항상 display_order로 정렬한다.
+   * 정렬 저장은 로드된 항목 기준으로만 이뤄진다.
+   */
+  adminInfiniteList: (
+    params: AdminProductsParams = {},
+    accessToken?: string
+  ) =>
+    infiniteQueryOptions({
+      queryKey: ["admin-products-infinite", params] as const,
+      queryFn: ({ pageParam }) =>
+        fetchAdminProductsPage(
+          {
+            include_inactive: true,
+            ...params,
+            page: pageParam,
+            page_size: ADMIN_LIST_PAGE_SIZE,
+          },
+          accessToken
+        ),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        if (!lastPage.items.length) return undefined;
+        if (lastPage.items.length < ADMIN_LIST_PAGE_SIZE) return undefined;
+        if (allPages.length >= MAX_PAGE_LOOP) return undefined;
+        return lastPage.pagination?.hasNext ? allPages.length + 1 : undefined;
+      },
       retry: false,
       staleTime: 30_000,
     }),

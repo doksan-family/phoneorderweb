@@ -2,6 +2,7 @@
 
 import type { AdminProductSummary } from "@/entities/product/api/admin";
 import { AdminEmptyState } from "@/shared/ui/AdminEmptyState";
+import { InfiniteScrollSentinel } from "@/shared/ui/InfiniteScrollSentinel";
 import { SkeletonRows } from "@/shared/ui/SkeletonRows";
 import { useDragReorder } from "@/shared/lib/useDragReorder";
 import { AdminProductRow } from "./AdminProductRow";
@@ -20,6 +21,10 @@ type AdminProductListProps = {
   onReorder: (items: AdminProductSummary[]) => void;
   /** 카테고리로 걸러진 목록은 순서가 전체 노출 순서와 어긋나므로 드래그를 막는다. */
   canReorder?: boolean;
+  /** 무한 스크롤 */
+  hasMore?: boolean;
+  isFetchingMore?: boolean;
+  onLoadMore?: () => void;
 };
 
 export function AdminProductList({
@@ -32,8 +37,15 @@ export function AdminProductList({
   onSelect,
   onReorder,
   canReorder = true,
+  hasMore,
+  isFetchingMore,
+  onLoadMore,
 }: AdminProductListProps) {
-  const { getRowProps } = useDragReorder(items, onReorder);
+  const { getRowProps, registerContainer, onContainerDragOver } = useDragReorder(
+    items,
+    onReorder,
+    { hasMore, onLoadMore }
+  );
 
   if (error) {
     return <AdminEmptyState message={`상품을 불러오지 못했습니다. ${error.message}`} />;
@@ -48,7 +60,11 @@ export function AdminProductList({
   }
 
   return (
-    <div className="grid gap-2.5">
+    <div
+      className="grid gap-2.5"
+      ref={registerContainer}
+      onDragOver={onContainerDragOver}
+    >
       {items.map((item, index) => {
         const drag = getRowProps(index);
         return (
@@ -63,6 +79,13 @@ export function AdminProductList({
           />
         );
       })}
+      {onLoadMore ? (
+        <InfiniteScrollSentinel
+          onReach={onLoadMore}
+          disabled={!hasMore || isFetchingMore}
+          loading={isFetchingMore}
+        />
+      ) : null}
     </div>
   );
 }

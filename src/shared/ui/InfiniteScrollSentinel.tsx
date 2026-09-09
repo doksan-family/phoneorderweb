@@ -6,7 +6,9 @@ type InfiniteScrollSentinelProps = {
   /** 뷰포트에 근접하면 호출된다. hasNext·로딩중이 아닐 때만 넘겨받도록 disabled로 제어한다. */
   onReach: () => void;
   disabled?: boolean;
-  /** 로딩 스켈레톤 등 다음 페이지를 불러오는 동안 보여줄 내용. */
+  /** 다음 페이지를 불러오는 중이면 스피너를 보여준다. */
+  loading?: boolean;
+  /** 스피너 대신 직접 넣을 내용. */
   children?: ReactNode;
 };
 
@@ -16,6 +18,7 @@ type InfiniteScrollSentinelProps = {
 export function InfiniteScrollSentinel({
   onReach,
   disabled = false,
+  loading = false,
   children,
 }: InfiniteScrollSentinelProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -42,8 +45,17 @@ export function InfiniteScrollSentinel({
   }, [disabled]);
 
   return (
-    <div ref={ref} aria-hidden={!children}>
-      {children}
+    <div ref={ref}>
+      {children ??
+        (loading ? (
+          <div className="flex justify-center py-4">
+            <span
+              aria-label="더 불러오는 중"
+              className="size-6 animate-spin rounded-full border-2 border-slate-200 border-t-slate-500"
+              role="status"
+            />
+          </div>
+        ) : null)}
     </div>
   );
 }

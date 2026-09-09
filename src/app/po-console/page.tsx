@@ -13,8 +13,8 @@ export default async function AdminPage() {
 
   const queryClient = makeQueryClient();
   if (accessToken) {
-    await queryClient.prefetchQuery(
-      productQueryOptions.adminList({}, accessToken)
+    await queryClient.prefetchInfiniteQuery(
+      productQueryOptions.adminInfiniteList({}, accessToken)
     );
   }
 

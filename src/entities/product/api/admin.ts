@@ -1,5 +1,9 @@
 import { apiFetch, apiFetchMultipart } from "@/shared/api/client";
-import { BULK_PAGE_SIZE, MAX_PAGE_LOOP, readPaginationMeta } from "@/shared/api/pagination";
+import {
+  BULK_PAGE_SIZE,
+  MAX_PAGE_LOOP,
+  readPaginationMeta,
+} from "@/shared/api/pagination";
 import { createClient } from "@/shared/lib/supabase/client";
 import {
   mapAdminProduct,
@@ -46,24 +50,34 @@ export async function fetchAdminProducts(
   const all: ReturnType<typeof mapAdminProductList> = [];
 
   for (let page = 1; page <= MAX_PAGE_LOOP; page += 1) {
-    const response = await apiFetch<unknown>(
-      `/functions/v1/admin-products${toAdminProductsSearch({
-        ...params,
-        page,
-        page_size: BULK_PAGE_SIZE,
-      })}`,
-      undefined,
+    const { items, pagination } = await fetchAdminProductsPage(
+      { ...params, page, page_size: BULK_PAGE_SIZE },
       token
     );
-    const batch = mapAdminProductList(response);
-    all.push(...batch);
+    all.push(...items);
 
-    const meta = readPaginationMeta(response);
-    const done = meta ? !meta.hasNext : batch.length < BULK_PAGE_SIZE;
+    const done = pagination ? !pagination.hasNext : items.length < BULK_PAGE_SIZE;
     if (done) break;
   }
 
   return all;
+}
+
+/** 목록 한 페이지와 서버 페이지 정보를 함께 돌려준다(무한 스크롤용). */
+export async function fetchAdminProductsPage(
+  params: AdminProductsParams & { page?: number; page_size?: number } = {},
+  accessToken?: string
+) {
+  const token = accessToken ?? (await getAccessToken());
+  const response = await apiFetch<unknown>(
+    `/functions/v1/admin-products${toAdminProductsSearch(params)}`,
+    undefined,
+    token
+  );
+  return {
+    items: mapAdminProductList(response),
+    pagination: readPaginationMeta(response),
+  };
 }
 
 /** 단건 조회. 단건 응답과 1건짜리 목록 응답을 모두 받는다. */

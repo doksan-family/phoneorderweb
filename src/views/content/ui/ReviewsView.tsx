@@ -74,13 +74,8 @@ export function ReviewsView() {
         <InfiniteScrollSentinel
           onReach={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
-        >
-          {isFetchingNextPage ? (
-            <p className="m-0 pt-6 text-center text-[0.85rem] text-slate-400">
-              더 불러오는 중…
-            </p>
-          ) : null}
-        </InfiniteScrollSentinel>
+          loading={isFetchingNextPage}
+        />
       ) : null}
 
       {openedReviewId ? (

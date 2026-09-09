@@ -22,30 +22,40 @@ export type AdminReviewsParams = PublicReviewsParams;
 export async function fetchAdminReviews(
   params: AdminReviewsParams = {}
 ): Promise<PublicReviewPage> {
-  const accessToken = await getAccessToken();
   const items: PublicReviewPage["items"] = [];
   let total = 0;
 
   for (let page = 1; page <= MAX_PAGE_LOOP; page += 1) {
-    const response = await apiFetch<PublicReviewListResponse>(
-      `/functions/v1/admin-reviews${toPublicReviewsSearch({
-        ...params,
-        page,
-        page_size: BULK_PAGE_SIZE,
-      })}`,
-      undefined,
-      accessToken
-    );
-    const batch = response.data.items ?? [];
-    items.push(...batch);
-    total = response.data.total || total || items.length;
+    const result = await fetchAdminReviewsPage({
+      ...params,
+      page,
+      page_size: BULK_PAGE_SIZE,
+    });
+    items.push(...result.items);
+    total = result.total || total || items.length;
 
-    const meta = readPaginationMeta(response);
-    const done = meta ? !meta.hasNext : batch.length < BULK_PAGE_SIZE;
+    const done = result.pagination
+      ? !result.pagination.hasNext
+      : result.items.length < BULK_PAGE_SIZE;
     if (done) break;
   }
 
   return { items, total, limit: items.length, offset: 0 };
+}
+
+/** 후기 목록 한 페이지 + 전체 건수 + 서버 페이지 정보(무한 스크롤용). */
+export async function fetchAdminReviewsPage(params: AdminReviewsParams = {}) {
+  const accessToken = await getAccessToken();
+  const response = await apiFetch<PublicReviewListResponse>(
+    `/functions/v1/admin-reviews${toPublicReviewsSearch(params)}`,
+    undefined,
+    accessToken
+  );
+  return {
+    items: response.data.items ?? [],
+    total: response.data.total ?? response.data.items?.length ?? 0,
+    pagination: readPaginationMeta(response),
+  };
 }
 
 /** GET /functions/v1/admin-reviews?id= (단건) */

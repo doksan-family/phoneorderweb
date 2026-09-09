@@ -66,6 +66,8 @@ export function dedupeById<T extends { id: string }>(items: T[]): T[] {
 }
 
 export const DEFAULT_PAGE_SIZE = 20;
+/** 관리자 목록 무한 스크롤 한 페이지 크기. */
+export const ADMIN_LIST_PAGE_SIZE = 30;
 /** 관리자 목록을 페이지 루프로 한 번에 받을 때 쓰는 페이지 크기. */
 export const BULK_PAGE_SIZE = 100;
 /** 페이지 루프 안전장치. 이 이상은 돌지 않는다. */
