@@ -68,7 +68,9 @@ export function AdminProductDetailModal({
             </button>
           </div>
           <div className="grid grid-cols-[minmax(0,360px)_minmax(0,1fr)] items-start gap-6 max-[1000px]:grid-cols-1">
-            <AdminProductDetailBody product={data} />
+            <div className="min-[1001px]:sticky min-[1001px]:top-0 min-[1001px]:max-h-[calc(100dvh_-_9rem)] min-[1001px]:self-start min-[1001px]:overflow-y-auto">
+              <AdminProductDetailBody product={data} />
+            </div>
             <div className="min-w-0">
               {isPlaceholderData ? (
                 <Skeleton className="h-40 rounded-xl" />
