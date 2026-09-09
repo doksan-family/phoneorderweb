@@ -35,6 +35,8 @@ export function AdminProductDetailModal({
   return (
     <AdminCreateDialog
       title={isEditing ? "상품 수정" : "상품 상세"}
+      widthClassName="w-[min(1200px,95vw)]"
+      heightClassName="h-[min(920px,calc(100dvh_-_40px))]"
       onClose={onClose}
     >
       {error ? (
@@ -54,15 +56,7 @@ export function AdminProductDetailModal({
           onUpdate={() => setIsEditing(false)}
         />
       ) : (
-        <div className="grid gap-4">
-          <AdminProductDetailBody product={data} />
-          {isPlaceholderData ? (
-            <Skeleton className="h-40 rounded-xl" />
-          ) : data.pricingOptions.length ? (
-            <AdminProductPricingBreakdown product={data} />
-          ) : (
-            <AdminProductDetailPricing product={data} />
-          )}
+        <div className="grid content-start gap-4">
           <div className="flex justify-end">
             <button
               disabled={isPlaceholderData}
@@ -72,6 +66,18 @@ export function AdminProductDetailModal({
             >
               수정
             </button>
+          </div>
+          <div className="grid grid-cols-[minmax(0,360px)_minmax(0,1fr)] items-start gap-6 max-[1000px]:grid-cols-1">
+            <AdminProductDetailBody product={data} />
+            <div className="min-w-0">
+              {isPlaceholderData ? (
+                <Skeleton className="h-40 rounded-xl" />
+              ) : data.pricingOptions.length ? (
+                <AdminProductPricingBreakdown product={data} />
+              ) : (
+                <AdminProductDetailPricing product={data} />
+              )}
+            </div>
           </div>
         </div>
       )}

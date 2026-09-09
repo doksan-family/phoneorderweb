@@ -35,7 +35,7 @@ export function AdminProductDetailBody({ product }: AdminProductDetailBodyProps)
         </div>
       ) : null}
 
-      <dl className="m-0 grid grid-cols-2 gap-x-4 gap-y-2.5 max-[560px]:grid-cols-1">
+      <dl className="m-0 grid gap-x-4 gap-y-2.5">
         <Row label="상품 ID" value={product.id} />
         <Row label="브랜드" value={product.brand} />
         <Row label="카테고리" value={product.categoryName || product.categoryCode} />
