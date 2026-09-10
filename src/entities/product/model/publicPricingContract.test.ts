@@ -20,7 +20,7 @@ const pricing: PublicProductPricingOption = {
 };
 const detail: PublicProductDetail = { id: "product-a", name: "상품", category: "samsung", category_code: "samsung", category_name: "삼성", brand: "삼성", summary: "", representative_image_url: null, pricing_options: [pricing] };
 function profile(): ProductDetailProfile {
-  return { colors: [{ id: "black", label: "블랙", hexCode: "#000000" }], capacities: [], currentCarriers: [], joiningCarriers: [], plans: [], discounts: [], estimate: null, detailTabs: { modelInfo: [], cautions: [] }, pricingOptions: mapPricingOptions(detail) };
+  return { colors: [{ id: "black", label: "블랙", hexCode: "#000000" }], capacities: [], currentCarriers: [], joiningCarriers: [], plans: [], discounts: [], estimate: null, pricingOptions: mapPricingOptions(detail) };
 }
 
 test("상세 응답에 금액이 있어도 available_discount_types가 허용하지 않으면 노출하지 않는다", () => {

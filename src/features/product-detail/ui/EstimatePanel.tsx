@@ -16,11 +16,18 @@ type EstimatePanelProps = {
   productId: string;
   /** API 견적이 없으면 null. 준비 중 안내를 보여준다. */
   estimate: ProductEstimate | null;
-  /** 상담 페이지 안 모달에서 쓸 때는 목록 링크를 감춘다. */
+  /** 상담 페이지 안 모달에서 쓸 때는 목록 링크와 모바일 고정 바를 감춘다. */
   hideBackLink?: boolean;
+  /** "목록으로 돌아가기" 목적지. 기본은 전체 목록. */
+  backHref?: string;
   /** 상담 신청 링크를 눌렀을 때 추가로 할 일 (모달 닫기 등) */
   onConsultationSelect?: () => void;
 };
+
+const ctaClass =
+  "inline-flex w-full min-h-[52px] items-center justify-center rounded-[14px] px-6 text-[0.95rem] font-bold bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]";
+const ctaDisabledClass =
+  "flex w-full min-h-[52px] items-center justify-center rounded-[14px] bg-slate-100 px-6 text-sm font-bold text-slate-400";
 
 export function EstimatePanel({
   quotePending,
@@ -31,12 +38,25 @@ export function EstimatePanel({
   productId,
   estimate,
   hideBackLink,
+  backHref = "/products",
   onConsultationSelect,
 }: EstimatePanelProps) {
   const consultationHref = getConsultationHref(
     productId,
     consultationPayload,
     colorValue
+  );
+  const canApply = Boolean(
+    consultationPayload && estimate && !quotePending && !quoteError
+  );
+  const cta = canApply ? (
+    <Link className={ctaClass} href={consultationHref} onClick={onConsultationSelect}>
+      이 조건으로 상담 신청하기
+    </Link>
+  ) : (
+    <span className={ctaDisabledClass}>
+      {quotePending ? "견적 확인 중" : "상담 가능한 조건을 선택해 주세요"}
+    </span>
   );
 
   return (
@@ -66,20 +86,32 @@ export function EstimatePanel({
         </p>
       ) : null}
 
-      {consultationPayload && estimate && !quotePending && !quoteError ? <Link
-        className="inline-flex min-h-[52px] items-center justify-center rounded-[14px] px-6 text-[0.95rem] font-bold bg-[var(--brand-cta)] text-white shadow-[0_2px_8px_var(--brand-cta-shadow)] transition hover:bg-[var(--brand-cta-hover)]"
-        href={consultationHref}
-        onClick={onConsultationSelect}
-      >
-        이 조건으로 상담 신청하기
-      </Link> : <button type="button" disabled className="min-h-[52px] rounded-[14px] bg-slate-100 px-6 text-sm font-bold text-slate-400">{quotePending ? "견적 확인 중" : "상담 가능한 조건을 선택해 주세요"}</button>}
+      {/* 데스크톱: 인라인 CTA. 모바일은 하단 고정 바에서 처리 */}
+      <div className="max-[900px]:hidden">{cta}</div>
+
       {hideBackLink ? null : (
         <Link
           className="inline-flex min-h-[48px] items-center justify-center rounded-[14px] border border-slate-300 px-6 text-[0.88rem] font-bold text-slate-700 transition hover:bg-[var(--brand-primary-soft)] hover:text-slate-950"
-          href="/products"
+          href={backHref}
         >
           목록으로 돌아가기
         </Link>
+      )}
+
+      {hideBackLink ? null : (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur min-[901px]:hidden">
+          <div className="site-container flex items-center gap-3">
+            {estimate ? (
+              <div className="shrink-0">
+                <p className="m-0 text-[0.65rem] text-slate-400">월 예상</p>
+                <strong className="text-[0.95rem] text-[var(--brand-primary-strong)]">
+                  {estimate.estimatedMonthlyPayment.toLocaleString("ko-KR")}원
+                </strong>
+              </div>
+            ) : null}
+            <div className="min-w-0 flex-1">{cta}</div>
+          </div>
+        </div>
       )}
     </div>
   );

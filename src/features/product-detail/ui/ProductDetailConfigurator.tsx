@@ -15,6 +15,8 @@ type ProductDetailConfiguratorProps = {
   priceSummary?: ReactNode;
   /** 상담 페이지 모달에서 쓸 때 목록 링크를 감춘다. */
   hideBackLink?: boolean;
+  /** "목록으로 돌아가기" 링크 목적지. 기본은 전체 목록. */
+  backHref?: string;
   onConsultationSelect?: () => void;
 };
 
@@ -23,6 +25,7 @@ export function ProductDetailConfigurator({
   profile,
   priceSummary,
   hideBackLink,
+  backHref,
   onConsultationSelect
 }: ProductDetailConfiguratorProps) {
   const selection = useProductDetailSelection(profile);
@@ -87,6 +90,7 @@ export function ProductDetailConfigurator({
         quoteError={selection.quoteError}
         onRetry={selection.retryQuote}
         hideBackLink={hideBackLink}
+        backHref={backHref}
         onConsultationSelect={onConsultationSelect}
         colorValue={selection.selectedColorId}
         consultationPayload={selection.consultationPayload}

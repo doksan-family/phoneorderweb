@@ -88,10 +88,6 @@ export type ProductDetailProfile = {
   discountOptions?: ProductQuoteDiscountOption[];
   /** API가 견적을 못 주면 null. 화면은 "견적 준비 중"으로 처리한다. */
   estimate: ProductEstimate | null;
-  detailTabs: {
-    modelInfo: string[];
-    cautions: string[];
-  };
 };
 
 export type {

@@ -26,7 +26,6 @@ export const emptyProductDetailProfile: ProductDetailProfile = {
   pricingOptions: [],
   discountOptions: [],
   estimate: null,
-  detailTabs: { modelInfo: [], cautions: [] },
 };
 
 export function mapPublicProductDetailToProfile(
@@ -44,7 +43,6 @@ export function mapPublicProductDetailToProfile(
     joiningCarriers: mapCarriers(detail),
     plans: [],
     discounts: [],
-    detailTabs: { modelInfo: [], cautions: [] },
     subscriptionTypes: mapSubscriptionTypes(detail),
     pricingOptions: mapPricingOptions(detail),
     discountOptions: pricing ? mapPricingDiscountOptions(pricing) : [],

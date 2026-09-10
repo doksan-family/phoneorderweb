@@ -9,7 +9,6 @@ import { productQueryOptions } from "@/entities/product/model/queries";
 import { useStoredProducts } from "@/entities/product/model/useStoredProducts";
 import { ProductDetailConfigurator } from "@/features/product-detail/ui/ProductDetailConfigurator";
 import { ProductDescriptionImages } from "./ProductDescriptionImages";
-import { ProductDetailTabs } from "./ProductDetailTabs";
 import { ProductGallery } from "./ProductGallery";
 import { ProductPriceSummary } from "./ProductPriceSummary";
 import { ProductDetailSkeleton } from "./ProductDetailSkeleton";
@@ -57,9 +56,31 @@ export function ProductDetailView({
   }
 
   const badges = product.badges ?? [];
+  const categoryHref = product.categoryId
+    ? `/products?category=${encodeURIComponent(product.categoryId)}`
+    : "/products";
 
   return (
-    <main className="site-container pt-10 pb-[112px]">
+    <main className="site-container pt-10 pb-[112px] max-[900px]:pb-[132px]">
+      <nav
+        aria-label="위치"
+        className="mb-4 flex flex-wrap items-center gap-1.5 text-[0.8rem] text-slate-400"
+      >
+        <Link className="transition hover:text-slate-700" href="/products">
+          전체 상품
+        </Link>
+        {product.categoryName ? (
+          <>
+            <span aria-hidden>›</span>
+            <Link className="transition hover:text-slate-700" href={categoryHref}>
+              {product.categoryName}
+            </Link>
+          </>
+        ) : null}
+        <span aria-hidden>›</span>
+        <span className="min-w-0 truncate text-slate-500">{product.name}</span>
+      </nav>
+
       <section className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-10 max-[900px]:grid-cols-1 max-[900px]:gap-6">
         <ProductGallery product={product} />
         <div>
@@ -82,14 +103,13 @@ export function ProductDetailView({
             {product.summary}
           </p>
           <ProductDetailConfigurator
+            backHref={categoryHref}
             priceSummary={<ProductPriceSummary product={product} />}
             productId={product.id}
             profile={profile}
           />
         </div>
       </section>
-
-      <ProductDetailTabs profile={profile} />
 
       {product.detail ? (
         <section className="mt-12">
