@@ -1,5 +1,6 @@
 import { apiFetch } from "@/shared/api/client";
 import type {
+  CustomerCenterDetailResponse,
   CustomerCenterListResponse,
   CustomerCenterPage,
   PublicFaq,
@@ -26,6 +27,16 @@ export function fetchPublicFaqs(
   params: CustomerCenterParams = {}
 ): Promise<CustomerCenterPage<PublicFaq>> {
   return fetchCustomerCenter<PublicFaq>("faqs", params);
+}
+
+/** id를 넘기면 공지 한 건을 돌려준다. */
+export async function fetchPublicNotice(id: string): Promise<PublicNotice> {
+  const search = new URLSearchParams({ id });
+  const response = await apiFetch<CustomerCenterDetailResponse<PublicNotice>>(
+    `/functions/v1/public-customer-center/notices?${search.toString()}`,
+    publicCacheInit
+  );
+  return response.data;
 }
 
 async function fetchCustomerCenter<T>(

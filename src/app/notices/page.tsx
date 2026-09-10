@@ -5,7 +5,9 @@ import { NoticesView } from "@/views/content/ui/NoticesView";
 
 export default async function NoticesPage() {
   const queryClient = makeQueryClient();
-  await queryClient.prefetchQuery(customerCenterQueryOptions.notices());
+  await queryClient.prefetchInfiniteQuery(
+    customerCenterQueryOptions.noticesInfinite()
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
