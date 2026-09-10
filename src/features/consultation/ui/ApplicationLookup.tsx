@@ -117,7 +117,12 @@ export function ApplicationLookup() {
       >
         <h2 className="m-0 text-[clamp(1.4rem,3vw,2.1rem)] tracking-[-0.5px]">조회 결과</h2>
         {results === null && !lookupMutation.isPending ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">신청 정보를 입력하면 내역이 표시됩니다.</p> : null}
-        {results?.length === 0 ? <p className="text-slate-500 text-[0.88rem] leading-[1.65]">일치하는 신청 내역이 없습니다.</p> : null}
+        {results?.length === 0 ? (
+          <p className="text-slate-500 text-[0.88rem] leading-[1.65]">
+            일치하는 신청 내역이 없습니다. 이름·휴대폰 번호·신청 시 등록한 비밀번호가
+            모두 정확해야 조회됩니다.
+          </p>
+        ) : null}
         {results?.map((item) => (
           <ApplicationLookupResult item={item} key={item.id} />
         ))}
