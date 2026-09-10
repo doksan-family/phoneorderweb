@@ -23,7 +23,6 @@ export const reviewQueryOptions = {
     queryOptions({
       queryKey: ["public-reviews", params] as const,
       queryFn: () => fetchPublicReviews(params),
-      retry: false,
       staleTime: 30_000,
     }),
   /** 후기 목록 무한 스크롤. page/page_size 기반이며 total로 다음 페이지 유무를 판단한다. */
@@ -44,14 +43,12 @@ export const reviewQueryOptions = {
         const loaded = allPages.reduce((sum, page) => sum + page.items.length, 0);
         return loaded < lastPage.total ? allPages.length + 1 : undefined;
       },
-      retry: false,
       staleTime: 30_000,
     }),
   publicDetail: (id: string) =>
     queryOptions({
       queryKey: ["public-review-detail", id] as const,
       queryFn: () => fetchPublicReview(id),
-      retry: false,
       staleTime: 30_000,
     }),
   /** 어드민 목록. 비공개 후기까지 내려온다. */
@@ -59,7 +56,6 @@ export const reviewQueryOptions = {
     queryOptions({
       queryKey: ["admin-reviews", params] as const,
       queryFn: () => fetchAdminReviews(params),
-      retry: false,
       staleTime: 30_000,
     }),
   /** 어드민 목록 무한 스크롤. 드래그 정렬은 로드된 항목 기준으로만 저장된다. */
@@ -83,7 +79,6 @@ export const reviewQueryOptions = {
         const loaded = allPages.reduce((sum, page) => sum + page.items.length, 0);
         return loaded < lastPage.total ? allPages.length + 1 : undefined;
       },
-      retry: false,
       staleTime: 30_000,
     }),
   adminDetail: (id: string) =>
@@ -91,7 +86,6 @@ export const reviewQueryOptions = {
       queryKey: ["admin-review-detail", id] as const,
       queryFn: () => fetchAdminReview(id),
       enabled: id !== "",
-      retry: false,
       staleTime: 30_000,
     }),
 };

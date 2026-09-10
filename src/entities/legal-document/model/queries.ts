@@ -8,14 +8,12 @@ export const legalDocumentQueryOptions = {
     queryOptions({
       queryKey: ["public-legal-documents", type ?? "all"] as const,
       queryFn: () => fetchPublicLegalDocuments(type),
-      retry: false,
       staleTime: 300_000,
     }),
   adminList: () =>
     queryOptions({
       queryKey: ["admin-legal-documents"] as const,
       queryFn: () => fetchAdminLegalDocuments(),
-      retry: false,
       staleTime: 30_000,
     }),
 };

@@ -9,7 +9,6 @@ export const dashboardQueryOptions = {
     queryOptions({
       queryKey: ["admin-dashboard", days] as const,
       queryFn: () => fetchAdminDashboard(days),
-      retry: false,
       staleTime: 60_000,
     }),
 };

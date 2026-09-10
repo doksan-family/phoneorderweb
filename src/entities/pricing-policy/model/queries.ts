@@ -8,7 +8,6 @@ export const pricingPolicyQueryOptions = {
     queryOptions({
       queryKey: pricingPolicyQueryKey,
       queryFn: () => fetchPricingPolicy(accessToken),
-      retry: false,
       staleTime: 30_000,
     }),
 };

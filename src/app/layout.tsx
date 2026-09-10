@@ -7,6 +7,7 @@ import { SITE_URL } from "@/shared/config/site";
 import { makeQueryClient } from "@/shared/lib/react-query";
 import { QueryProvider } from "@/shared/lib/react-query/QueryProvider";
 import { LegacyStorageCleanup } from "@/shared/ui/LegacyStorageCleanup";
+import { Toaster } from "@/shared/ui/toast/Toaster";
 import { MaintenanceGate } from "@/shared/ui/MaintenanceGate";
 import { SiteFooterGate } from "@/shared/ui/SiteFooterGate";
 import { SiteHeaderGate } from "@/shared/ui/SiteHeaderGate";
@@ -62,6 +63,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <QueryProvider>
           <HydrationBoundary state={dehydrate(queryClient)}>
             <LegacyStorageCleanup />
+            <Toaster />
             <MaintenanceGate>
               <SiteHeaderGate />
               {children}

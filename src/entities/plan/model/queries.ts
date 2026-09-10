@@ -9,7 +9,6 @@ export const planQueryOptions = {
     queryOptions({
       queryKey: ["admin-plans", params] as const,
       queryFn: () => fetchAdminPlans(params),
-      retry: false,
       staleTime: 30_000,
     }),
 };

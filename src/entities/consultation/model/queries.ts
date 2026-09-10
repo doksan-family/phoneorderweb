@@ -15,7 +15,6 @@ export const consultationQueryOptions = {
     queryOptions({
       queryKey: [...adminConsultationsQueryKey, params] as const,
       queryFn: () => fetchAdminConsultations(params),
-      retry: false,
       staleTime: 30_000,
     }),
   /** 상담 신청 목록 무한 스크롤. 키워드·상태 필터는 화면에서 로드된 페이지에만 적용된다. */
@@ -39,7 +38,6 @@ export const consultationQueryOptions = {
         const loaded = allPages.reduce((sum, page) => sum + page.items.length, 0);
         return loaded < lastPage.total ? allPages.length + 1 : undefined;
       },
-      retry: false,
       staleTime: 30_000,
     }),
 };

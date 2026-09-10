@@ -10,21 +10,18 @@ export const siteSettingsQueryOptions = {
     queryOptions({
       queryKey: ["public-site-settings"] as const,
       queryFn: () => fetchPublicSiteSettings(),
-      retry: false,
       staleTime: 300_000,
     }),
   admin: () =>
     queryOptions({
       queryKey: ["admin-site-settings"] as const,
       queryFn: () => fetchAdminSiteSettings(),
-      retry: false,
       staleTime: 30_000,
     }),
   privacyRetentionPreview: () =>
     queryOptions({
       queryKey: ["privacy-retention-preview"] as const,
       queryFn: () => fetchPrivacyRetentionPreview(),
-      retry: false,
       staleTime: 30_000,
     }),
 };

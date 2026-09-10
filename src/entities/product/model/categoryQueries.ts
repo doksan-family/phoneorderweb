@@ -9,14 +9,12 @@ export const productCategoryQueryOptions = {
     queryOptions({
       queryKey: ["admin-product-categories"] as const,
       queryFn: () => fetchAdminProductCategories(),
-      retry: false,
       staleTime: 30_000,
     }),
   publicList: (placement?: "main_menu") =>
     queryOptions({
       queryKey: ["public-product-categories", placement ?? "all"] as const,
       queryFn: () => fetchPublicProductCategories({ placement }),
-      retry: false,
       staleTime: 30_000,
     }),
 };

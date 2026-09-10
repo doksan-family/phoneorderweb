@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { reportError } from "@/shared/lib/reportError";
 
 type ErrorPageProps = {
   error: Error & { digest?: string };
@@ -10,7 +11,7 @@ type ErrorPageProps = {
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
   useEffect(() => {
-    console.error(error);
+    reportError(error, "route-error");
   }, [error]);
 
   return (

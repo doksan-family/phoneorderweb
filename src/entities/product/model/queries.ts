@@ -35,7 +35,6 @@ export const productQueryOptions = {
       },
       // 카테고리를 바꿀 때 빈 스켈레톤 대신 직전 목록을 두고 교체한다.
       placeholderData: keepPreviousData,
-      retry: false,
       staleTime: 30_000,
     }),
   /**
@@ -64,7 +63,6 @@ export const productQueryOptions = {
         if (allPages.length >= MAX_PAGE_LOOP) return undefined;
         return lastPage.pagination?.hasNext ? allPages.length + 1 : undefined;
       },
-      retry: false,
       staleTime: 30_000,
     }),
   publicDetail: (id: string) =>
@@ -77,7 +75,6 @@ export const productQueryOptions = {
           profile: mapPublicProductDetailToProfile(response),
         };
       },
-      retry: false,
       staleTime: 30_000,
     }),
   /**
@@ -90,7 +87,6 @@ export const productQueryOptions = {
       queryKey: ["admin-products", params] as const,
       queryFn: () =>
         fetchAdminProducts({ include_inactive: true, ...params }, accessToken),
-      retry: false,
       staleTime: 30_000,
     }),
   /**
@@ -120,7 +116,6 @@ export const productQueryOptions = {
         if (allPages.length >= MAX_PAGE_LOOP) return undefined;
         return lastPage.pagination?.hasNext ? allPages.length + 1 : undefined;
       },
-      retry: false,
       staleTime: 30_000,
     }),
   /** 어드민 상세. 모달이 열릴 때만 요청한다. */
@@ -129,7 +124,6 @@ export const productQueryOptions = {
       queryKey: ["admin-product-detail", id] as const,
       queryFn: () => fetchAdminProduct(id, accessToken),
       enabled: id !== "",
-      retry: false,
       staleTime: 30_000,
     }),
 };

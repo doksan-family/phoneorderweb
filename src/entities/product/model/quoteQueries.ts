@@ -8,7 +8,6 @@ import { mapConsultationPayload, mapQuoteToEstimate } from "./publicProductQuote
 export const productQuoteQueryOptions = (request: ProductQuoteRequest | null) => queryOptions({
   queryKey: ["public-product-quote", request] as const,
   enabled: request !== null,
-  retry: false,
   staleTime: 30_000,
   queryFn: async () => {
     if (!request) throw new Error("견적 조건을 선택해 주세요.");
