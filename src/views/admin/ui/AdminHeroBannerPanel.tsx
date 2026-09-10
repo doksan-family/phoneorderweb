@@ -15,14 +15,38 @@ import { AdminBannerList } from "./AdminBannerList";
 export function AdminHeroBannerPanel() {
   const [banners, setBanners] = useState<AdminBanner[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  useEffect(() => {
+  function loadBanners() {
+    setLoading(true);
+    setLoadError(false);
     fetchAdminBanners()
-      .then(setBanners)
+      .then((data) => {
+        setBanners(data);
+        setLoadError(false);
+      })
+      .catch(() => setLoadError(true))
       .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    let alive = true;
+    fetchAdminBanners()
+      .then((data) => {
+        if (alive) setBanners(data);
+      })
+      .catch(() => {
+        if (alive) setLoadError(true);
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   function handleCreated(banner: AdminBanner) {
@@ -75,17 +99,32 @@ export function AdminHeroBannerPanel() {
       <section className={`${adminFullPanelBaseClass} flex flex-col overflow-hidden p-6 pb-24`}>
         <h2 className="m-0 mb-4 shrink-0 text-base font-extrabold text-slate-950">등록된 배너</h2>
         <div className="grid content-start gap-2.5 overflow-y-auto flex-1 pr-1">
-          <AdminBannerList
-            banners={banners}
-            deletingId={deletingId}
-            editingId={editingId}
-            loading={loading}
-            onCancelEdit={() => setEditingId(null)}
-            onDelete={handleDelete}
-            onReorder={handleReorder}
-            onToggleEdit={toggleEdit}
-            onUpdated={handleUpdated}
-          />
+          {loadError ? (
+            <div className="grid justify-items-start gap-2 py-6">
+              <p className="m-0 text-sm text-slate-500">
+                배너를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+              </p>
+              <button
+                className="text-sm font-bold text-[var(--brand-primary-strong)] underline"
+                type="button"
+                onClick={loadBanners}
+              >
+                다시 시도
+              </button>
+            </div>
+          ) : (
+            <AdminBannerList
+              banners={banners}
+              deletingId={deletingId}
+              editingId={editingId}
+              loading={loading}
+              onCancelEdit={() => setEditingId(null)}
+              onDelete={handleDelete}
+              onReorder={handleReorder}
+              onToggleEdit={toggleEdit}
+              onUpdated={handleUpdated}
+            />
+          )}
         </div>
       </section>
 
