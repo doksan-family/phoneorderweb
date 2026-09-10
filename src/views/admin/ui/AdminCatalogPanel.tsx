@@ -25,11 +25,23 @@ import { useProductReorder } from "../model/useProductReorder";
 import { AdminProductCategoryFilter } from "./AdminProductCategoryFilter";
 import { AdminProductList } from "./AdminProductList";
 
+const chipBase =
+  "inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-3 text-sm font-bold transition";
+
+function visibilityChipClass(active: boolean) {
+  return `${chipBase} ${
+    active
+      ? "border-[var(--brand-primary-strong)] bg-[var(--brand-primary-soft)] text-[var(--brand-primary-strong)]"
+      : "border-slate-200 bg-white text-slate-600 hover:bg-[var(--brand-primary-soft)]"
+  }`;
+}
+
 export function AdminCatalogPanel() {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [showHiddenOnly, setShowHiddenOnly] = useState(false);
   const {
     data,
     error,
@@ -46,9 +58,14 @@ export function AdminCatalogPanel() {
       (first, second) => first.displayOrder - second.displayOrder
     );
   }, [data]);
-  const visibleProducts = selectedCategory
-    ? products.filter((item) => item.categoryCode === selectedCategory)
-    : products;
+  const hiddenCount = products.filter((item) => !item.isActive).length;
+  const visibleProducts = products.filter((item) => {
+    if (selectedCategory && item.categoryCode !== selectedCategory) return false;
+    if (showHiddenOnly && item.isActive) return false;
+    return true;
+  });
+  // 숨김만 보기 상태에서는 순서 변경 의미가 없다.
+  const canReorder = selectedCategory === "" && !showHiddenOnly;
 
   function refetchProducts() {
     return queryClient.invalidateQueries({
@@ -82,15 +99,36 @@ export function AdminCatalogPanel() {
         </p>
       ) : null}
 
-      <AdminProductCategoryFilter
-        categories={categories ?? []}
-        selected={selectedCategory}
-        totalCount={products.length}
-        onSelect={setSelectedCategory}
-      />
+      <div className="grid gap-2">
+        <AdminProductCategoryFilter
+          categories={categories ?? []}
+          selected={selectedCategory}
+          totalCount={products.length}
+          onSelect={setSelectedCategory}
+        />
+        <div className="flex flex-wrap gap-2">
+          <button
+            aria-pressed={!showHiddenOnly}
+            className={visibilityChipClass(!showHiddenOnly)}
+            type="button"
+            onClick={() => setShowHiddenOnly(false)}
+          >
+            전체
+          </button>
+          <button
+            aria-pressed={showHiddenOnly}
+            className={visibilityChipClass(showHiddenOnly)}
+            type="button"
+            onClick={() => setShowHiddenOnly(true)}
+          >
+            숨김
+            <span className="text-[0.78rem] opacity-70">{hiddenCount}</span>
+          </button>
+        </div>
+      </div>
 
       <AdminProductList
-        canReorder={selectedCategory === ""}
+        canReorder={canReorder}
         error={error}
         hasMore={hasNextPage}
         isFetchingMore={isFetchingNextPage}
