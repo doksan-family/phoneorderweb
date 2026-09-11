@@ -6,7 +6,7 @@ import type {
   AdminProductImage,
   AdminProductSummary,
 } from "@/entities/product/api/admin";
-import { adminProductsQueryKey } from "@/entities/product/model/queries";
+import { invalidateAllProductQueries } from "@/entities/product/model/queries";
 import type { Product } from "@/entities/product/model/types";
 import { submitCreate, submitUpdate } from "./productApi";
 import { createEmptyProductDraft } from "./productDraft";
@@ -17,7 +17,7 @@ type UseProductFormParams = {
   /** 있으면 수정 모드(PATCH), 없으면 등록 모드(POST) */
   product?: AdminProductSummary;
   order: number;
-  onCreate?: (product: Product) => void;
+  onCreate?: (product?: Product) => void;
   onUpdate?: () => void;
 };
 
@@ -51,15 +51,7 @@ export function useProductForm({
   }
 
   async function invalidate() {
-    await queryClient.invalidateQueries({ queryKey: ["public-products"] });
-    await queryClient.invalidateQueries({ queryKey: ["public-product-detail"] });
-    await queryClient.invalidateQueries({ queryKey: ["public-product-quote"] });
-    await queryClient.invalidateQueries({ queryKey: adminProductsQueryKey });
-    if (product) {
-      await queryClient.invalidateQueries({
-        queryKey: ["admin-product-detail", product.id],
-      });
-    }
+    await invalidateAllProductQueries(queryClient, product?.id);
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -96,7 +88,8 @@ export function useProductForm({
           order,
         });
         await invalidate();
-        if (created) onCreate?.(created);
+        // 등록 자체는 성공했으므로 낙관적 Product 유무와 상관없이 완료를 알린다.
+        onCreate?.(created ?? undefined);
         setDraft(createEmptyProductDraft());
         setProductImages([]);
         setDescriptionImages([]);

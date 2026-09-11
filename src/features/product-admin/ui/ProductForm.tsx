@@ -14,7 +14,7 @@ type ProductFormProps = {
   product?: AdminProductSummary;
   order?: number;
   onCancel?: () => void;
-  onCreate?: (product: Product) => void;
+  onCreate?: (product?: Product) => void;
   onUpdate?: () => void;
 };
 

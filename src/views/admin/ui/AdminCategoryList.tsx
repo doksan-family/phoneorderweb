@@ -27,7 +27,10 @@ export function AdminCategoryList({
   onSelect,
   onReorder,
 }: AdminCategoryListProps) {
-  const { getRowProps } = useDragReorder(items, onReorder);
+  const { getRowProps, registerContainer, onContainerDragOver } = useDragReorder(
+    items,
+    onReorder
+  );
 
   if (error) {
     return (
@@ -44,7 +47,11 @@ export function AdminCategoryList({
   }
 
   return (
-    <div className="grid gap-2.5">
+    <div
+      className="grid gap-2.5"
+      ref={registerContainer}
+      onDragOver={onContainerDragOver}
+    >
       {items.map((item, index) => (
         <AdminCategoryRow
           drag={getRowProps(index)}

@@ -3,15 +3,14 @@
 import Image from "next/image";
 import type { AdminProductSummary } from "@/entities/product/api/admin";
 import { DragHandle } from "@/shared/ui/DragHandle";
-import { VisibilityToggle } from "@/shared/ui/VisibilityToggle";
+import { IconDeleteButton } from "@/shared/ui/IconDeleteButton";
 import type { DragRowProps } from "@/shared/lib/useDragReorder";
 
 type AdminProductRowProps = {
   item: AdminProductSummary;
   isMutating: boolean;
   drag: DragRowProps;
-  onDeactivate: (id: string) => void;
-  onToggleActive: (id: string, isActive: boolean) => void;
+  onDelete: (id: string) => void;
   onSelect: (id: string) => void;
 };
 
@@ -19,8 +18,7 @@ export function AdminProductRow({
   item,
   isMutating,
   drag,
-  onDeactivate,
-  onToggleActive,
+  onDelete,
   onSelect,
 }: AdminProductRowProps) {
   return (
@@ -54,13 +52,11 @@ export function AdminProductRow({
             .join(" · ") || "—"}
         </span>
       </button>
-      <VisibilityToggle
-        active={item.isActive}
+      <IconDeleteButton
         disabled={isMutating}
-        label={`${item.name || item.id} 노출`}
-        onChange={() =>
-          item.isActive ? onDeactivate(item.id) : onToggleActive(item.id, item.isActive)
-        }
+        label="상품 삭제"
+        targetName={item.name || item.id}
+        onClick={() => onDelete(item.id)}
       />
     </article>
   );

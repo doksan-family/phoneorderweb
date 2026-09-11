@@ -12,10 +12,8 @@ type AdminProductListProps = {
   isPending: boolean;
   isMutating: boolean;
   error: Error | null;
-  /** 노출 중인 상품을 감춘다(DELETE) */
-  onDeactivate: (id: string) => void;
-  /** 감춰진 상품을 다시 노출한다(PATCH) */
-  onToggleActive: (id: string, isActive: boolean) => void;
+  /** 상품과 연결 데이터를 영구 삭제한다(DELETE). 되돌릴 수 없다. */
+  onDelete: (id: string) => void;
   onSelect: (id: string) => void;
   /** 드래그로 바뀐 전체 순서. 첫 항목이 노출 순서 1이다. */
   onReorder: (items: AdminProductSummary[]) => void;
@@ -32,8 +30,7 @@ export function AdminProductList({
   isPending,
   isMutating,
   error,
-  onDeactivate,
-  onToggleActive,
+  onDelete,
   onSelect,
   onReorder,
   canReorder = true,
@@ -73,9 +70,8 @@ export function AdminProductList({
             isMutating={isMutating}
             item={item}
             key={item.id}
-            onDeactivate={onDeactivate}
+            onDelete={onDelete}
             onSelect={onSelect}
-            onToggleActive={onToggleActive}
           />
         );
       })}

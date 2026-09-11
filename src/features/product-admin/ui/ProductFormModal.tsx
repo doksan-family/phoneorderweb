@@ -10,7 +10,7 @@ type ProductFormModalProps = {
   product?: AdminProductSummary;
   order?: number;
   onClose: () => void;
-  onCreate?: (product: Product) => void;
+  onCreate?: (product?: Product) => void;
   onUpdate?: () => void;
 };
 

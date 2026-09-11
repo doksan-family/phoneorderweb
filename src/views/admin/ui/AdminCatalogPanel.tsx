@@ -8,12 +8,10 @@ import {
 } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { dedupeById } from "@/shared/api/pagination";
-import {
-  deactivateAdminProduct,
-  updateAdminProduct,
-} from "@/entities/product/api/admin";
+import { deleteAdminProduct } from "@/entities/product/api/admin";
 import {
   adminProductsQueryKey,
+  invalidateAllProductQueries,
   productQueryOptions,
 } from "@/entities/product/model/queries";
 import { productCategoryQueryOptions } from "@/entities/product/model/categoryQueries";
@@ -76,20 +74,18 @@ export function AdminCatalogPanel() {
     });
   }
 
-  const toggleActive = useMutation({
-    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
-      updateAdminProduct(id, { is_active: !isActive }),
-    onSuccess: refetchProducts,
-  });
-
-  const deactivate = useMutation({
-    mutationFn: (id: string) => deactivateAdminProduct(id),
-    onSuccess: refetchProducts,
+  const deleteProduct = useMutation({
+    mutationFn: (id: string) => deleteAdminProduct(id),
+    onSuccess: (_data, id) => {
+      if (selectedProductId === id) setSelectedProductId("");
+      // 삭제한 상품이 공개 목록/상세 캐시에 남지 않도록 함께 지운다.
+      return invalidateAllProductQueries(queryClient, id);
+    },
   });
 
   const reorder = useProductReorder(refetchProducts);
 
-  const mutationError = toggleActive.error ?? deactivate.error ?? reorder.error;
+  const mutationError = deleteProduct.error ?? reorder.error;
 
   return (
     <section className={`grid content-start gap-5 ${adminFullPanelWithFabClass}`}>
@@ -133,9 +129,9 @@ export function AdminCatalogPanel() {
         hasMore={hasNextPage}
         isFetchingMore={isFetchingNextPage}
         isPending={isPending}
-        isMutating={toggleActive.isPending || deactivate.isPending}
+        isMutating={deleteProduct.isPending}
         items={visibleProducts}
-        onDeactivate={(id) => deactivate.mutate(id)}
+        onDelete={(id) => deleteProduct.mutate(id)}
         onLoadMore={() => fetchNextPage()}
         onReorder={(next) =>
           reorder.mutate(
@@ -143,7 +139,6 @@ export function AdminCatalogPanel() {
           )
         }
         onSelect={setSelectedProductId}
-        onToggleActive={(id, isActive) => toggleActive.mutate({ id, isActive })}
       />
 
       {selectedProductId ? (

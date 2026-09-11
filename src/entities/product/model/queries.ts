@@ -2,6 +2,7 @@ import {
   infiniteQueryOptions,
   keepPreviousData,
   queryOptions,
+  type QueryClient,
 } from "@tanstack/react-query";
 import {
   fetchAdminProduct,
@@ -129,3 +130,28 @@ export const productQueryOptions = {
 };
 
 export const adminProductsQueryKey = ["admin-products"] as const;
+
+/**
+ * 상품 생성·수정·삭제 후 공개/관리자 캐시를 한 번에 무효화한다.
+ * 무한 스크롤 키("-infinite")는 파라미터가 붙어 exact 매칭이 안 되므로 별도로 넣는다.
+ */
+export async function invalidateAllProductQueries(
+  queryClient: QueryClient,
+  productId?: string
+) {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: ["public-products"] }),
+    queryClient.invalidateQueries({ queryKey: ["public-products-infinite"] }),
+    queryClient.invalidateQueries({ queryKey: ["public-product-detail"] }),
+    queryClient.invalidateQueries({ queryKey: ["public-product-quote"] }),
+    queryClient.invalidateQueries({ queryKey: adminProductsQueryKey }),
+    queryClient.invalidateQueries({ queryKey: ["admin-products-infinite"] }),
+    ...(productId
+      ? [
+          queryClient.invalidateQueries({
+            queryKey: ["admin-product-detail", productId],
+          }),
+        ]
+      : []),
+  ]);
+}

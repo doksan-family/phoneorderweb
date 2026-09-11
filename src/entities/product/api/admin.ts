@@ -123,8 +123,11 @@ export async function updateAdminProduct(
   return mapAdminProduct(unwrapDataField(response));
 }
 
-/** 실제 삭제가 아니라 is_active=false로 비활성화한다. */
-export async function deactivateAdminProduct(id: string) {
+/**
+ * 상품과 연결된 용량·색상·요금제 연결·가격조건·이미지 레코드를 영구 삭제한다.
+ * 복구 불가. 단순 노출 중지는 updateAdminProduct(id, { is_active: false })를 쓴다.
+ */
+export async function deleteAdminProduct(id: string) {
   const accessToken = await getAccessToken();
   await apiFetch<unknown>(
     `/functions/v1/admin-products?id=${encodeURIComponent(id)}`,

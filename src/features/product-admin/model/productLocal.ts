@@ -12,8 +12,12 @@ export function createLocalProductFromDraft(
   response?: AdminProductCreateResponse,
   localOrder = 0
 ): Product | null {
+  if (!draft.name.trim()) return null;
+
+  // 관리자가 만든 동적 카테고리는 정적 목록에 없을 수 있으므로 draft 값으로 대체한다.
   const category = findProductCategory(draft.categoryCode);
-  if (!draft.name.trim() || !category) return null;
+  const categoryId = category?.id ?? draft.categoryCode;
+  const categoryName = category?.name ?? draft.categoryCode;
 
   const productImages = mapResponseImages(response?.product_images);
   const badges = (response?.badges ?? draft.badges)
@@ -23,13 +27,13 @@ export function createLocalProductFromDraft(
   return {
     id: response?.id ?? createProductId(draft.name),
     name: draft.name.trim(),
-    categoryId: category.id,
-    categoryName: category.name,
-    brand: draft.brand.trim() || category.name,
+    categoryId,
+    categoryName,
+    brand: draft.brand.trim() || categoryName,
     imageUrl:
       productImages?.[0]?.url ??
       response?.thumbnail_image_url ??
-      getFallbackImage(category.id),
+      getFallbackImage(categoryId),
     imageAlt: `${draft.name.trim()} 대표 이미지`,
     summary: draft.summary.trim() || "관리자가 등록한 상품입니다.",
     detail: draft.summary.trim() || "상담을 통해 상세 안내합니다.",
